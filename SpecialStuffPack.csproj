@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1E4235EC-FEFD-4984-A595-A1E49F18B0DB}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SpecialStuffPack</RootNamespace>
+    <AssemblyName>SpecialStuffPack</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>..\..\..\Documents\ModDependencies\Assembly-CSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Assembly-CSharp.Base.mm">
+      <HintPath>..\..\..\Documents\ModDependencies\Assembly-CSharp.Base.mm.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip">
+      <HintPath>..\..\..\Documents\ModDependencies\Ionic.Zip.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Cecil">
+      <HintPath>..\..\..\Documents\ModDependencies\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security">
+      <HintPath>..\..\..\Documents\ModDependencies\Mono.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.RuntimeDetour">
+      <HintPath>..\..\..\Documents\ModDependencies\MonoMod.RuntimeDetour.dll</HintPath>
+    </Reference>
+    <Reference Include="MonoMod.Utils">
+      <HintPath>..\..\..\Documents\ModDependencies\MonoMod.Utils.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\Documents\ModDependencies\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PlayMaker">
+      <HintPath>..\..\..\Documents\ModDependencies\PlayMaker.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="UnityEngine">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.Base.mm">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.Base.mm.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.CoreModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule.Base.mm">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.CoreModule.Base.mm.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ImageConversionModule">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.ImageConversionModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.JSONSerializeModule">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.JSONSerializeModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.ParticleSystemModule">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.ParticleSystemModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.TextRenderingModule">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.TextRenderingModule.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>..\..\..\Documents\ModDependencies\UnityEngine.UI.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GungeonAPI\DungeonHandler.cs" />
+    <Compile Include="GungeonAPI\DungeonHooks.cs" />
+    <Compile Include="GungeonAPI\GungeonAPIMain.cs" />
+    <Compile Include="GungeonAPI\HitboxMonitor.cs" />
+    <Compile Include="GungeonAPI\OfficialFlows.cs" />
+    <Compile Include="GungeonAPI\ResourceExtractor.cs" />
+    <Compile Include="GungeonAPI\RoomFactory.cs" />
+    <Compile Include="GungeonAPI\SampleFlow.cs" />
+    <Compile Include="GungeonAPI\SimpleInteractable.cs" />
+    <Compile Include="GungeonAPI\StaticReferences.cs" />
+    <Compile Include="GungeonAPI\TextureStitcher.cs" />
+    <Compile Include="GungeonAPI\Tools.cs" />
+    <Compile Include="Items\ActiveOverchargeItem.cs" />
+    <Compile Include="Items\ExtraChestItem.cs" />
+    <Compile Include="Items\BoxOfStuff.cs" />
+    <Compile Include="Components\BlombkBehaviour.cs" />
+    <Compile Include="Components\DragunDeathChecks.cs" />
+    <Compile Include="Components\MicrotransactionDiscountSynergyController.cs" />
+    <Compile Include="ItemAPI\ItemBuilder.cs" />
+    <Compile Include="Items\FusedAmmolet.cs" />
+    <Compile Include="Items\PayToWin.cs" />
+    <Compile Include="Items\ProtectiveArmorItem.cs" />
+    <Compile Include="Items\RatWhistle.cs" />
+    <Compile Include="Items\ShacklesItem.cs" />
+    <Compile Include="Items\SubscribeButton.cs" />
+    <Compile Include="PlayMakerActions\FriendlyRatGrabby.cs" />
+    <Compile Include="SpecialDungeonPrerequisite.cs" />
+    <Compile Include="SpecialSynergies.cs" />
+    <Compile Include="SynergyAPI\AdvancedCompanionSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\AdvancedDualWieldSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\AdvancedGunFormeData.cs" />
+    <Compile Include="SynergyAPI\AdvancedGunFormeSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\AdvancedHoveringGunSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\AdvancedInfiniteAmmoSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\AdvancedStringDB.cs" />
+    <Compile Include="SynergyAPI\AdvancedStringDBTable.cs" />
+    <Compile Include="SynergyAPI\AdvancedTransformGunSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\SynergyBuilder.cs" />
+    <Compile Include="Tools\AssetBundleManager.cs" />
+    <Compile Include="Tools\CodeShortcuts.cs" />
+    <Compile Include="Tools\ExtraPublicFields.cs" />
+    <Compile Include="Tools\LoadHelper.cs" />
+    <Compile Include="Tools\SpriteBuilder.cs" />
+    <Compile Include="SaveAPI\AdvancedGameStats.cs" />
+    <Compile Include="SaveAPI\AdvancedGameStatsManager.cs" />
+    <Compile Include="SaveAPI\AdvancedMidGameSaveData.cs" />
+    <Compile Include="SaveAPI\BreachShopTool.cs" />
+    <Compile Include="SaveAPI\CustomDungeonPrerequisite.cs" />
+    <Compile Include="SaveAPI\CustomHuntQuest.cs" />
+    <Compile Include="SaveAPI\CustomHuntQuests.cs" />
+    <Compile Include="SaveAPI\Enums\Comparers\CustomDungeonFlagsComparer.cs" />
+    <Compile Include="SaveAPI\Enums\Comparers\CustomTrackedMaximumsComparer.cs" />
+    <Compile Include="SaveAPI\Enums\Comparers\CustomTrackedStatsComparer.cs" />
+    <Compile Include="SaveAPI\Enums\CustomCharacterSpecificGungeonFlags.cs" />
+    <Compile Include="SaveAPI\Enums\CustomDungeonFlags.cs" />
+    <Compile Include="SaveAPI\Enums\CustomTrackedMaximums.cs" />
+    <Compile Include="SaveAPI\Enums\CustomTrackedStats.cs" />
+    <Compile Include="SaveAPI\JammedEnemyState.cs" />
+    <Compile Include="SaveAPI\SaveAPIManager.cs" />
+    <Compile Include="SaveAPI\SaveTools.cs" />
+    <Compile Include="SaveAPI\SpecialAIActor.cs" />
+    <Compile Include="SaveAPI\SpecialPickupObject.cs" />
+    <Compile Include="SpecialStuffModule.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Items\WoodenToken.cs" />
+    <Compile Include="Items\WishingOrb.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="specialeverything" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Rooms\Room_DLChest.room" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
