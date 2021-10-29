@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using SpecialStuffPack.SaveAPI;
 
 namespace SpecialStuffPack.Items
 {
@@ -18,6 +19,9 @@ namespace SpecialStuffPack.Items
             item.DamageNegateChance = 0.25f;
             item.ArmorlessDamageNegateChance = 0.05f;
             item.ArmorToGive = 1;
+            item.AddToBlacksmithShop();
+            item.AddToOldRedShop();
+            item.SetupUnlockOnCustomFlag(CustomDungeonFlags.ITEMSPECIFIC_MARINES_HELMET, true);
         }
 
         public override void Pickup(PlayerController player)

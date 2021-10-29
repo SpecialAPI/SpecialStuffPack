@@ -25,6 +25,7 @@ namespace SpecialStuffPack.Items
             item.sUpgradePrice = 215;
             item.rainbowUpgradePrice = 1000;
             ETGMod.Databases.Strings.Core.Set("#PTW_UPGRADE_CHEST", "Upgrade chest for %PRICE%CURRENCY_SYMBOL?");
+            item.AddToFlyntShop();
         }
 
         public override void Update()

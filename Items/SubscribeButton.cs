@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Subscribe Button";
             string shortdesc = "Don't forget to LIKE & SUBSCRIBE!";
             string longdesc = "Power increases with the number of subscribers you have.\n\nBrought to a gungeon from another dimension by a famous GunTuber";
-            SubscribeButton item = ItemBuilder.EasyInit<SubscribeButton>("items/subscribebutton", "sprites/subscribe_button_idle_001.png", name, shortdesc, longdesc, ItemQuality.S, SpecialStuffModule.globalPrefix, null, null);
+            SubscribeButton item = ItemBuilder.EasyInit<SubscribeButton>("items/subscribebutton", "sprites/subscribe_button_idle_001.png", name, shortdesc, longdesc, ItemQuality.S, SpecialStuffModule.globalPrefix, 524, null);
             item.DamageIncreasePerSubscriber = 0.05f;
             item.DamageIncreasePerSubscriberSynergy = 0.07f;
             ETGMod.Databases.Strings.Core.Set("#SUBUTTON_NUM_SUBSCRIBERS", "%SUBS subscribers");

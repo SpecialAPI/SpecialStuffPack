@@ -1,4 +1,5 @@
 ﻿using SpecialStuffPack.ItemAPI;
+using SpecialStuffPack.SaveAPI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,9 @@ namespace SpecialStuffPack.Items
             ShacklesItem item = ItemBuilder.EasyInit<ShacklesItem>("items/shackles", "sprites/shackles_idle_001.png", name, shortdesc, longdesc, ItemQuality.C, SpecialStuffModule.globalPrefix, 525, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.MovementSpeed, -2f, StatModifier.ModifyMethod.ADDITIVE);
             item.CanBeDropped = false;
+            item.AddToOldRedShop();
+            item.AddToBlacksmithShop();
+            item.SetupUnlockOnCustomFlag(CustomDungeonFlags.ITEMSPECIFIC_CONVICTS_SHACKLES, true);
         }
 
         public override void Pickup(PlayerController player)

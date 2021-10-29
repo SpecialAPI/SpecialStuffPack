@@ -75,6 +75,7 @@ namespace SpecialStuffPack.Items
                     }
                 }
             };
+            item.AddToCursulaShop();
         }
 
         protected override void DoEffect(PlayerController user)

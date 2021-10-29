@@ -18,7 +18,17 @@ namespace SpecialStuffPack.Components
         {
             if(GameManager.Instance.CurrentGameMode == GameManager.GameMode.BOSSRUSH)
             {
-
+                switch (GameManager.Instance.PrimaryPlayer.characterIdentity)
+                {
+                    case PlayableCharacters.Convict:
+                        SaveAPIManager.SetFlag(CustomDungeonFlags.ITEMSPECIFIC_CONVICTS_SHACKLES, true);
+                        break;
+                    case PlayableCharacters.Soldier:
+                        SaveAPIManager.SetFlag(CustomDungeonFlags.ITEMSPECIFIC_MARINES_HELMET, true);
+                        break;
+                    default:
+                        break;
+                }
             }
             else
             {

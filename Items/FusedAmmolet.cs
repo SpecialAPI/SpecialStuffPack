@@ -88,6 +88,7 @@ namespace SpecialStuffPack.Items
                 rotateEffectToNormal = false
             };
             item.BlankBombPrefab = bombObject;
+            item.AddToOldRedShop();
             new Hook(
                 typeof(PlayerController).GetMethod("DoConsumableBlank", BindingFlags.Instance | BindingFlags.NonPublic),
                 typeof(FusedAmmolet).GetMethod("LookItsBlombkFromOMITB")

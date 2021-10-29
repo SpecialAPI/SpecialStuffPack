@@ -31,6 +31,10 @@ namespace SpecialStuffPack
             SynergyBuilder.CreateSynergy("Also you can leave a comment", new List<int> { ItemBuilder.ItemIds["subscribebutton"], 28 }, null, false);
             SynergyBuilder.CreateSynergy("Chill", new List<int> { ItemBuilder.ItemIds["ratwhistle"] }, new List<int> { 109, 387, 278, 344, 223, 97, 364, 170, 225, 40 });
             SynergyBuilder.CreateSynergy("All At Once", new List<int> { ItemBuilder.ItemIds["ratwhistle"] }, new List<int> { 626, 667, 662, 663, 463, ItemBuilder.ItemIds["woodentoken"] });
+            SynergyBuilder.CreateSynergy("Shadow Mirror", new List<int> { ItemBuilder.ItemIds["truthmirror"], 820 });
+            SynergyBuilder.CreateSynergy("Blessed Mirror", new List<int> { ItemBuilder.ItemIds["truthmirror"], 538 });
+            SynergyBuilder.CreateSynergy("Just Your Normal Luck", new List<int> { ItemBuilder.ItemIds["badluckclover"], 289 });
+            SynergyBuilder.CreateSynergy("Somehow... Luckier?", new List<int> { ItemBuilder.ItemIds["badluckclover"], ItemBuilder.ItemIds["truthmirror"] });
 
             //add synergy components
             PickupObjectDatabase.GetById(476).AddComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck = "50% OFF ON ALL IN-GAME PURCHASES!";
