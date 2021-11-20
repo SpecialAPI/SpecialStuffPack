@@ -105,7 +105,7 @@ namespace SpecialStuffPack.ItemAPI
             }
             if(overrideConsoleID != null)
             {
-                Game.Items.Rename(consolePrefix + ":" + name.ToLower().Replace(" ", "_").Replace("\"", "").Replace("'", ""), overrideConsoleID);
+                Game.Items.Rename(consolePrefix + ":" + name.ToMTGId(), overrideConsoleID);
             }
             return item;
         }
@@ -132,7 +132,7 @@ namespace SpecialStuffPack.ItemAPI
                 item.SetLongDescription(longDesc);
                 if (item is PlayerItem)
                     (item as PlayerItem).consumable = false;
-                Game.Items.Add(idPool + ":" + name.ToLower().Replace(" ", "_").Replace("\"", "").Replace("'", ""), item);
+                Game.Items.Add(idPool + ":" + name.ToMTGId(), item);
                 ETGMod.Databases.Items.Add(item);
                 item.RemovePeskyQuestionmark();
                 ItemIds.Add(item.name.ToLower(), item.PickupObjectId);

@@ -20,6 +20,18 @@ namespace SpecialStuffPack
 
         public static T Load<T>(string path) where T : UnityEngine.Object
         {
+            if (!path.StartsWith("assets/"))
+            {
+                path = "assets/" + path;
+            }
+            if(typeof(T) == typeof(GameObject) && !path.EndsWith(".prefab"))
+            {
+                path += ".prefab";
+            }
+            if(typeof(T) == typeof(Texture2D) && !path.EndsWith(".png"))
+            {
+                path += ".png";
+            }
             return specialeverything.LoadAsset<T>(path);
         }
 

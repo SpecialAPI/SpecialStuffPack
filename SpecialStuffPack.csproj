@@ -94,7 +94,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\AsteroidProjectile.cs" />
     <Compile Include="Components\BadLuckAffectedChest.cs" />
+    <Compile Include="Components\BinaryGunMarkedBehaviour.cs" />
+    <Compile Include="Components\BinaryGunProjectile.cs" />
     <Compile Include="GungeonAPI\DungeonHandler.cs" />
     <Compile Include="GungeonAPI\DungeonHooks.cs" />
     <Compile Include="GungeonAPI\GungeonAPIMain.cs" />
@@ -107,8 +110,13 @@
     <Compile Include="GungeonAPI\StaticReferences.cs" />
     <Compile Include="GungeonAPI\TextureStitcher.cs" />
     <Compile Include="GungeonAPI\Tools.cs" />
+    <Compile Include="ItemAPI\GunBuilder.cs" />
     <Compile Include="Items\ActiveOverchargeItem.cs" />
+    <Compile Include="Items\AsteroidBelt.cs" />
     <Compile Include="Items\BadLuckClover.cs" />
+    <Compile Include="Items\BinaryGun.cs" />
+    <Compile Include="Items\Butter.cs" />
+    <Compile Include="Items\Calendar.cs" />
     <Compile Include="Items\ExtraChestItem.cs" />
     <Compile Include="Items\BoxOfStuff.cs" />
     <Compile Include="Components\BlombkBehaviour.cs" />
@@ -116,11 +124,15 @@
     <Compile Include="Components\MicrotransactionDiscountSynergyController.cs" />
     <Compile Include="ItemAPI\ItemBuilder.cs" />
     <Compile Include="Items\FusedAmmolet.cs" />
+    <Compile Include="Items\GlassBell.cs" />
+    <Compile Include="Items\GreenCandle.cs" />
+    <Compile Include="Items\LegitCoupon.cs" />
     <Compile Include="Items\MirrorOfTruth.cs" />
     <Compile Include="Items\PayToWin.cs" />
     <Compile Include="Items\ProtectiveArmorItem.cs" />
     <Compile Include="Items\RatWhistle.cs" />
     <Compile Include="Items\ShacklesItem.cs" />
+    <Compile Include="Items\ShootingStar.cs" />
     <Compile Include="Items\SubscribeButton.cs" />
     <Compile Include="PlayMakerActions\FriendlyRatGrabby.cs" />
     <Compile Include="SpecialDungeonPrerequisite.cs" />
@@ -134,12 +146,15 @@
     <Compile Include="SynergyAPI\AdvancedStringDB.cs" />
     <Compile Include="SynergyAPI\AdvancedStringDBTable.cs" />
     <Compile Include="SynergyAPI\AdvancedTransformGunSynergyProcessor.cs" />
+    <Compile Include="SynergyAPI\AdvancedVolleyReplacementSynergyProcessor.cs" />
     <Compile Include="SynergyAPI\SynergyBuilder.cs" />
     <Compile Include="Tools\AssetBundleManager.cs" />
     <Compile Include="Tools\CodeShortcuts.cs" />
     <Compile Include="Tools\ExtraDelegates.cs" />
     <Compile Include="Tools\ExtraPublicFields.cs" />
     <Compile Include="Tools\LoadHelper.cs" />
+    <Compile Include="Tools\MoreLogging.cs" />
+    <Compile Include="Tools\SpecialAssets.cs" />
     <Compile Include="Tools\SpriteBuilder.cs" />
     <Compile Include="SaveAPI\AdvancedGameStats.cs" />
     <Compile Include="SaveAPI\AdvancedGameStatsManager.cs" />

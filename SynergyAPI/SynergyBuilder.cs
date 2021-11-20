@@ -37,6 +37,108 @@ namespace SpecialStuffPack.SynergyAPI
         }
 
         /// <summary>
+        /// Adds <paramref name="obj"/> to an already existing synergy with the <see cref="CustomSynergyType"/> of <paramref name="type"/>.
+        /// </summary>
+        /// <param name="obj">The item to add to the synergy.</param>
+        /// <param name="type">The <see cref="CustomSynergyType"/> of the synergy.</param>
+        public static void AddItemToSynergy(this PickupObject obj, CustomSynergyType type)
+        {
+            AddItemToSynergy(type, obj.PickupObjectId);
+        }
+
+        /// <summary>
+        /// Adds <paramref name="obj"/> to an already existing synergy with the name key of <paramref name="nameKey"/>.
+        /// </summary>
+        /// <param name="obj">The item to add to the synergy.</param>
+        /// <param name="nameKey">The name key of the synergy.</param>
+        public static void AddItemToSynergy(this PickupObject obj, string nameKey)
+        {
+            AddItemToSynergy(nameKey, obj.PickupObjectId);
+        }
+
+        /// <summary>
+        /// Adds an item with the id of <paramref name="id"/> to an already existing synergy with the <see cref="CustomSynergyType"/> of <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type">The <see cref="CustomSynergyType"/> of the synergy.</param>
+        /// <param name="id">The id of the item that will be added to the synergy.</param>
+        public static void AddItemToSynergy(CustomSynergyType type, int id)
+        {
+            foreach (AdvancedSynergyEntry entry in GameManager.Instance.SynergyManager.synergies)
+            {
+                if (entry.bonusSynergies.Contains(type))
+                {
+                    if (PickupObjectDatabase.GetById(id) != null)
+                    {
+                        PickupObject obj = PickupObjectDatabase.GetById(id);
+                        if (obj is Gun)
+                        {
+                            if (entry.OptionalGunIDs != null)
+                            {
+                                entry.OptionalGunIDs.Add(id);
+                            }
+                            else
+                            {
+                                entry.OptionalGunIDs = new List<int> { id };
+                            }
+                        }
+                        else
+                        {
+                            if (entry.OptionalItemIDs != null)
+                            {
+                                entry.OptionalItemIDs.Add(id);
+                            }
+                            else
+                            {
+                                entry.OptionalItemIDs = new List<int> { id };
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Adds an item with the id of <paramref name="id"/> to an already existing synergy with the name key of <paramref name="nameKey"/>.
+        /// </summary>
+        /// <param name="nameKey">The name key of the synergy.</param>
+        /// <param name="id">The id of the item that will be added to the synergy.</param>
+        public static void AddItemToSynergy(string nameKey, int id)
+        {
+            foreach (AdvancedSynergyEntry entry in GameManager.Instance.SynergyManager.synergies)
+            {
+                if (entry.NameKey == nameKey)
+                {
+                    if (PickupObjectDatabase.GetById(id) != null)
+                    {
+                        PickupObject obj = PickupObjectDatabase.GetById(id);
+                        if (obj is Gun)
+                        {
+                            if (entry.OptionalGunIDs != null)
+                            {
+                                entry.OptionalGunIDs.Add(id);
+                            }
+                            else
+                            {
+                                entry.OptionalGunIDs = new List<int> { id };
+                            }
+                        }
+                        else
+                        {
+                            if (entry.OptionalItemIDs != null)
+                            {
+                                entry.OptionalItemIDs.Add(id);
+                            }
+                            else
+                            {
+                                entry.OptionalItemIDs = new List<int> { id };
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Returns <see langword="true"/> if <paramref name="self"/>'s owner has a synergy with name of <paramref name="synergyToCheck"/>.
         /// </summary>
         /// <param name="self">The gun whose owner will be checked.</param>
@@ -122,6 +224,14 @@ namespace SpecialStuffPack.SynergyAPI
         {
             AdvancedGunFormeSynergyProcessor p = gun.gameObject.AddComponent<AdvancedGunFormeSynergyProcessor>();
             p.Formes = new AdvancedGunFormeData[0];
+            return p;
+        }
+
+        public static AdvancedVolleyReplacementSynergyProcessor AddVolleyReplacementSynergyProcessor(this Gun gun, string requiredSynergy, ProjectileVolleyData synergyVolley)
+        {
+            AdvancedVolleyReplacementSynergyProcessor p = gun.gameObject.AddComponent<AdvancedVolleyReplacementSynergyProcessor>();
+            p.RequiredSynergy = requiredSynergy;
+            p.SynergyVolley = synergyVolley;
             return p;
         }
 

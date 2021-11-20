@@ -1,4 +1,5 @@
 ﻿using SpecialStuffPack.ItemAPI;
+using SpecialStuffPack.SaveAPI;
 using SpecialStuffPack.SynergyAPI;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,7 @@ namespace SpecialStuffPack.Items
                     }
                 }
             };
+            item.StarGunId = ItemBuilder.ItemIds["shooting_star"];
             item.AddToCursulaShop();
         }
 
@@ -90,7 +92,6 @@ namespace SpecialStuffPack.Items
             else
             {
                 user.ownerlessStatModifiers.Add(StatModifier.Create(PlayerStats.StatType.Health, StatModifier.ModifyMethod.ADDITIVE, -1));
-                user.stats.RecalculateStats(user, false, false);
             }
             GameObject go = ChestChances.SelectByWeight();
             Chest chest = Chest.Spawn(go.GetComponent<Chest>(), user.CurrentRoom.GetRandomAvailableCell(new IntVector2(2, 1), Dungeonator.CellTypes.FLOOR, false, null).GetValueOrDefault(), user.CurrentRoom, true);
@@ -124,6 +125,14 @@ namespace SpecialStuffPack.Items
                     }
                 }
             }
+            foreach(Gun g in user.inventory.AllGuns)
+            {
+                if(g.PickupObjectId == StarGunId)
+                {
+                    SaveTools.Add(ref g.currentGunStatModifiers, StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.05f));
+                }
+            }
+            user.stats.RecalculateStats(user, false, false);
         }
 
         public override bool CanBeUsed(PlayerController user)
@@ -133,6 +142,7 @@ namespace SpecialStuffPack.Items
 
         public Color FlashColor;
         public Color ErrorFlashColor;
+        public int StarGunId;
         public WeightedGameObjectCollection ChestChances;
     }
 }

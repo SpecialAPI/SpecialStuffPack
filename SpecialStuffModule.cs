@@ -11,12 +11,22 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Gungeon;
+using MonoMod.RuntimeDetour;
 using UnityEngine;
 
 namespace SpecialStuffPack
 {
     public class SpecialStuffModule : ETGModule
     {
+        public static int? GetActiveItemUICount(PlayerItem input)
+        {
+            if (input is GreenCandle)
+            {
+                return (input as GreenCandle).Flames;
+            }
+            return null;
+        }
+
         public override void Init()
         {
             //asset bundle setup
@@ -34,7 +44,6 @@ namespace SpecialStuffPack
 
             //init items
             WoodenToken.Init();
-            WishingOrb.Init();
             PayToWin.Init();
             FusedAmmolet.Init();
             BoxOfStuff.Init();
@@ -45,12 +54,24 @@ namespace SpecialStuffPack
             ExtraChestItem.Init();
             MirrorOfTruth.Init();
             BadLuckClover.Init();
+            Calendar.Init();
+            GreenCandle.Init();
+            GlassBell.Init();
+            ShootingStar.Init();
+            WishingOrb.Init();
+            Butter.Init();
+            LegitCoupon.Init();
+            BinaryGun.Init();
+            AsteroidBelt.Init();
 
             //init synergies
             SpecialSynergies.Init();
             
             //add other stuff
             EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();
+
+            //add hooks
+            new Hook(typeof(GameUIItemController).GetMethod("UpdateItem"), typeof(SpecialStuffModule).GetMethod("ItemUIUpdateHook"));
 
             //add console commands
             ItemAutocompletion = new AutocompletionSettings(delegate (string input)
@@ -85,6 +106,20 @@ namespace SpecialStuffPack
                 return list.ToArray();
             });
             ETGModConsole.Commands.GetGroup("spawn").AddUnit("item", SpawnItem, ItemAutocompletion);
+        }
+
+        public static void ItemUIUpdateHook(Action<GameUIItemController, PlayerItem, List<PlayerItem>> orig, GameUIItemController self, PlayerItem current, List<PlayerItem> items)
+        {
+            orig(self, current, items);
+            if (!GameUIRoot.Instance.ForceHideItemPanel && !self.temporarilyPreventVisible && current != null)
+            {
+                if (!((current.canStack && current.numberOfUses > 1 && current.consumable) || (current.numberOfUses > 1 && current.UsesNumberOfUsesBeforeCooldown && !current.IsOnCooldown)) && !(current is EstusFlaskItem) && (!(current is RatPackItem) || 
+                    current.IsOnCooldown) && GetActiveItemUICount(current) != null)
+                {
+                    self.ItemCountLabel.IsVisible = true;
+                    self.ItemCountLabel.Text = GetActiveItemUICount(current).Value.ToString();
+                }
+            }
         }
 
         public void SpawnItem(string[] args)

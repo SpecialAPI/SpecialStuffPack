@@ -118,5 +118,10 @@ namespace SpecialStuffPack
             }
             return component;
         }
+
+        public static string ToMTGId(this string s)
+        {
+            return s.ToLower().Replace(" ", "_").Replace("\"", "").Replace("'", "").Replace("-", "");
+        }
     }
 }

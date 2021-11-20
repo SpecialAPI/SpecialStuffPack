@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Reflection;
 using UnityEngine;
+using SpecialStuffPack.SaveAPI;
 
 namespace SpecialStuffPack
 {
@@ -65,6 +66,27 @@ namespace SpecialStuffPack
 
             return obj;
         }
+        
+        public static void ApplyOffsetsToAnimation(this tk2dSpriteAnimationClip clip, List<IntVector2> offsets)
+        {
+            ApplyOffsetsToAnimation(clip, offsets.Convert((IntVector2 vec) => new Vector2(vec.x / 16f, vec.y / 16f)));
+        }
+
+        public static void ApplyOffsetsToAnimation(this tk2dSpriteAnimationClip clip, List<Vector2> offsets)
+        {
+            if(clip != null && clip.frames != null && offsets != null)
+            {
+                int longest = clip.frames.Length > offsets.Count ? clip.frames.Length : offsets.Count;
+                for (int i = 0; i < longest; i++)
+                {
+                    if (clip.frames[i] != null && clip.frames[i].spriteCollection != null && clip.frames[i].spriteCollection.spriteDefinitions != null && clip.frames[i].spriteId >= 0 && 
+                        clip.frames[i].spriteCollection.spriteDefinitions[clip.frames[i].spriteId] != null)
+                    {
+                        clip.frames[i].spriteCollection.spriteDefinitions[clip.frames[i].spriteId].AddOffset(offsets[i]);
+                    }
+                }
+            }
+        }
 
         /// <summary>
         /// Adds a sprite (from a resource) to a collection
@@ -72,7 +94,7 @@ namespace SpecialStuffPack
         /// <returns>The spriteID of the defintion in the collection</returns>
         public static int AddSpriteToCollection(string resourcePath, tk2dSpriteCollectionData collection, string shaderName)
         {
-            var texture = AssetBundleManager.specialeverything.LoadAsset<Texture2D>(resourcePath); //Get Texture
+            var texture = AssetBundleManager.Load<Texture2D>(resourcePath); //Get Texture
 
             var definition = ConstructDefinition(texture, shaderName); //Generate definition
             definition.name = texture.name; //naming the definition is actually extremely important 
@@ -188,11 +210,7 @@ namespace SpecialStuffPack
         /// <returns>The spriteID of the defintion in the ammonomicon collection</returns>
         public static int AddToAmmonomicon(tk2dSpriteDefinition spriteDefinition)
         {
-            tk2dSpriteDefinition copyDef = CopyDefinitionFrom(spriteDefinition);
-            Shader ammonomiconShader = ShaderCache.Acquire("tk2d/CutoutVertexColorTilted");
-            copyDef.material.shader = ammonomiconShader;
-            copyDef.materialInst.shader = ammonomiconShader;
-            return AddSpriteToCollection(copyDef, ammonomiconCollection);
+            return AddSpriteToCollection(spriteDefinition, ammonomiconCollection);
         }
 
         public static tk2dSpriteDefinition CopyDefinitionFrom(this tk2dSpriteDefinition other)

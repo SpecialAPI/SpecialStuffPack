@@ -35,6 +35,36 @@ namespace SpecialStuffPack
             SynergyBuilder.CreateSynergy("Blessed Mirror", new List<int> { ItemBuilder.ItemIds["truthmirror"], 538 });
             SynergyBuilder.CreateSynergy("Just Your Normal Luck", new List<int> { ItemBuilder.ItemIds["badluckclover"], 289 });
             SynergyBuilder.CreateSynergy("Somehow... Luckier?", new List<int> { ItemBuilder.ItemIds["badluckclover"], ItemBuilder.ItemIds["truthmirror"] });
+            SynergyBuilder.CreateSynergy("why do you keep crashing", new List<int> { ItemBuilder.ItemIds["binary_gun"], 38 });
+            SynergyBuilder.CreateSynergy("BURN! BUUURRRNNNN!!!", new List<int> { ItemBuilder.ItemIds["greencandle"] }, new List<int> { 253, 191, 295 });
+            SynergyBuilder.CreateSynergy("Ring It Twice", new List<int> { ItemBuilder.ItemIds["glassbell"], 237 });
+            SynergyBuilder.CreateSynergy("Celestial Rhythm", new List<int> { ItemBuilder.ItemIds["shooting_star"], 52 });
+            SynergyBuilder.CreateSynergy("Wishing Star", new List<int> { ItemBuilder.ItemIds["shooting_star"], ItemBuilder.ItemIds["wishorb"] });
+            SynergyBuilder.CreateSynergy("The Initial Idea", new List<int> { ItemBuilder.ItemIds["shooting_star"], ItemBuilder.ItemIds["asteroidbelt"] }, null, false, new List<StatModifier> { StatModifier.Create(PlayerStats.StatType.Damage, 
+                StatModifier.ModifyMethod.MULTIPLICATIVE, 2f) });
+            SynergyBuilder.CreateSynergy("Bouncy Throws", new List<int> { ItemBuilder.ItemIds["butter"], 288 });
+            SynergyBuilder.CreateSynergy("Piercing Throws", new List<int> { ItemBuilder.ItemIds["butter"], 172 });
+            SynergyBuilder.CreateSynergy("Homing Boomerang Throws", new List<int> { ItemBuilder.ItemIds["butter"] }, new List<int> { 240, 284 });
+            SynergyBuilder.CreateSynergy("Take It Before They Notice", new List<int> { ItemBuilder.ItemIds["legitcoupon"] }, new List<int> { 460, 237, 438, 71, 462, 216, 250, 458, 206, 543, 182 });
+
+            //add this long synergy
+            List<StatModifier> sm = new List<StatModifier>();
+            if(DateTime.Now.DayOfWeek == DayOfWeek.Monday)
+            {
+                sm.Add(StatModifier.Create(PlayerStats.StatType.MovementSpeed, StatModifier.ModifyMethod.ADDITIVE, -3f));
+                sm.Add(StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.5f));
+            }
+            else
+            {
+                sm.Add(StatModifier.Create(PlayerStats.StatType.MovementSpeed, StatModifier.ModifyMethod.ADDITIVE, 1f));
+            }
+            SynergyBuilder.CreateSynergy("I Hate Mondays", new List<int> { ItemBuilder.ItemIds["calendar"] }, new List<int> { 143, 399 }, statModifiers: sm);
+
+            //add new items to existing synergies
+            SynergyBuilder.AddItemToSynergy(CustomSynergyType.PITCHPERFECT, ItemBuilder.ItemIds["greencandle"]);
+            SynergyBuilder.AddItemToSynergy(CustomSynergyType.LOADED_DICE, ItemBuilder.ItemIds["greencandle"]);
+            SynergyBuilder.AddItemToSynergy(CustomSynergyType.RELODESTAR, ItemBuilder.ItemIds["bombammolet"]);
+            SynergyBuilder.AddItemToSynergy(CustomSynergyType.MINOR_BLANKABLES, ItemBuilder.ItemIds["bombammolet"]);
 
             //add synergy components
             PickupObjectDatabase.GetById(476).AddComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck = "50% OFF ON ALL IN-GAME PURCHASES!";
