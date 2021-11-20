@@ -280,7 +280,7 @@ namespace SpecialStuffPack.ItemAPI
         }
 
         public static Gun EasyGunInit(string assetPath, string gunName, string gunShortDesc, string gunLongDesc, string defaultSprite, string ammonomiconSprite, string gunSpriteContainer, int maxAmmo, float realoadTime, Vector3 barrelOffset, 
-            VFXPool muzzleflash, string gunSwitchGroup, PickupObject.ItemQuality quality, GunClass gunClass, string consolePrefix, out Action finish, string overrideConsoleId = null, GameObject baseObject = null)
+            VFXPool muzzleflash, string gunSwitchGroup, PickupObject.ItemQuality quality, GunClass gunClass, string consolePrefix, out Action finish, int? ammonomiconPlacement = null, string overrideConsoleId = null, GameObject baseObject = null)
         {
             if (!assetPath.StartsWith("assets/"))
             {
@@ -340,6 +340,10 @@ namespace SpecialStuffPack.ItemAPI
             if (muzzleflash != null)
             {
                 gun.muzzleFlashEffects = muzzleflash;
+            }
+            if(ammonomiconPlacement != null)
+            {
+                gun.PlaceItemInAmmonomiconAfterItemById(ammonomiconPlacement.Value);
             }
             finish = delegate ()
             {

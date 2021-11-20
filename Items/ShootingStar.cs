@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Rapidfire Starlight";
             string longdesc = "Shoots starlight, rapidly.\n\nThe original idea behind the gun was a gun that could shoot meteors, but the gunsmith that was making the gun must've really misunderstood the idea...";
             Gun gun = GunBuilder.EasyGunInit("guns/shooting_star", name, shortdesc, longdesc, "shooting_star_idle_001", "gunsprites/ammonomicon/shooting_star_idle_001", "gunsprites/shootingstar", 600, 0f, new Vector3(1.875f, 0.4375f), 
-                CodeShortcuts.GetItemById<Gun>(15).muzzleFlashEffects, "ak47", PickupObject.ItemQuality.S, GunClass.FULLAUTO, SpecialStuffModule.globalPrefix, out var finish, null, null);
+                CodeShortcuts.GetItemById<Gun>(15).muzzleFlashEffects, "ak47", PickupObject.ItemQuality.S, GunClass.FULLAUTO, SpecialStuffModule.globalPrefix, out var finish, 15, null, null);
             ProjectileModule module = new ProjectileModule
             {
                 shootStyle = ProjectileModule.ShootStyle.Automatic,
@@ -56,6 +56,8 @@ namespace SpecialStuffPack.Items
             };
             gun.AddVolleyReplacementSynergyProcessor("Celestial Rhythm", synergyVolley);
             finish();
+            gun.AddToCursulaShop();
+            gun.AddToBlacksmithShop();
         }
     }
 }

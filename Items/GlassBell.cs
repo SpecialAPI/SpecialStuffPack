@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Glass Bell";
             string shortdesc = "Ring It Carefully";
             string longdesc = "Can be used to summon glass guon stones. Will break when the owner is wounded, but will mend itself when going to the next floor.";
-            GlassBell item = ItemBuilder.EasyInit<GlassBell>("items/glassbell", "sprites/glass_bell_idle_001", name, shortdesc, longdesc, ItemQuality.B, SpecialStuffModule.globalPrefix, null, null);
+            GlassBell item = ItemBuilder.EasyInit<GlassBell>("items/glassbell", "sprites/glass_bell_idle_001", name, shortdesc, longdesc, ItemQuality.B, SpecialStuffModule.globalPrefix, 134, null);
             item.SetCooldownType(ItemBuilder.CooldownType.PerRoom, 1f);
             item.MaxGuons = 6;
             item.MaxGuonsSynergy = 7;

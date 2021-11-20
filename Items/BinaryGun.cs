@@ -18,7 +18,7 @@ namespace SpecialStuffPack.Items
             string longdesc = "Shoots ones and zeroes. Despite it's name, isn't actually a rifle.\n\nA gun made out of ones and zeroes. Nobody quite knows what they mean, nobody knows how this gun appeared in the Gungoen and nobody knows how it shoots." +
                 " Truly a mysterious gun.";
             Gun gun = GunBuilder.EasyGunInit("guns/binary_gun", name, shortdesc, longdesc, "binary_gun_idle_001", "gunsprites/ammonomicon/binary_gun_idle_001.png", "gunsprites/binarygun", 101, 1f, new Vector3(1.625f, 0.5f), null, "Magnum",
-                PickupObject.ItemQuality.B, GunClass.PISTOL, SpecialStuffModule.globalPrefix, out var finish, null, null);
+                PickupObject.ItemQuality.B, GunClass.PISTOL, SpecialStuffModule.globalPrefix, out var finish, 199, null, null);
             gun.SetAnimationFPS(gun.reloadAnimation, 5);
             gun.spriteAnimator.GetClipByName(gun.shootAnimation).ApplyOffsetsToAnimation(new List<IntVector2> { new IntVector2(0, 0), new IntVector2(-2, 2), new IntVector2(-1, 1), new IntVector2(1, -1) });
             GameObject markVFX = AssetBundleManager.Load<GameObject>("vfx/binarygunhitindicator");
