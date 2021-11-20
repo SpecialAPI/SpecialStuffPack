@@ -30,7 +30,7 @@ namespace SpecialStuffPack.Items
                 numberOfFinalProjectiles = 0,
                 angleVariance = 4f,
                 cooldownTime = 0.11f,
-                numberOfShotsInClip = 1000
+                numberOfShotsInClip = 600
             };
             gun.RawSourceVolley.projectiles.Add(module);
             ProjectileVolleyData synergyVolley = ScriptableObject.CreateInstance<ProjectileVolleyData>();
