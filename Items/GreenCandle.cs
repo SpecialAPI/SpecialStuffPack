@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string name = "Green Candle";
             string shortdesc = "Light It On";
             string longdesc = "A strange candle. Even though it's not lit, it still seems to emit some warmth.";
-            GreenCandle item = ItemBuilder.EasyInit<GreenCandle>("items/greencandle", "sprites/green_candle_idle_002", name, shortdesc, longdesc, ItemQuality.B, SpecialStuffModule.globalPrefix, null, null);
+            GreenCandle item = ItemBuilder.EasyInit<GreenCandle>("items/greencandle", "sprites/green_candle_idle_002", name, shortdesc, longdesc, ItemQuality.A, SpecialStuffModule.globalPrefix, null, null);
             item.ChanceToBurnEnemy = 1f;
             item.GreenFireEffect = CodeShortcuts.GetItemById<Gun>(722).DefaultModule.projectiles[0].fireEffect;
             item.GreenFireGoop = CodeShortcuts.GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
