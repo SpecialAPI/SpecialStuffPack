@@ -47,47 +47,6 @@ namespace SpecialStuffPack.Items
             {
 				item.StartCoroutine(DelayedThrow(player, item));
             }
-			else if (item.CanBeDropped && item.consumable && item.numberOfUses <= 1)
-            {
-				DebrisObject deb = player.DropActiveItem(item);
-				Destroy(deb);
-				deb.GetComponent<PlayerItem>().ForceAsExtant = true;
-				GameObject active = deb.gameObject;
-				AkSoundEngine.PostEvent("Play_OBJ_item_throw_01", active);
-				Vector3 vector = player.CenterPosition;
-				Vector2 vector2 = player.unadjustedAimPoint.XY() - vector.XY();
-				float z = BraveMathCollege.Atan2Degrees(vector2);
-				GameObject gameObject = SpawnManager.SpawnProjectile("ThrownGunProjectile", vector, Quaternion.Euler(0f, 0f, z));
-				Projectile component = gameObject.GetComponent<Projectile>();
-				component.Shooter = player.specRigidbody;
-				component.DestroyMode = Projectile.ProjectileDestroyMode.Destroy;
-				component.baseData.damage *= player.stats.GetStatValue(PlayerStats.StatType.ThrownGunDamage);
-				SpeculativeRigidbody component2 = gameObject.GetComponent<SpeculativeRigidbody>();
-				component2.sprite = deb.sprite;
-				deb.sprite.scale = Vector3.one;
-				active.transform.parent = gameObject.transform;
-				active.transform.localRotation = Quaternion.identity;
-				deb.sprite.PlaceAtLocalPositionByAnchor(Vector3.zero, tk2dBaseSprite.Anchor.MiddleCenter);
-				Bounds bounds = deb.sprite.GetBounds();
-				component2.PrimaryPixelCollider.ColliderGenerationMode = PixelCollider.PixelColliderGeneration.Manual;
-				component2.PrimaryPixelCollider.ManualOffsetX = -Mathf.RoundToInt(bounds.extents.x / 0.0625f);
-				component2.PrimaryPixelCollider.ManualOffsetY = -Mathf.RoundToInt(bounds.extents.y / 0.0625f);
-				component2.PrimaryPixelCollider.ManualWidth = Mathf.RoundToInt(bounds.size.x / 0.0625f);
-				component2.PrimaryPixelCollider.ManualHeight = Mathf.RoundToInt(bounds.size.y / 0.0625f);
-				component2.UpdateCollidersOnRotation = true;
-				component2.UpdateCollidersOnScale = true;
-				component.Reawaken();
-				component.Owner = player;
-				component.Start();
-				component.SendInDirection(vector2, true, false);
-				component.angularVelocity = (vector2.x <= 0f) ? 1080 : -1080;
-				component2.ForceRegenerate(null, null);
-				if (player)
-				{
-					player.DoPostProcessThrownGun(component);
-				}
-				PostThrowModifier(projectile);
-			}
         }
 
         public IEnumerator DelayedThrow(PlayerController player, PlayerItem item)
