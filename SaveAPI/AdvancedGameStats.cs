@@ -15,27 +15,27 @@ namespace SpecialStuffPack.SaveAPI
     {
         public AdvancedGameStats()
         {
-            this.m_flags = new HashSet<CustomCharacterSpecificGungeonFlags>();
-            this.stats = new Dictionary<CustomTrackedStats, float>(new CustomTrackedStatsComparer());
-            this.maxima = new Dictionary<CustomTrackedMaximums, float>(new CustomTrackedMaximumsComparer());
+            m_flags = new HashSet<CustomCharacterSpecificGungeonFlags>();
+            stats = new Dictionary<CustomTrackedStats, float>(new CustomTrackedStatsComparer());
+            maxima = new Dictionary<CustomTrackedMaximums, float>(new CustomTrackedMaximumsComparer());
         }
 
         public float GetStatValue(CustomTrackedStats statToCheck)
         {
-            if (!this.stats.ContainsKey(statToCheck))
+            if (!stats.ContainsKey(statToCheck))
             {
                 return 0f;
             }
-            return this.stats[statToCheck];
+            return stats[statToCheck];
         }
 
         public float GetMaximumValue(CustomTrackedMaximums maxToCheck)
         {
-            if (!this.maxima.ContainsKey(maxToCheck))
+            if (!maxima.ContainsKey(maxToCheck))
             {
                 return 0f;
             }
-            return this.maxima[maxToCheck];
+            return maxima[maxToCheck];
         }
 
         public bool GetFlag(CustomCharacterSpecificGungeonFlags flag)
@@ -45,30 +45,30 @@ namespace SpecialStuffPack.SaveAPI
                 Debug.LogError("Something is attempting to get a NONE character-specific save flag!");
                 return false;
             }
-            return this.m_flags.Contains(flag);
+            return m_flags.Contains(flag);
         }
 
         public void SetStat(CustomTrackedStats stat, float val)
         {
-            if (this.stats.ContainsKey(stat))
+            if (stats.ContainsKey(stat))
             {
-                this.stats[stat] = val;
+                stats[stat] = val;
             }
             else
             {
-                this.stats.Add(stat, val);
+                stats.Add(stat, val);
             }
         }
 
         public void SetMax(CustomTrackedMaximums max, float val)
         {
-            if (this.maxima.ContainsKey(max))
+            if (maxima.ContainsKey(max))
             {
-                this.maxima[max] = Mathf.Max(this.maxima[max], val);
+                maxima[max] = Mathf.Max(maxima[max], val);
             }
             else
             {
-                this.maxima.Add(max, val);
+                maxima.Add(max, val);
             }
         }
 
@@ -81,23 +81,23 @@ namespace SpecialStuffPack.SaveAPI
             }
             if (value)
             {
-                this.m_flags.Add(flag);
+                m_flags.Add(flag);
             }
             else
             {
-                this.m_flags.Remove(flag);
+                m_flags.Remove(flag);
             }
         }
 
         public void IncrementStat(CustomTrackedStats stat, float val)
         {
-            if (this.stats.ContainsKey(stat))
+            if (stats.ContainsKey(stat))
             {
-                this.stats[stat] = this.stats[stat] + val;
+                stats[stat] = stats[stat] + val;
             }
             else
             {
-                this.stats.Add(stat, val);
+                stats.Add(stat, val);
             }
         }
 
@@ -105,37 +105,37 @@ namespace SpecialStuffPack.SaveAPI
         {
             foreach (KeyValuePair<CustomTrackedStats, float> keyValuePair in otherStats.stats)
             {
-                this.IncrementStat(keyValuePair.Key, keyValuePair.Value);
+                IncrementStat(keyValuePair.Key, keyValuePair.Value);
             }
             foreach (KeyValuePair<CustomTrackedMaximums, float> keyValuePair2 in otherStats.maxima)
             {
-                this.SetMax(keyValuePair2.Key, keyValuePair2.Value);
+                SetMax(keyValuePair2.Key, keyValuePair2.Value);
             }
             foreach (CustomCharacterSpecificGungeonFlags item in otherStats.m_flags)
             {
-                this.m_flags.Add(item);
+                m_flags.Add(item);
             }
         }
 
         public void ClearAllState()
         {
             List<CustomTrackedStats> list = new List<CustomTrackedStats>();
-            foreach (KeyValuePair<CustomTrackedStats, float> keyValuePair in this.stats)
+            foreach (KeyValuePair<CustomTrackedStats, float> keyValuePair in stats)
             {
                 list.Add(keyValuePair.Key);
             }
             foreach (CustomTrackedStats key in list)
             {
-                this.stats[key] = 0f;
+                stats[key] = 0f;
             }
             List<CustomTrackedMaximums> list2 = new List<CustomTrackedMaximums>();
-            foreach (KeyValuePair<CustomTrackedMaximums, float> keyValuePair2 in this.maxima)
+            foreach (KeyValuePair<CustomTrackedMaximums, float> keyValuePair2 in maxima)
             {
                 list2.Add(keyValuePair2.Key);
             }
             foreach (CustomTrackedMaximums key2 in list2)
             {
-                this.maxima[key2] = 0f;
+                maxima[key2] = 0f;
             }
         }
 

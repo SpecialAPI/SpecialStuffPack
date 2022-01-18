@@ -24,18 +24,18 @@ namespace SpecialStuffPack.GungeonAPI
 
         public void Interact(PlayerController interactor)
         {
-            if (TextBoxManager.HasTextBox(this.talkPoint))
+            if (TextBoxManager.HasTextBox(talkPoint))
                 return;
 
             Tools.Print("Can use: " + (CanUse == null));
-            m_canUse = CanUse != null ? CanUse.Invoke(interactor, this.gameObject) : m_canUse;
-            StartCoroutine(this.HandleConversation(interactor));
+            m_canUse = CanUse != null ? CanUse.Invoke(interactor, gameObject) : m_canUse;
+            StartCoroutine(HandleConversation(interactor));
         }
 
         private IEnumerator HandleConversation(PlayerController interactor)
         {
             // Show text and lock player in place
-            TextBoxManager.ShowStoneTablet(this.talkPoint.position, this.talkPoint, -1f, text, true, false);
+            TextBoxManager.ShowStoneTablet(talkPoint.position, talkPoint, -1f, text, true, false);
             int selectedResponse = -1;
             interactor.SetInputOverride("shrineConversation");
             yield return null;
@@ -65,21 +65,21 @@ namespace SpecialStuffPack.GungeonAPI
 
             // Free player and run OnAccept/OnDecline actions
             interactor.ClearInputOverride("shrineConversation");
-            TextBoxManager.ClearTextBox(this.talkPoint);
+            TextBoxManager.ClearTextBox(talkPoint);
             if (!m_canUse)
                 yield break;
 
             if (selectedResponse == 0 && isToggle)
             {
-                (m_isToggled ? OnDecline : OnAccept)?.Invoke(interactor, this.gameObject);
+                (m_isToggled ? OnDecline : OnAccept)?.Invoke(interactor, gameObject);
                 m_isToggled = !m_isToggled;
                 yield break;
             }
 
             if (selectedResponse == 0)
-                OnAccept?.Invoke(interactor, this.gameObject);
+                OnAccept?.Invoke(interactor, gameObject);
             else
-                OnDecline?.Invoke(interactor, this.gameObject);
+                OnDecline?.Invoke(interactor, gameObject);
             yield break;
         }
 

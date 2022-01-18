@@ -97,17 +97,65 @@ namespace SpecialStuffPack.ItemAPI
             GameObject go = AssetBundleManager.Load<GameObject>(objectPath);
             tk2dSprite.AddComponent(go, SpriteBuilder.itemCollection, AddSpriteToCollection(AssetBundleManager.Load<Texture2D>(spritePath), SpriteBuilder.itemCollection));
             T item = go.AddComponent<T>();
-            SetupItem(item, name, shortDesc, longDesc, consolePrefix);
+            SetupItem(item, name, shortDesc, longDesc, consolePrefix, overrideConsoleID);
             item.quality = quality;
             if(ammonomiconPlacement != null)
             {
                 item.PlaceItemInAmmonomiconAfterItemById(ammonomiconPlacement.Value);
             }
-            if(overrideConsoleID != null)
+            if(quality == PickupObject.ItemQuality.SPECIAL || quality == PickupObject.ItemQuality.EXCLUDED)
             {
-                Game.Items.Rename(consolePrefix + ":" + name.ToMTGId(), overrideConsoleID);
+                item.RemovePickupFromLootTables();
             }
             return item;
+        }
+
+        public static void RemovePickupFromLootTables(this PickupObject po)
+        {
+            WeightedGameObject go1 = GameManager.Instance.RewardManager.GunsLootTable.defaultItemDrops.FindWeightedGameObjectInCollection(po);
+            if (go1 != null)
+            {
+                GameManager.Instance.RewardManager.GunsLootTable.defaultItemDrops.elements.Remove(go1);
+            }
+            WeightedGameObject go2 = GameManager.Instance.RewardManager.ItemsLootTable.defaultItemDrops.FindWeightedGameObjectInCollection(po);
+            if (go2 != null)
+            {
+                GameManager.Instance.RewardManager.ItemsLootTable.defaultItemDrops.elements.Remove(go2);
+            }
+        }
+
+        public static WeightedGameObject FindWeightedGameObjectInCollection(this WeightedGameObjectCollection collection, PickupObject po)
+        {
+            WeightedGameObject go = collection.FindWeightedGameObjectInCollection(po.PickupObjectId);
+            if (go == null)
+            {
+                go = collection.FindWeightedGameObjectInCollection(po.gameObject);
+            }
+            return go;
+        }
+
+        public static WeightedGameObject FindWeightedGameObjectInCollection(this WeightedGameObjectCollection collection, int id)
+        {
+            foreach (WeightedGameObject go in collection.elements)
+            {
+                if (go.pickupId == id)
+                {
+                    return go;
+                }
+            }
+            return null;
+        }
+
+        public static WeightedGameObject FindWeightedGameObjectInCollection(this WeightedGameObjectCollection collection, GameObject obj)
+        {
+            foreach (WeightedGameObject go in collection.elements)
+            {
+                if (go.gameObject == obj)
+                {
+                    return go;
+                }
+            }
+            return null;
         }
 
         public static void PlaceItemInAmmonomiconAfterItemById(this PickupObject item, int id)
@@ -119,7 +167,7 @@ namespace SpecialStuffPack.ItemAPI
         /// Finishes the item setup, adds it to the item databases, adds an encounter trackable 
         /// blah, blah, blah
         /// </summary>
-        public static void SetupItem(PickupObject item, string name, string shortDesc, string longDesc, string idPool)
+        public static void SetupItem(PickupObject item, string name, string shortDesc, string longDesc, string idPool, string overrideConsoleId = null)
         {
             try
             {
@@ -132,7 +180,14 @@ namespace SpecialStuffPack.ItemAPI
                 item.SetLongDescription(longDesc);
                 if (item is PlayerItem)
                     (item as PlayerItem).consumable = false;
-                Game.Items.Add(idPool + ":" + name.ToMTGId(), item);
+                if(!string.IsNullOrEmpty(overrideConsoleId))
+                {
+                    Game.Items.Add(overrideConsoleId, item);
+                }
+                else
+                {
+                    Game.Items.Add(idPool + ":" + name.ToMTGId(), item);
+                }
                 ETGMod.Databases.Items.Add(item);
                 item.RemovePeskyQuestionmark();
                 ItemIds.Add(item.name.ToLower(), item.PickupObjectId);

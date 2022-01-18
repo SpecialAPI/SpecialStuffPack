@@ -8,6 +8,6 @@ namespace SpecialStuffPack
 {
     public static class SpecialAssets
     {
-        public static List<GameObject> assets = new List<GameObject>();
+        public static List<UnityEngine.Object> assets = new List<UnityEngine.Object>();
     }
 }

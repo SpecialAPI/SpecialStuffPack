@@ -19,12 +19,12 @@ namespace SpecialStuffPack.GungeonAPI
 
         private static Hook preDungeonGenHook = new Hook(
            typeof(LoopDungeonGenerator).GetConstructor(new Type[] { typeof(Dungeon), typeof(int) }),
-           typeof(DungeonHooks).GetMethod("LoopGenConstructor")
+           typeof(DungeonHooks).GetMethod("LoopGenConstructor", BindingFlags.Public | BindingFlags.Static)
         );
 
         private static Hook foyerAwakeHook = new Hook(
             typeof(MainMenuFoyerController).GetMethod("Awake", BindingFlags.NonPublic | BindingFlags.Instance),
-            typeof(DungeonHooks).GetMethod("FoyerAwake") //this no longer exists
+            typeof(DungeonHooks).GetMethod("FoyerAwake", BindingFlags.Public | BindingFlags.Static) //this no longer exists
         );
 
         //private static Hook roomEventsHook = new Hook(

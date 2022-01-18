@@ -28,23 +28,23 @@ namespace SpecialStuffPack.SaveAPI
             DougMetaShopItems = SaveTools.LoadAssetFromAnywhere<GenericLootTable>("Shop_Beetle_Meta");
             pickupObjectEncounterableHook = new Hook(
                 typeof(PickupObject).GetMethod("HandleEncounterable", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BreachShopTool).GetMethod("HandleEncounterableHook")
+                typeof(BreachShopTool).GetMethod("HandleEncounterableHook", BindingFlags.Public | BindingFlags.Static)
             );
             baseShopSetupHook = new Hook(
                 typeof(BaseShopController).GetMethod("DoSetup", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BreachShopTool).GetMethod("BaseShopSetupHook")
+                typeof(BreachShopTool).GetMethod("BaseShopSetupHook", BindingFlags.Public | BindingFlags.Static)
             );
             metaShopSetupHook = new Hook(
                 typeof(MetaShopController).GetMethod("DoSetup", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BreachShopTool).GetMethod("MetaSetupHook")
+                typeof(BreachShopTool).GetMethod("MetaSetupHook", BindingFlags.Public | BindingFlags.Static)
             );
             metaShopCurrentTierHook = new Hook(
                 typeof(MetaShopController).GetMethod("GetCurrentTier", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BreachShopTool).GetMethod("MetaShopCurrentTierHook")
+                typeof(BreachShopTool).GetMethod("MetaShopCurrentTierHook", BindingFlags.Public | BindingFlags.Static)
             );
             metaShopProximateTierHook = new Hook(
                 typeof(MetaShopController).GetMethod("GetProximateTier", BindingFlags.NonPublic | BindingFlags.Instance),
-                typeof(BreachShopTool).GetMethod("MetaShopProximateTierHook")
+                typeof(BreachShopTool).GetMethod("MetaShopProximateTierHook", BindingFlags.Public | BindingFlags.Static)
             );
             m_loaded = true;
         }
@@ -770,8 +770,8 @@ namespace SpecialStuffPack.SaveAPI
             /// <param name="bottomTier"></param>
             public DoubleMetaShopTier(MetaShopTier topTier, MetaShopTier bottomTier)
             {
-                this.m_topTier = topTier;
-                this.m_bottomTier = bottomTier;
+                m_topTier = topTier;
+                m_bottomTier = bottomTier;
             }
 
             /// <summary>
@@ -780,8 +780,8 @@ namespace SpecialStuffPack.SaveAPI
             /// <param name="other"></param>
             public DoubleMetaShopTier(DoubleMetaShopTier other)
             {
-                this.m_topTier = other.m_topTier;
-                this.m_bottomTier = other.m_bottomTier;
+                m_topTier = other.m_topTier;
+                m_bottomTier = other.m_bottomTier;
             }
 
             /// <summary>
@@ -790,7 +790,7 @@ namespace SpecialStuffPack.SaveAPI
             /// <returns>The first tier</returns>
             public MetaShopTier GetTopTier()
             {
-                return this.m_topTier;
+                return m_topTier;
             }
 
             /// <summary>
@@ -799,7 +799,7 @@ namespace SpecialStuffPack.SaveAPI
             /// <returns>The second tier</returns>
             public MetaShopTier GetBottomTier()
             {
-                return this.m_topTier;
+                return m_topTier;
             }
 
             /// <summary>
@@ -810,8 +810,8 @@ namespace SpecialStuffPack.SaveAPI
             {
                 return new List<MetaShopTier>
                 {
-                    this.m_topTier,
-                    this.m_bottomTier
+                    m_topTier,
+                    m_bottomTier
                 };
             }
 

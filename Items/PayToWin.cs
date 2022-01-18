@@ -107,6 +107,7 @@ namespace SpecialStuffPack.Items
                 chest.sprite.HeightOffGround -= 0.5f;
                 Exploder.DoDefaultExplosion(chest.sprite.WorldCenter, Vector2.zero, null, true, CoreDamageTypes.None, false);
                 user.carriedConsumables.Currency -= rainbowUpgradePrice;
+                return;
             }
             Vector3 pos = chest.transform.position;
             RoomHandler room = chest.GetAbsoluteParentRoom();
@@ -116,11 +117,14 @@ namespace SpecialStuffPack.Items
             ItemQuality? nextQuality = GetNextQuality(quality);
             int? price = GetPriceForQuality(quality);
             user.carriedConsumables.Currency -= price.GetValueOrDefault();
-            chest.pickedUp = true;
-            chest.GetAbsoluteParentRoom().DeregisterInteractable(chest);
-            chest.majorBreakable.Break(Vector2.zero);
-            chest.sprite.HeightOffGround -= 0.5f;
-            chest.sprite.UpdateZDepth();
+            if (!chest.pickedUp)
+            {
+                chest.pickedUp = true;
+                chest.GetAbsoluteParentRoom().DeregisterInteractable(chest);
+                chest.majorBreakable.Break(Vector2.zero);
+                chest.sprite.HeightOffGround -= 0.5f;
+                chest.sprite.UpdateZDepth();
+            }
             Chest toSpawn = quality == ItemQuality.S ? GameManager.Instance.RewardManager.Rainbow_Chest : GetChestFromQuality(nextQuality.GetValueOrDefault());
             Chest newChest = Chest.Spawn(toSpawn, pos, room, false);
             if (!isLocked)

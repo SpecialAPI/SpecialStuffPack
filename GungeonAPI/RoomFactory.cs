@@ -35,7 +35,7 @@ namespace SpecialStuffPack.GungeonAPI
         }
 
 
-        public static void AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, ProceduralFlowModifierData.FlowModifierPlacementType placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
+        public static void AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
             string injectorName)
         {
             ProceduralFlowModifierData injection = new ProceduralFlowModifierData()
@@ -43,7 +43,7 @@ namespace SpecialStuffPack.GungeonAPI
                 annotation = injectionAnnotation,
                 DEBUG_FORCE_SPAWN = false,
                 OncePerRun = false,
-                placementRules = new List<ProceduralFlowModifierData.FlowModifierPlacementType> { placementRules },
+                placementRules = new List<ProceduralFlowModifierData.FlowModifierPlacementType>(placementRules),
                 roomTable = null,
                 exactRoom = protoroom,
                 IsWarpWing = false,

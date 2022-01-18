@@ -1,10 +1,14 @@
 ﻿using Dungeonator;
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
+using SpecialStuffPack.Components;
+using SpecialStuffPack.Controls;
 
 namespace SpecialStuffPack
 {
@@ -122,6 +126,131 @@ namespace SpecialStuffPack
         public static string ToMTGId(this string s)
         {
             return s.ToLower().Replace(" ", "_").Replace("\"", "").Replace("'", "").Replace("-", "");
+        }
+
+        public static List<AIActor> GetActiveEnemiesUnreferenced(this RoomHandler room, RoomHandler.ActiveEnemyType type)
+        {
+            List<AIActor> enemies = new List<AIActor>();
+            room.GetActiveEnemies(type, ref enemies);
+            return enemies;
+        }
+
+        public static List<T> GetComponentsInRoom<T>(this RoomHandler room) where T : Component
+        {
+            T[] array = UnityEngine.Object.FindObjectsOfType<T>();
+            List<T> list = new List<T>();
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (GameManager.Instance.Dungeon.GetRoomFromPosition(array[i].transform.position.IntXY(VectorConversions.Floor)) == room)
+                {
+                    list.Add(array[i]);
+                }
+            }
+            return list;
+        }
+
+        public static void BecomeTerrifyingDarkRoomNoEnemies(this RoomHandler self, float duration = 1f, float goalIntensity = 0.1f, float lightIntensity = 1f, string wwiseEvent = "Play_ENM_darken_world_01")
+        {
+            if (self.IsDarkAndTerrifying)
+            {
+                return;
+            }
+            self.OnChangedTerrifyingDarkState?.Invoke(true);
+            GameManager.Instance.StartCoroutine(self.HandleBecomeTerrifyingDarkRoom(duration, goalIntensity, lightIntensity, false));
+            AkSoundEngine.PostEvent(wwiseEvent, GameManager.Instance.PrimaryPlayer.gameObject);
+        }
+
+        public static IEnumerator HandleBecomeTerrifyingDarkRoom(this RoomHandler room, float duration, float goalIntensity, float lightIntensity = 1f, bool reverse = false)
+        {
+            float elapsed = 0f;
+            room.IsDarkAndTerrifying = !reverse;
+            while (elapsed < duration || duration == 0f)
+            {
+                elapsed += GameManager.INVARIANT_DELTA_TIME;
+                float t = (duration != 0f) ? Mathf.Clamp01(elapsed / duration) : 1f;
+                if (reverse)
+                {
+                    t = 1f - t;
+                }
+                float num = (GameManager.Options.ShaderQuality != GameOptions.GenericHighMedLowOption.VERY_LOW && GameManager.Options.ShaderQuality != GameOptions.GenericHighMedLowOption.LOW) ? 1f : 1.25f;
+                RenderSettings.ambientIntensity = num;
+                float targetAmbient = num;
+                RenderSettings.ambientIntensity = Mathf.Lerp(targetAmbient, goalIntensity, t);
+                if (!GameManager.Instance.Dungeon.PreventPlayerLightInDarkTerrifyingRooms)
+                {
+                    GameManager.Instance.Dungeon.PlayerIsLight = true;
+                    GameManager.Instance.Dungeon.PlayerLightColor = Color.white;
+                    GameManager.Instance.Dungeon.PlayerLightIntensity = Mathf.Lerp(0f, lightIntensity * 4.25f, t);
+                    GameManager.Instance.Dungeon.PlayerLightRadius = Mathf.Lerp(0f, lightIntensity * 7.25f, t);
+                }
+                Pixelator.Instance.pointLightMultiplier = Mathf.Lerp(1f, 0f, t);
+                if (duration == 0f)
+                {
+                    break;
+                }
+                yield return null;
+            }
+            if (!GameManager.Instance.Dungeon.PreventPlayerLightInDarkTerrifyingRooms && reverse)
+            {
+                GameManager.Instance.Dungeon.PlayerIsLight = false;
+            }
+            yield break;
+        }
+
+        public static void UnsealOneWayDoors(this RoomHandler self)
+        {
+            for (int i = 0; i < self.connectedDoors.Count; i++)
+            {
+                if (self.connectedDoors[i].IsSealed || (self.connectedDoors[i].subsidiaryBlocker != null && self.connectedDoors[i].subsidiaryBlocker.isSealed) || (self.connectedDoors[i].subsidiaryDoor != null && self.connectedDoors[i].subsidiaryDoor.IsSealed))
+                {
+                    if (self.connectedDoors[i].OneWayDoor)
+                    {
+                        if (self.npcSealState == RoomHandler.NPCSealState.SealNone)
+                        {
+                            self.connectedDoors[i].DoUnseal(self);
+                        }
+                        else if (self.npcSealState == RoomHandler.NPCSealState.SealPrior)
+                        {
+                            RoomHandler roomHandler = (self.connectedDoors[i].upstreamRoom != self) ? self.connectedDoors[i].upstreamRoom : self.connectedDoors[i].downstreamRoom;
+                            if (roomHandler.distanceFromEntrance >= self.distanceFromEntrance)
+                            {
+                                self.connectedDoors[i].DoUnseal(self);
+                            }
+                        }
+                        else if (self.npcSealState == RoomHandler.NPCSealState.SealNext)
+                        {
+                            RoomHandler roomHandler2 = (self.connectedDoors[i].upstreamRoom != self) ? self.connectedDoors[i].upstreamRoom : self.connectedDoors[i].downstreamRoom;
+                            if (roomHandler2.distanceFromEntrance < self.distanceFromEntrance)
+                            {
+                                self.connectedDoors[i].DoUnseal(self);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static SpecialPlayerController SpecialPlayer(this PlayerController player)
+        {
+            if(player == null)
+            {
+                return null;
+            }
+            return player.GetOrAddComponent<SpecialPlayerController>();
+        }
+
+        public static SpecialInput SpecialInput(this BraveInput input)
+        {
+            if(input == null)
+            {
+                return null;
+            }
+            return input.GetOrAddComponent<SpecialInput>();
+        }
+
+        public static GenericFieldInfo<T> GetField<T>(this Type type, string name, BindingFlags flags)
+        {
+            return new GenericFieldInfo<T>(type.GetField(name, flags));
         }
     }
 }

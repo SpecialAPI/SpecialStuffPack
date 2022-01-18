@@ -31,7 +31,7 @@ namespace SpecialStuffPack.Items
         {
             if(!player.PlayerHasActiveSynergy("Take It Before They Notice") || UnityEngine.Random.value > freeTakeChance)
             {
-                CanBeDropped = false;
+                //CanBeDropped = false;
                 player.ownerlessStatModifiers.Add(StatModifier.Create(PlayerStats.StatType.GlobalPriceMultiplier, StatModifier.ModifyMethod.ADDITIVE, priceIncreasePerPurchase));
                 player.stats.RecalculateStats(player, false, false);
             }

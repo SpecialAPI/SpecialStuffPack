@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Bad Luck";
             string longdesc = "A withered clover, seems to affect the bearer's luck negatively.";
             ItemBuilder.EasyInit<BadLuckClover>("items/badluckclover", "sprites/withered_clover_idle_001", name, shortdesc, longdesc, ItemQuality.D, SpecialStuffModule.globalPrefix, 289, null);
-            new Hook(typeof(RewardManager).GetMethod("GenerationSpawnRewardChestAt", BindingFlags.Public | BindingFlags.Instance), typeof(BadLuckClover).GetMethod("DoBadLuck"));
+            new Hook(typeof(RewardManager).GetMethod("GenerationSpawnRewardChestAt", BindingFlags.Public | BindingFlags.Instance), typeof(BadLuckClover).GetMethod("DoBadLuck", BindingFlags.Public | BindingFlags.Static));
             ETGMod.Chest.OnPreOpen += HandleEncounterableBadLuck;
         }
         

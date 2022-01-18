@@ -17,96 +17,96 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns><see langword="true"/> if all conditions are fulfilled</returns>
         public virtual new bool CheckConditionsFulfilled()
         {
-            if (this.advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_FLAG)
+            if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_FLAG)
             {
-                return AdvancedGameStatsManager.Instance.GetFlag(this.customFlagToCheck) == this.requireCustomFlag;
+                return AdvancedGameStatsManager.Instance.GetFlag(customFlagToCheck) == requireCustomFlag;
             }
-            else if (this.advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_STAT_COMPARISION)
+            else if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_STAT_COMPARISION)
             {
-                float playerStatValue = AdvancedGameStatsManager.Instance.GetPlayerStatValue(this.customStatToCheck);
-                switch (this.prerequisiteOperation)
+                float playerStatValue = AdvancedGameStatsManager.Instance.GetPlayerStatValue(customStatToCheck);
+                switch (prerequisiteOperation)
                 {
                     case PrerequisiteOperation.LESS_THAN:
-                        return playerStatValue < this.comparisonValue;
+                        return playerStatValue < comparisonValue;
                     case PrerequisiteOperation.EQUAL_TO:
-                        return playerStatValue == this.comparisonValue;
+                        return playerStatValue == comparisonValue;
                     case PrerequisiteOperation.GREATER_THAN:
-                        return playerStatValue > this.comparisonValue;
+                        return playerStatValue > comparisonValue;
                     default:
                         Debug.LogError("Switching on invalid stat comparison operation!");
                         break;
                 }
             }
-            else if(this.advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_MAXIMUM_COMPARISON)
+            else if(advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_MAXIMUM_COMPARISON)
             {
-                float playerMaximum = AdvancedGameStatsManager.Instance.GetPlayerMaximum(this.customMaximumToCheck);
-                switch (this.prerequisiteOperation)
+                float playerMaximum = AdvancedGameStatsManager.Instance.GetPlayerMaximum(customMaximumToCheck);
+                switch (prerequisiteOperation)
                 {
                     case PrerequisiteOperation.LESS_THAN:
-                        return playerMaximum < this.comparisonValue;
+                        return playerMaximum < comparisonValue;
                     case PrerequisiteOperation.EQUAL_TO:
-                        return playerMaximum == this.comparisonValue;
+                        return playerMaximum == comparisonValue;
                     case PrerequisiteOperation.GREATER_THAN:
-                        return playerMaximum > this.comparisonValue;
+                        return playerMaximum > comparisonValue;
                     default:
                         Debug.LogError("Switching on invalid stat comparison operation!");
                         break;
                 }
             }
-            else if (this.advancedPrerequisiteType == AdvancedPrerequisiteType.NUMBER_PASTS_COMPLETED_BETTER)
+            else if (advancedPrerequisiteType == AdvancedPrerequisiteType.NUMBER_PASTS_COMPLETED_BETTER)
             {
                 float pastsBeaten = GameStatsManager.Instance.GetNumberPastsBeaten();
-                switch (this.prerequisiteOperation)
+                switch (prerequisiteOperation)
                 {
                     case PrerequisiteOperation.LESS_THAN:
-                        return pastsBeaten < this.comparisonValue;
+                        return pastsBeaten < comparisonValue;
                     case PrerequisiteOperation.EQUAL_TO:
-                        return pastsBeaten == this.comparisonValue;
+                        return pastsBeaten == comparisonValue;
                     case PrerequisiteOperation.GREATER_THAN:
-                        return pastsBeaten > this.comparisonValue;
+                        return pastsBeaten > comparisonValue;
                     default:
                         Debug.LogError("Switching on invalid stat comparison operation!");
                         break;
                 }
             }
-            else if(this.advancedPrerequisiteType == AdvancedPrerequisiteType.ENCOUNTER_OR_CUSTOM_FLAG)
+            else if(advancedPrerequisiteType == AdvancedPrerequisiteType.ENCOUNTER_OR_CUSTOM_FLAG)
             {
                 EncounterDatabaseEntry encounterDatabaseEntry = null;
-                if (!string.IsNullOrEmpty(this.encounteredObjectGuid))
+                if (!string.IsNullOrEmpty(encounteredObjectGuid))
                 {
-                    encounterDatabaseEntry = EncounterDatabase.GetEntry(this.encounteredObjectGuid);
+                    encounterDatabaseEntry = EncounterDatabase.GetEntry(encounteredObjectGuid);
                 }
-                if (AdvancedGameStatsManager.Instance.GetFlag(this.customFlagToCheck) == this.requireCustomFlag)
+                if (AdvancedGameStatsManager.Instance.GetFlag(customFlagToCheck) == requireCustomFlag)
                 {
                     return true;
                 }
                 if (encounterDatabaseEntry != null)
                 {
                     int num3 = GameStatsManager.Instance.QueryEncounterable(encounterDatabaseEntry);
-                    switch (this.prerequisiteOperation)
+                    switch (prerequisiteOperation)
                     {
                         case PrerequisiteOperation.LESS_THAN:
-                            return num3 < this.requiredNumberOfEncounters;
+                            return num3 < requiredNumberOfEncounters;
                         case PrerequisiteOperation.EQUAL_TO:
-                            return num3 == this.requiredNumberOfEncounters;
+                            return num3 == requiredNumberOfEncounters;
                         case PrerequisiteOperation.GREATER_THAN:
-                            return num3 > this.requiredNumberOfEncounters;
+                            return num3 > requiredNumberOfEncounters;
                         default:
                             Debug.LogError("Switching on invalid stat comparison operation!");
                             break;
                     }
                 }
-                else if (this.encounteredRoom != null)
+                else if (encounteredRoom != null)
                 {
-                    int num4 = GameStatsManager.Instance.QueryRoomEncountered(this.encounteredRoom.GUID);
-                    switch (this.prerequisiteOperation)
+                    int num4 = GameStatsManager.Instance.QueryRoomEncountered(encounteredRoom.GUID);
+                    switch (prerequisiteOperation)
                     {
                         case PrerequisiteOperation.LESS_THAN:
-                            return num4 < this.requiredNumberOfEncounters;
+                            return num4 < requiredNumberOfEncounters;
                         case PrerequisiteOperation.EQUAL_TO:
-                            return num4 == this.requiredNumberOfEncounters;
+                            return num4 == requiredNumberOfEncounters;
                         case PrerequisiteOperation.GREATER_THAN:
-                            return num4 > this.requiredNumberOfEncounters;
+                            return num4 > requiredNumberOfEncounters;
                         default:
                             Debug.LogError("Switching on invalid stat comparison operation!");
                             break;
@@ -116,7 +116,7 @@ namespace SpecialStuffPack.SaveAPI
             }
             else
             {
-                return this.CheckConditionsFulfilledOrig();
+                return CheckConditionsFulfilledOrig();
             }
             return false;
         }
@@ -128,44 +128,44 @@ namespace SpecialStuffPack.SaveAPI
         public bool CheckConditionsFulfilledOrig()
         {
             EncounterDatabaseEntry encounterDatabaseEntry = null;
-            if (!string.IsNullOrEmpty(this.encounteredObjectGuid))
+            if (!string.IsNullOrEmpty(encounteredObjectGuid))
             {
-                encounterDatabaseEntry = EncounterDatabase.GetEntry(this.encounteredObjectGuid);
+                encounterDatabaseEntry = EncounterDatabase.GetEntry(encounteredObjectGuid);
             }
-            switch (this.prerequisiteType)
+            switch (prerequisiteType)
             {
                 case PrerequisiteType.ENCOUNTER:
-                    if (encounterDatabaseEntry == null && this.encounteredRoom == null)
+                    if (encounterDatabaseEntry == null && encounteredRoom == null)
                     {
                         return true;
                     }
                     if (encounterDatabaseEntry != null)
                     {
                         int num = GameStatsManager.Instance.QueryEncounterable(encounterDatabaseEntry);
-                        switch (this.prerequisiteOperation)
+                        switch (prerequisiteOperation)
                         {
                             case PrerequisiteOperation.LESS_THAN:
-                                return num < this.requiredNumberOfEncounters;
+                                return num < requiredNumberOfEncounters;
                             case PrerequisiteOperation.EQUAL_TO:
-                                return num == this.requiredNumberOfEncounters;
+                                return num == requiredNumberOfEncounters;
                             case PrerequisiteOperation.GREATER_THAN:
-                                return num > this.requiredNumberOfEncounters;
+                                return num > requiredNumberOfEncounters;
                             default:
                                 Debug.LogError("Switching on invalid stat comparison operation!");
                                 break;
                         }
                     }
-                    else if (this.encounteredRoom != null)
+                    else if (encounteredRoom != null)
                     {
-                        int num2 = GameStatsManager.Instance.QueryRoomEncountered(this.encounteredRoom.GUID);
-                        switch (this.prerequisiteOperation)
+                        int num2 = GameStatsManager.Instance.QueryRoomEncountered(encounteredRoom.GUID);
+                        switch (prerequisiteOperation)
                         {
                             case PrerequisiteOperation.LESS_THAN:
-                                return num2 < this.requiredNumberOfEncounters;
+                                return num2 < requiredNumberOfEncounters;
                             case PrerequisiteOperation.EQUAL_TO:
-                                return num2 == this.requiredNumberOfEncounters;
+                                return num2 == requiredNumberOfEncounters;
                             case PrerequisiteOperation.GREATER_THAN:
-                                return num2 > this.requiredNumberOfEncounters;
+                                return num2 > requiredNumberOfEncounters;
                             default:
                                 Debug.LogError("Switching on invalid stat comparison operation!");
                                 break;
@@ -174,15 +174,15 @@ namespace SpecialStuffPack.SaveAPI
                     return false;
                 case PrerequisiteType.COMPARISON:
                     {
-                        float playerStatValue = GameStatsManager.Instance.GetPlayerStatValue(this.statToCheck);
-                        switch (this.prerequisiteOperation)
+                        float playerStatValue = GameStatsManager.Instance.GetPlayerStatValue(statToCheck);
+                        switch (prerequisiteOperation)
                         {
                             case PrerequisiteOperation.LESS_THAN:
-                                return playerStatValue < this.comparisonValue;
+                                return playerStatValue < comparisonValue;
                             case PrerequisiteOperation.EQUAL_TO:
-                                return playerStatValue == this.comparisonValue;
+                                return playerStatValue == comparisonValue;
                             case PrerequisiteOperation.GREATER_THAN:
-                                return playerStatValue > this.comparisonValue;
+                                return playerStatValue > comparisonValue;
                             default:
                                 Debug.LogError("Switching on invalid stat comparison operation!");
                                 break;
@@ -207,29 +207,29 @@ namespace SpecialStuffPack.SaveAPI
                                 playableCharacters = GameManager.Instance.BestGenerationDungeonPrefab.defaultPlayerPrefab.GetComponent<PlayerController>().characterIdentity;
                             }
                         }
-                        return this.requireCharacter == (playableCharacters == this.requiredCharacter);
+                        return requireCharacter == (playableCharacters == requiredCharacter);
                     }
                 case PrerequisiteType.TILESET:
                     if (GameManager.Instance.BestGenerationDungeonPrefab != null)
                     {
-                        return this.requireTileset == (GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId == this.requiredTileset);
+                        return requireTileset == (GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId == requiredTileset);
                     }
-                    return this.requireTileset == (GameManager.Instance.Dungeon.tileIndices.tilesetId == this.requiredTileset);
+                    return requireTileset == (GameManager.Instance.Dungeon.tileIndices.tilesetId == requiredTileset);
                 case PrerequisiteType.FLAG:
-                    return GameStatsManager.Instance.GetFlag(this.saveFlagToCheck) == this.requireFlag;
+                    return GameStatsManager.Instance.GetFlag(saveFlagToCheck) == requireFlag;
                 case PrerequisiteType.DEMO_MODE:
-                    return !this.requireDemoMode;
+                    return !requireDemoMode;
                 case PrerequisiteType.MAXIMUM_COMPARISON:
                     {
-                        float playerMaximum = GameStatsManager.Instance.GetPlayerMaximum(this.maxToCheck);
-                        switch (this.prerequisiteOperation)
+                        float playerMaximum = GameStatsManager.Instance.GetPlayerMaximum(maxToCheck);
+                        switch (prerequisiteOperation)
                         {
                             case PrerequisiteOperation.LESS_THAN:
-                                return playerMaximum < this.comparisonValue;
+                                return playerMaximum < comparisonValue;
                             case PrerequisiteOperation.EQUAL_TO:
-                                return playerMaximum == this.comparisonValue;
+                                return playerMaximum == comparisonValue;
                             case PrerequisiteOperation.GREATER_THAN:
-                                return playerMaximum > this.comparisonValue;
+                                return playerMaximum > comparisonValue;
                             default:
                                 Debug.LogError("Switching on invalid stat comparison operation!");
                                 break;
@@ -237,37 +237,37 @@ namespace SpecialStuffPack.SaveAPI
                         break;
                     }
                 case PrerequisiteType.ENCOUNTER_OR_FLAG:
-                    if (GameStatsManager.Instance.GetFlag(this.saveFlagToCheck) == this.requireFlag)
+                    if (GameStatsManager.Instance.GetFlag(saveFlagToCheck) == requireFlag)
                     {
                         return true;
                     }
                     if (encounterDatabaseEntry != null)
                     {
                         int num3 = GameStatsManager.Instance.QueryEncounterable(encounterDatabaseEntry);
-                        switch (this.prerequisiteOperation)
+                        switch (prerequisiteOperation)
                         {
                             case PrerequisiteOperation.LESS_THAN:
-                                return num3 < this.requiredNumberOfEncounters;
+                                return num3 < requiredNumberOfEncounters;
                             case PrerequisiteOperation.EQUAL_TO:
-                                return num3 == this.requiredNumberOfEncounters;
+                                return num3 == requiredNumberOfEncounters;
                             case PrerequisiteOperation.GREATER_THAN:
-                                return num3 > this.requiredNumberOfEncounters;
+                                return num3 > requiredNumberOfEncounters;
                             default:
                                 Debug.LogError("Switching on invalid stat comparison operation!");
                                 break;
                         }
                     }
-                    else if (this.encounteredRoom != null)
+                    else if (encounteredRoom != null)
                     {
-                        int num4 = GameStatsManager.Instance.QueryRoomEncountered(this.encounteredRoom.GUID);
-                        switch (this.prerequisiteOperation)
+                        int num4 = GameStatsManager.Instance.QueryRoomEncountered(encounteredRoom.GUID);
+                        switch (prerequisiteOperation)
                         {
                             case PrerequisiteOperation.LESS_THAN:
-                                return num4 < this.requiredNumberOfEncounters;
+                                return num4 < requiredNumberOfEncounters;
                             case PrerequisiteOperation.EQUAL_TO:
-                                return num4 == this.requiredNumberOfEncounters;
+                                return num4 == requiredNumberOfEncounters;
                             case PrerequisiteOperation.GREATER_THAN:
-                                return num4 > this.requiredNumberOfEncounters;
+                                return num4 > requiredNumberOfEncounters;
                             default:
                                 Debug.LogError("Switching on invalid stat comparison operation!");
                                 break;
@@ -275,7 +275,7 @@ namespace SpecialStuffPack.SaveAPI
                     }
                     return false;
                 case PrerequisiteType.NUMBER_PASTS_COMPLETED:
-                    return (float)GameStatsManager.Instance.GetNumberPastsBeaten() >= this.comparisonValue;
+                    return (float)GameStatsManager.Instance.GetNumberPastsBeaten() >= comparisonValue;
                 default:
                     Debug.LogError("Switching on invalid prerequisite type!!!");
                     break;

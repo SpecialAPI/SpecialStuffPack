@@ -16,10 +16,10 @@ namespace SpecialStuffPack.SaveAPI
     {
         public AdvancedGameStatsManager()
         {
-            this.m_flags = new HashSet<CustomDungeonFlags>(new CustomDungeonFlagsComparer());
-            this.m_characterStats = new Dictionary<PlayableCharacters, AdvancedGameStats>(new PlayableCharactersComparer());
-            this.m_numCharacters = -1;
-            this.cachedHuntIndex = -1;
+            m_flags = new HashSet<CustomDungeonFlags>(new CustomDungeonFlagsComparer());
+            m_characterStats = new Dictionary<PlayableCharacters, AdvancedGameStats>(new PlayableCharactersComparer());
+            m_numCharacters = -1;
+            cachedHuntIndex = -1;
         }
 
         /// <summary>
@@ -43,17 +43,17 @@ namespace SpecialStuffPack.SaveAPI
                 Debug.LogError("Something is attempting to set a NONE character-specific save flag!");
                 return;
             }
-            if (!this.m_characterStats.ContainsKey(character))
+            if (!m_characterStats.ContainsKey(character))
             {
-                this.m_characterStats.Add(character, new AdvancedGameStats());
+                m_characterStats.Add(character, new AdvancedGameStats());
             }
-            if (this.m_sessionStats != null && this.m_sessionCharacter == character)
+            if (m_sessionStats != null && m_sessionCharacter == character)
             {
-                this.m_sessionStats.SetFlag(flag, value);
+                m_sessionStats.SetFlag(flag, value);
             }
             else
             {
-                this.m_characterStats[character].SetFlag(flag, value);
+                m_characterStats[character].SetFlag(flag, value);
             }
         }
 
@@ -72,11 +72,11 @@ namespace SpecialStuffPack.SaveAPI
             {
                 return;
             }
-            if (this.m_sessionStats == null)
+            if (m_sessionStats == null)
             {
                 return;
             }
-            this.m_sessionStats.SetStat(stat, value);
+            m_sessionStats.SetStat(stat, value);
         }
 
         /// <summary>
@@ -94,11 +94,11 @@ namespace SpecialStuffPack.SaveAPI
             {
                 return;
             }
-            if (this.m_sessionStats == null)
+            if (m_sessionStats == null)
             {
                 return;
             }
-            this.m_sessionStats.SetMax(maximum, val);
+            m_sessionStats.SetMax(maximum, val);
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns>The value of session character's <paramref name="flag"/></returns>
         public bool GetCharacterSpecificFlag(CustomCharacterSpecificGungeonFlags flag)
         {
-            return this.GetCharacterSpecificFlag(this.m_sessionCharacter, flag);
+            return GetCharacterSpecificFlag(m_sessionCharacter, flag);
         }
 
         /// <summary>
@@ -124,19 +124,19 @@ namespace SpecialStuffPack.SaveAPI
                 Debug.LogError("Something is attempting to get a NONE character-specific save flag!");
                 return false;
             }
-            if (this.m_sessionStats != null && this.m_sessionCharacter == character)
+            if (m_sessionStats != null && m_sessionCharacter == character)
             {
-                if (this.m_sessionStats.GetFlag(flag))
+                if (m_sessionStats.GetFlag(flag))
                 {
                     return true;
                 }
-                if (this.m_savedSessionStats.GetFlag(flag))
+                if (m_savedSessionStats.GetFlag(flag))
                 {
                     return true;
                 }
             }
             AdvancedGameStats gameStats;
-            return this.m_characterStats.TryGetValue(character, out gameStats) && gameStats.GetFlag(flag);
+            return m_characterStats.TryGetValue(character, out gameStats) && gameStats.GetFlag(flag);
         }
 
         /// <summary>
@@ -158,7 +158,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="value">Increment value</param>
         public void RegisterStatChange(CustomTrackedStats stat, float value)
         {
-            if (this.m_sessionStats == null)
+            if (m_sessionStats == null)
             {
                 Debug.LogError("No session stats active and we're registering a stat change!");
                 return;
@@ -175,7 +175,7 @@ namespace SpecialStuffPack.SaveAPI
             {
                 return;
             }
-            this.m_sessionStats.IncrementStat(stat, value);
+            m_sessionStats.IncrementStat(stat, value);
         }
 
         /// <summary>
@@ -251,16 +251,16 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         public void ClearAllStatsGlobal()
         {
-            this.m_sessionStats.ClearAllState();
-            this.m_savedSessionStats.ClearAllState();
-            if (this.m_numCharacters <= 0)
+            m_sessionStats.ClearAllState();
+            m_savedSessionStats.ClearAllState();
+            if (m_numCharacters <= 0)
             {
-                this.m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
+                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
             }
-            for (int i = 0; i < this.m_numCharacters; i++)
+            for (int i = 0; i < m_numCharacters; i++)
             {
                 AdvancedGameStats gameStats;
-                if (this.m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
+                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
                 {
                     gameStats.ClearAllState();
                 }
@@ -273,16 +273,16 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="stat"></param>
         public void ClearStatValueGlobal(CustomTrackedStats stat)
         {
-            this.m_sessionStats.SetStat(stat, 0f);
-            this.m_savedSessionStats.SetStat(stat, 0f);
-            if (this.m_numCharacters <= 0)
+            m_sessionStats.SetStat(stat, 0f);
+            m_savedSessionStats.SetStat(stat, 0f);
+            if (m_numCharacters <= 0)
             {
-                this.m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
+                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
             }
-            for (int i = 0; i < this.m_numCharacters; i++)
+            for (int i = 0; i < m_numCharacters; i++)
             {
                 AdvancedGameStats gameStats;
-                if (this.m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
+                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
                 {
                     gameStats.SetStat(stat, 0f);
                 }
@@ -301,24 +301,24 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns><paramref name="maximum"/> value</returns>
         public float GetPlayerMaximum(CustomTrackedMaximums maximum)
         {
-            if (this.m_numCharacters <= 0)
+            if (m_numCharacters <= 0)
             {
-                this.m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
+                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
             }
             float num = 0f;
-            if (this.m_sessionStats != null)
+            if (m_sessionStats != null)
             {
                 num = Mathf.Max(new float[]
                 {
                 num,
-                this.m_sessionStats.GetMaximumValue(maximum),
-                this.m_savedSessionStats.GetMaximumValue(maximum)
+                m_sessionStats.GetMaximumValue(maximum),
+                m_savedSessionStats.GetMaximumValue(maximum)
                 });
             }
-            for (int i = 0; i < this.m_numCharacters; i++)
+            for (int i = 0; i < m_numCharacters; i++)
             {
                 AdvancedGameStats gameStats;
-                if (this.m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
+                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
                 {
                     num = Mathf.Max(num, gameStats.GetMaximumValue(maximum));
                 }
@@ -333,19 +333,19 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns>The value of <paramref name="stat"/></returns>
         public float GetPlayerStatValue(CustomTrackedStats stat)
         {
-            if (this.m_numCharacters <= 0)
+            if (m_numCharacters <= 0)
             {
-                this.m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
+                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
             }
             float num = 0f;
-            if (this.m_sessionStats != null)
+            if (m_sessionStats != null)
             {
-                num += this.m_sessionStats.GetStatValue(stat);
+                num += m_sessionStats.GetStatValue(stat);
             }
-            for (int i = 0; i < this.m_numCharacters; i++)
+            for (int i = 0; i < m_numCharacters; i++)
             {
                 AdvancedGameStats gameStats;
-                if (this.m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
+                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
                 {
                     num += gameStats.GetStatValue(stat);
                 }
@@ -360,7 +360,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="value">Value to set</param>
         public void SetCharacterSpecificFlag(CustomCharacterSpecificGungeonFlags flag, bool value)
         {
-            this.SetCharacterSpecificFlag(this.m_sessionCharacter, flag, value);
+            SetCharacterSpecificFlag(m_sessionCharacter, flag, value);
         }
 
         /// <summary>
@@ -370,7 +370,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns></returns>
         public float GetSessionStatValue(CustomTrackedStats stat)
         {
-            return this.m_sessionStats.GetStatValue(stat) + this.m_savedSessionStats.GetStatValue(stat);
+            return m_sessionStats.GetStatValue(stat) + m_savedSessionStats.GetStatValue(stat);
         }
 
         /// <summary>
@@ -382,7 +382,7 @@ namespace SpecialStuffPack.SaveAPI
 		///   Primary player is null</exception>
         public float GetCharacterStatValue(CustomTrackedStats stat)
         {
-            return this.GetCharacterStatValue(this.GetCurrentCharacter(), stat);
+            return GetCharacterStatValue(GetCurrentCharacter(), stat);
         }
 
         /// <summary>
@@ -391,20 +391,20 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns>Saved session stats</returns>
         public AdvancedGameStats MoveSessionStatsToSavedSessionStats()
         {
-            if (!this.IsInSession)
+            if (!IsInSession)
             {
                 return null;
             }
-            if (this.m_sessionStats != null)
+            if (m_sessionStats != null)
             {
-                if (this.m_characterStats.ContainsKey(this.m_sessionCharacter))
+                if (m_characterStats.ContainsKey(m_sessionCharacter))
                 {
-                    this.m_characterStats[this.m_sessionCharacter].AddStats(this.m_sessionStats);
+                    m_characterStats[m_sessionCharacter].AddStats(m_sessionStats);
                 }
-                this.m_savedSessionStats.AddStats(this.m_sessionStats);
-                this.m_sessionStats.ClearAllState();
+                m_savedSessionStats.AddStats(m_sessionStats);
+                m_sessionStats.ClearAllState();
             }
-            return this.m_savedSessionStats;
+            return m_savedSessionStats;
         }
 
         /// <summary>
@@ -416,13 +416,13 @@ namespace SpecialStuffPack.SaveAPI
         public float GetCharacterStatValue(PlayableCharacters character, CustomTrackedStats stat)
         {
             float num = 0f;
-            if (this.m_sessionCharacter == character)
+            if (m_sessionCharacter == character)
             {
-                num += this.m_sessionStats.GetStatValue(stat);
+                num += m_sessionStats.GetStatValue(stat);
             }
-            if (this.m_characterStats.ContainsKey(character))
+            if (m_characterStats.ContainsKey(character))
             {
-                num += this.m_characterStats[character].GetStatValue(stat);
+                num += m_characterStats[character].GetStatValue(stat);
             }
             return num;
         }
@@ -433,26 +433,26 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="player">Session character</param>
         public void BeginNewSession(PlayerController player)
         {
-            if (this.m_characterStats == null)
+            if (m_characterStats == null)
             {
-                this.m_characterStats = new Dictionary<PlayableCharacters, AdvancedGameStats>(new PlayableCharactersComparer());
+                m_characterStats = new Dictionary<PlayableCharacters, AdvancedGameStats>(new PlayableCharactersComparer());
             }
-            if (this.IsInSession)
+            if (IsInSession)
             {
-                this.m_sessionCharacter = player.characterIdentity;
-                if (!this.m_characterStats.ContainsKey(player.characterIdentity))
+                m_sessionCharacter = player.characterIdentity;
+                if (!m_characterStats.ContainsKey(player.characterIdentity))
                 {
-                    this.m_characterStats.Add(player.characterIdentity, new AdvancedGameStats());
+                    m_characterStats.Add(player.characterIdentity, new AdvancedGameStats());
                 }
             }
             else
             {
-                this.m_sessionCharacter = player.characterIdentity;
-                this.m_sessionStats = new AdvancedGameStats();
-                this.m_savedSessionStats = new AdvancedGameStats();
-                if (!this.m_characterStats.ContainsKey(player.characterIdentity))
+                m_sessionCharacter = player.characterIdentity;
+                m_sessionStats = new AdvancedGameStats();
+                m_savedSessionStats = new AdvancedGameStats();
+                if (!m_characterStats.ContainsKey(player.characterIdentity))
                 {
-                    this.m_characterStats.Add(player.characterIdentity, new AdvancedGameStats());
+                    m_characterStats.Add(player.characterIdentity, new AdvancedGameStats());
                 }
             }
         }
@@ -463,24 +463,24 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="recordSessionStats">If <see langword="true"/>, moves session stats to character stats</param>
         public void EndSession(bool recordSessionStats)
         {
-            if (!this.IsInSession)
+            if (!IsInSession)
             {
                 return;
             }
-            if (this.m_sessionStats != null)
+            if (m_sessionStats != null)
             {
                 if (recordSessionStats)
                 {
-                    if (this.m_characterStats.ContainsKey(this.m_sessionCharacter))
+                    if (m_characterStats.ContainsKey(m_sessionCharacter))
                     {
-                        this.m_characterStats[this.m_sessionCharacter].AddStats(this.m_sessionStats);
+                        m_characterStats[m_sessionCharacter].AddStats(m_sessionStats);
                     }
                     else
                     {
                     }
                 }
-                this.m_sessionStats = null;
-                this.m_savedSessionStats = null;
+                m_sessionStats = null;
+                m_savedSessionStats = null;
             }
         }
 
@@ -492,7 +492,7 @@ namespace SpecialStuffPack.SaveAPI
         {
             get
             {
-                return this.m_sessionStats != null;
+                return m_sessionStats != null;
             }
         }
 
@@ -547,7 +547,7 @@ namespace SpecialStuffPack.SaveAPI
                 Debug.LogError("Something is attempting to get a NONE save flag!");
                 return false;
             }
-            return this.m_flags.Contains(flag);
+            return m_flags.Contains(flag);
         }
 
         /// <summary>
@@ -564,11 +564,11 @@ namespace SpecialStuffPack.SaveAPI
             }
             if (value)
             {
-                this.m_flags.Add(flag);
+                m_flags.Add(flag);
             }
             else
             {
-                this.m_flags.Remove(flag);
+                m_flags.Remove(flag);
             }
         }
 
@@ -599,13 +599,13 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="source">Stats to add</param>
         public void AssignMidGameSavedSessionStats(AdvancedGameStats source)
         {
-            if (!this.IsInSession)
+            if (!IsInSession)
             {
                 return;
             }
-            if (this.m_savedSessionStats != null)
+            if (m_savedSessionStats != null)
             {
-                this.m_savedSessionStats.AddStats(source);
+                m_savedSessionStats.AddStats(source);
             }
         }
 

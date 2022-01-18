@@ -46,6 +46,9 @@ namespace SpecialStuffPack
             SynergyBuilder.CreateSynergy("Piercing Throws", new List<int> { ItemBuilder.ItemIds["butter"], 172 });
             SynergyBuilder.CreateSynergy("Homing Boomerang Throws", new List<int> { ItemBuilder.ItemIds["butter"] }, new List<int> { 240, 284 });
             SynergyBuilder.CreateSynergy("Take It Before They Notice", new List<int> { ItemBuilder.ItemIds["legitcoupon"] }, new List<int> { 460, 237, 438, 71, 462, 216, 250, 458, 206, 543, 182 });
+            SynergyBuilder.CreateSynergy("The zombies are coming", new List<int> { ItemBuilder.ItemIds["gravediggershovel"] }, new List<int> { 528, 29, 45 });
+            SynergyBuilder.CreateSynergy("Armored Support", new List<int> { ItemBuilder.ItemIds["frailheart"] }, new List<int> { 114, 273, 298, 314 });
+            SynergyBuilder.CreateSynergy("I am YesEngine", new List<int> { ItemBuilder.ItemIds["consolecontroller"] }, new List<int> { 177, 401 });
 
             //add this long synergy
             List<StatModifier> sm = new List<StatModifier>();

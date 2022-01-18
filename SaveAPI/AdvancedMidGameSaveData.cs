@@ -14,7 +14,7 @@ namespace SpecialStuffPack.SaveAPI
 		public AdvancedMidGameSaveData(string midGameSaveGuid)
 		{
 			this.midGameSaveGuid = midGameSaveGuid;
-			this.PriorSessionStats = AdvancedGameStatsManager.Instance.MoveSessionStatsToSavedSessionStats();
+			PriorSessionStats = AdvancedGameStatsManager.Instance.MoveSessionStatsToSavedSessionStats();
 		}
 
 		/// <summary>
@@ -23,7 +23,7 @@ namespace SpecialStuffPack.SaveAPI
 		/// <returns><see langword="true"/> if this <see cref="AdvancedMidGameSaveData"/> isn't invalidated</returns>
 		public bool IsValid()
 		{
-			return !this.invalidated;
+			return !invalidated;
 		}
 
 		/// <summary>
@@ -31,7 +31,7 @@ namespace SpecialStuffPack.SaveAPI
 		/// </summary>
 		public void Invalidate()
 		{
-			this.invalidated = true;
+			invalidated = true;
 		}
 
 		/// <summary>
@@ -39,7 +39,7 @@ namespace SpecialStuffPack.SaveAPI
 		/// </summary>
 		public void Revalidate()
 		{
-			this.invalidated = false;
+			invalidated = false;
 		}
 
 		/// <summary>
@@ -47,7 +47,7 @@ namespace SpecialStuffPack.SaveAPI
 		/// </summary>
 		public void LoadDataFromMidGameSave()
 		{
-			AdvancedGameStatsManager.Instance.AssignMidGameSavedSessionStats(this.PriorSessionStats);
+			AdvancedGameStatsManager.Instance.AssignMidGameSavedSessionStats(PriorSessionStats);
 		}
 
 		/// <summary>

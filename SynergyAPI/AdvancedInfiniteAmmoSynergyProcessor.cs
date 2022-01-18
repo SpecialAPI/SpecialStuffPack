@@ -52,7 +52,8 @@ namespace SpecialStuffPack.SynergyAPI
         /// </summary>
         public string RequiredSynergy;
         /// <summary>
-        /// If true, will also set reload time to 0.
+        /// If true, will also 
+        /// reload time to 0.
         /// </summary>
         public bool PreventsReload;
         private bool m_processed;

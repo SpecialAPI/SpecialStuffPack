@@ -32,6 +32,10 @@ namespace SpecialStuffPack
             {
                 path += ".png";
             }
+            if (typeof(T) == typeof(Material) && !path.EndsWith(".mat"))
+            {
+                path += ".mat";
+            }
             return specialeverything.LoadAsset<T>(path);
         }
 

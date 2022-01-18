@@ -43,7 +43,7 @@ namespace SpecialStuffPack.Items
 
         private IEnumerator HandleRatSummon(RoomHandler room)
         {
-            List<AIActor> enemies = room.GetActiveEnemies(RoomHandler.ActiveEnemyType.All);
+            List<AIActor> enemies = room.GetActiveEnemiesUnreferenced(RoomHandler.ActiveEnemyType.All);
             for(int a = 0; a < enemies.Count; a++)
             {
                 if(a < enemies.Count)

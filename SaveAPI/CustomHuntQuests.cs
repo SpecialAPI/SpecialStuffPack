@@ -19,31 +19,31 @@ namespace SpecialStuffPack.SaveAPI
             HuntData = (MonsterHuntData)BraveResources.Load("Monster Hunt Data", ".asset");
             huntProgressLoadedHook = new Hook(
                 typeof(MonsterHuntProgress).GetMethod("OnLoaded"),
-                typeof(CustomHuntQuests).GetMethod("HuntProgressLoadedHook")
+                typeof(CustomHuntQuests).GetMethod("HuntProgressLoadedHook", BindingFlags.Public | BindingFlags.Static)
             );
             huntProgressCompleteHook = new Hook(
                 typeof(MonsterHuntProgress).GetMethod("Complete"),
-                typeof(CustomHuntQuests).GetMethod("HuntProgressCompleteHook")
+                typeof(CustomHuntQuests).GetMethod("HuntProgressCompleteHook", BindingFlags.Public | BindingFlags.Static)
             );
             huntProgressQuestCompleteHook = new Hook(
                 typeof(MonsterHuntProgress).GetMethod("IsQuestComplete"),
-                typeof(CustomHuntQuests).GetMethod("HuntProgressQuestCompleteHook")
+                typeof(CustomHuntQuests).GetMethod("HuntProgressQuestCompleteHook", BindingFlags.Public | BindingFlags.Static)
             );
             huntProgressNextQuestHook = new Hook(
                 typeof(MonsterHuntProgress).GetMethod("TriggerNextQuest"),
-                typeof(CustomHuntQuests).GetMethod("HuntProgressNextQuestHook")
+                typeof(CustomHuntQuests).GetMethod("HuntProgressNextQuestHook", BindingFlags.Public | BindingFlags.Static)
             );
             huntProgressProcessKillHook = new Hook(
                 typeof(MonsterHuntProgress).GetMethod("ProcessKill"),
-                typeof(CustomHuntQuests).GetMethod("HuntProgressProcessKillHook")
+                typeof(CustomHuntQuests).GetMethod("HuntProgressProcessKillHook", BindingFlags.Public | BindingFlags.Static)
             );
             huntQuestCompleteHook = new Hook(
                 typeof(MonsterHuntQuest).GetMethod("IsQuestComplete"),
-                typeof(CustomHuntQuests).GetMethod("HuntQuestCompleteHook")
+                typeof(CustomHuntQuests).GetMethod("HuntQuestCompleteHook", BindingFlags.Public | BindingFlags.Static)
             );
             huntQuestUnlockRewardsHook = new Hook(
                 typeof(MonsterHuntQuest).GetMethod("UnlockRewards"),
-                typeof(CustomHuntQuests).GetMethod("HuntQuestUnlockRewardsHook")
+                typeof(CustomHuntQuests).GetMethod("HuntQuestUnlockRewardsHook", BindingFlags.Public | BindingFlags.Static)
             );
             m_loaded = true;
         }

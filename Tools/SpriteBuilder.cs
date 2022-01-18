@@ -76,8 +76,8 @@ namespace SpecialStuffPack
         {
             if(clip != null && clip.frames != null && offsets != null)
             {
-                int longest = clip.frames.Length > offsets.Count ? clip.frames.Length : offsets.Count;
-                for (int i = 0; i < longest; i++)
+                int shortest = clip.frames.Length < offsets.Count ? clip.frames.Length : offsets.Count;
+                for (int i = 0; i < shortest; i++)
                 {
                     if (clip.frames[i] != null && clip.frames[i].spriteCollection != null && clip.frames[i].spriteCollection.spriteDefinitions != null && clip.frames[i].spriteId >= 0 && 
                         clip.frames[i].spriteCollection.spriteDefinitions[clip.frames[i].spriteId] != null)

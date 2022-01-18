@@ -91,7 +91,7 @@ namespace SpecialStuffPack.Items
             item.AddToOldRedShop();
             new Hook(
                 typeof(PlayerController).GetMethod("DoConsumableBlank", BindingFlags.Instance | BindingFlags.NonPublic),
-                typeof(FusedAmmolet).GetMethod("LookItsBlombkFromOMITB")
+                typeof(FusedAmmolet).GetMethod("LookItsBlombkFromOMITB", BindingFlags.Public | BindingFlags.Static)
             );
         }
 

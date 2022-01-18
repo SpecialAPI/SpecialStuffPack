@@ -11,43 +11,43 @@ namespace SpecialStuffPack.SaveAPI
 	{
 		public new bool IsQuestComplete()
 		{
-			if (this.CustomQuestFlag != CustomDungeonFlags.NONE && AdvancedGameStatsManager.Instance.GetFlag(this.CustomQuestFlag))
+			if (CustomQuestFlag != CustomDungeonFlags.NONE && AdvancedGameStatsManager.Instance.GetFlag(CustomQuestFlag))
             {
 				return true;
             }
-			return GameStatsManager.Instance.GetFlag(this.QuestFlag);
+			return GameStatsManager.Instance.GetFlag(QuestFlag);
 		}
 
 		public bool IsEnemyValid(AIActor enemy, MonsterHuntProgress progress)
         {
-			if(this.ValidTargetCheck != null && !this.ValidTargetCheck(enemy, progress))
+			if(ValidTargetCheck != null && !ValidTargetCheck(enemy, progress))
             {
 				return false;
             }
-			return SaveTools.IsEnemyStateValid(enemy, this.RequiredEnemyState);
+			return SaveTools.IsEnemyStateValid(enemy, RequiredEnemyState);
         }
 
 		public void Complete()
         {
-			if(this.QuestFlag != GungeonFlags.NONE)
+			if(QuestFlag != GungeonFlags.NONE)
             {
-				GameStatsManager.Instance.SetFlag(this.QuestFlag, true);
+				GameStatsManager.Instance.SetFlag(QuestFlag, true);
 			}
-			if(this.CustomQuestFlag != CustomDungeonFlags.NONE)
+			if(CustomQuestFlag != CustomDungeonFlags.NONE)
             {
-				AdvancedGameStatsManager.Instance.SetFlag(this.CustomQuestFlag, true);
+				AdvancedGameStatsManager.Instance.SetFlag(CustomQuestFlag, true);
 			}
         }
 
 		public new void UnlockRewards()
 		{
-			for (int i = 0; i < this.FlagsToSetUponReward.Count; i++)
+			for (int i = 0; i < FlagsToSetUponReward.Count; i++)
 			{
-				GameStatsManager.Instance.SetFlag(this.FlagsToSetUponReward[i], true);
+				GameStatsManager.Instance.SetFlag(FlagsToSetUponReward[i], true);
 			}
-			for (int i = 0; i < this.CustomFlagsToSetUponReward.Count; i++)
+			for (int i = 0; i < CustomFlagsToSetUponReward.Count; i++)
 			{
-				AdvancedGameStatsManager.Instance.SetFlag(this.CustomFlagsToSetUponReward[i], true);
+				AdvancedGameStatsManager.Instance.SetFlag(CustomFlagsToSetUponReward[i], true);
 			}
 		}
 

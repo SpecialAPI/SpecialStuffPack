@@ -22,7 +22,7 @@ namespace SpecialStuffPack.Items
             MirrorOfTruth item = ItemBuilder.EasyInit<MirrorOfTruth>("items/truthmirror", "sprites/mirror_of_truth_idle_001", name, shortdesc, longdesc, ItemQuality.C, SpecialStuffModule.globalPrefix, 289, null);
             item.ShadowSynergyClonePrefab = CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(820).objectToSpawn;
             item.AddToCursulaShop();
-            new Hook(typeof(RewardManager).GetMethod("GenerationSpawnRewardChestAt", BindingFlags.Public | BindingFlags.Instance), typeof(MirrorOfTruth).GetMethod("ReplaceChestWithMirror"));
+            new Hook(typeof(RewardManager).GetMethod("GenerationSpawnRewardChestAt", BindingFlags.Public | BindingFlags.Instance), typeof(MirrorOfTruth).GetMethod("ReplaceChestWithMirror", BindingFlags.Public | BindingFlags.Static));
         }
 
         public static Chest ReplaceChestWithMirror(Func<RewardManager, IntVector2, RoomHandler, ItemQuality?, float, Chest> orig, RewardManager self, IntVector2 positionInRoom, RoomHandler targetRoom, ItemQuality? targetQuality, float 

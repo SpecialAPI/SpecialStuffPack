@@ -140,7 +140,6 @@ namespace SpecialStuffPack.Items
 
         protected override void OnDestroy()
         {
-            base.OnDestroy();
             if(LastOwner != null)
             {
                 LastOwner.OnEnteredCombat -= MaybeBurnEnemy;
@@ -151,13 +150,14 @@ namespace SpecialStuffPack.Items
                     LastOwner.stats.RecalculateStats(LastOwner, false, false);
                 }
             }
+            base.OnDestroy();
         }
 
         protected override void DoEffect(PlayerController user)
         {
             m_flames = 0;
             RenderSettings.ambientLight = OnUseColor;
-            List<AIActor> enemies = user.CurrentRoom.GetActiveEnemies(RoomHandler.ActiveEnemyType.All);
+            List<AIActor> enemies = user.CurrentRoom.GetActiveEnemiesUnreferenced(RoomHandler.ActiveEnemyType.All);
             foreach(AIActor aiactor in enemies)
             {
                 if(aiactor != null)

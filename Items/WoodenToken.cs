@@ -104,13 +104,13 @@ namespace SpecialStuffPack.Items
 
         protected override void OnDestroy()
         {
-            base.OnDestroy();
             if(LastOwner != null)
             {
                 LastOwner.OnNewFloorLoaded -= SpawnShop;
                 LastOwner.OnItemPurchased -= HandleItemExchange;
                 LastOwner.OnItemStolen -= HandleItemExchange;
             }
+            base.OnDestroy();
         }
 
         public override void Update()
