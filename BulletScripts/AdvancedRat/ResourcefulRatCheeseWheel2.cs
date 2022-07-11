@@ -11,7 +11,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 {
 	public class ResourcefulRatCheeseWheel2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			CellArea area = BulletBank.aiActor.ParentRoom.area;
 			Vector2 roomLowerLeft = area.UnitBottomLeft;
@@ -145,7 +145,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 				m_roomCenter = roomCenter;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				int travelTime = UnityEngine.Random.Range(90, 136);
 				Projectile.IgnoreTileCollisionsFor(90f);
@@ -198,7 +198,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Projectile.spriteAnimator.Play("cheese_wheel_burst");
 				Projectile.ImmuneToSustainedBlanks = true;

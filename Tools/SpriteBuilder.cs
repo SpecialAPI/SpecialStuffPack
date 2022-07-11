@@ -12,7 +12,7 @@ namespace SpecialStuffPack
     {
         public static tk2dSpriteCollectionData itemCollection = PickupObjectDatabase.GetById(155).sprite.Collection;
         public static tk2dSpriteCollectionData ammonomiconCollection = AmmonomiconController.ForceInstance.EncounterIconCollection;
-
+        public static Dictionary<Texture2D, Vector2> TextureTrimOffsets = new();
 
         public static SpeculativeRigidbody SetUpSpeculativeRigidbody(this tk2dSprite sprite, IntVector2 offset, IntVector2 dimensions)
         {
@@ -66,6 +66,11 @@ namespace SpecialStuffPack
 
             return obj;
         }
+
+        public static void ResetOffset(this tk2dSpriteDefinition def)
+        {
+            def.AddOffset(-def.position0);
+        }
         
         public static void ApplyOffsetsToAnimation(this tk2dSpriteAnimationClip clip, List<IntVector2> offsets)
         {
@@ -94,12 +99,26 @@ namespace SpecialStuffPack
         /// <returns>The spriteID of the defintion in the collection</returns>
         public static int AddSpriteToCollection(string resourcePath, tk2dSpriteCollectionData collection, string shaderName)
         {
+            if(collection == null)
+            {
+                Debug.LogWarning("Collection is null! Resource path: " + resourcePath);
+                return -1;
+            }
             var texture = AssetBundleManager.Load<Texture2D>(resourcePath); //Get Texture
-
-            var definition = ConstructDefinition(texture, shaderName); //Generate definition
-            definition.name = texture.name; //naming the definition is actually extremely important 
-
-            return AddSpriteToCollection(definition, collection);
+            if(texture == null)
+            {
+                Debug.LogWarning("Texture is null! Resource path: " + resourcePath);
+                return -1;
+            }
+            else
+            {
+                var id = collection.GetSpriteIdByName(texture.name, -1);
+                if(id >= 0)
+                {
+                    return id;
+                }
+            }
+            return AddSpriteToCollection(texture, collection, shaderName);
         }
 
         /// <summary>
@@ -108,10 +127,200 @@ namespace SpecialStuffPack
         /// <returns>The spriteID of the defintion in the collection</returns>
         public static int AddSpriteToCollection(Texture2D texture, tk2dSpriteCollectionData collection, string shaderName)
         {
-            var definition = ConstructDefinition(texture, shaderName); //Generate definition
-            definition.name = texture.name; //naming the definition is actually extremely important 
+            if (collection == null)
+            {
+                Debug.LogWarning("Collection is null!");
+                return -1;
+            }
+            if (texture == null)
+            {
+                Debug.LogWarning("Texture is null!");
+                return -1;
+            }
+            else
+            {
+                var id = collection.GetSpriteIdByName(texture.name, -1);
+                if (id >= 0)
+                {
+                    return id;
+                }
+            }
+            if (TextureTrimOffsets.TryGetValue(texture, out var offset))
+            {
+                var definition = ConstructDefinition(texture, shaderName); //Generate definition
+                definition.AddOffset(offset);
+                definition.name = texture.name; //naming the definition is actually extremely important 
 
-            return AddSpriteToCollection(definition, collection);
+                return AddSpriteToCollection(definition, collection);
+            }
+            else
+            {
+                var pixelOffset = texture.TrimTexture();
+                var definition = ConstructDefinition(texture, shaderName); //Generate definition
+                var unitOffset = pixelOffset.ToVector2() / 16f;
+                definition.AddOffset(unitOffset);
+                definition.name = texture.name; //naming the definition is actually extremely important
+                TextureTrimOffsets.Add(texture, unitOffset);
+
+                return AddSpriteToCollection(definition, collection);
+            }
+        }
+
+        public static void TrimGunSprites(this Gun gun)
+        {
+            List<KeyValuePair<tk2dSpriteCollectionData, int>> ids = new List<KeyValuePair<tk2dSpriteCollectionData, int>>();
+            gun.TryTrimGunAnimation(gun.shootAnimation, ids);
+            gun.TryTrimGunAnimation(gun.reloadAnimation, ids);
+            gun.TryTrimGunAnimation(gun.emptyReloadAnimation, ids);
+            gun.TryTrimGunAnimation(gun.idleAnimation, ids);
+            gun.TryTrimGunAnimation(gun.chargeAnimation, ids);
+            gun.TryTrimGunAnimation(gun.dischargeAnimation, ids);
+            gun.TryTrimGunAnimation(gun.emptyAnimation, ids);
+            gun.TryTrimGunAnimation(gun.introAnimation, ids);
+            gun.TryTrimGunAnimation(gun.finalShootAnimation, ids);
+            gun.TryTrimGunAnimation(gun.enemyPreFireAnimation, ids);
+            gun.TryTrimGunAnimation(gun.outOfAmmoAnimation, ids);
+            gun.TryTrimGunAnimation(gun.criticalFireAnimation, ids);
+            gun.TryTrimGunAnimation(gun.dodgeAnimation, ids);
+            var defaultId = gun.sprite.spriteId;
+            var defaultDefinition = gun.sprite.Collection.spriteDefinitions[defaultId];
+            var globalOffset = new Vector2(-defaultDefinition.position0.x, -defaultDefinition.position0.y);
+            foreach (var x in ids)
+            {
+                x.Key?.spriteDefinitions[x.Value]?.AddOffset(globalOffset);
+                var attach = x.Key?.GetAttachPoints(x.Value);
+                if (attach == null)
+                {
+                    continue;
+                }
+                foreach (var attachPoint in attach)
+                {
+                    attachPoint.position += globalOffset.ToVector3ZUp(0f);
+                }
+            };
+        }
+
+        public static void TryTrimGunAnimation(this Gun gun, string animation, List<KeyValuePair<tk2dSpriteCollectionData, int>> ids)
+        {
+            if (!string.IsNullOrEmpty(animation) && gun.spriteAnimator != null)
+            {
+                var clip = gun.spriteAnimator.GetClipByName(animation);
+                if(clip != null)
+                {
+                    foreach(var frame in clip.frames)
+                    {
+                        if(frame?.spriteCollection?.spriteDefinitions != null && frame.spriteId >= 0 && frame.spriteId < frame.spriteCollection.spriteDefinitions.Length)
+                        {
+                            var definition = frame.spriteCollection.spriteDefinitions[frame.spriteId];
+                            ETGMod.Assets.TextureMap.TryGetValue("sprites/" + frame.spriteCollection.name + "/" + definition.name, out var texture);
+                            if(texture != null && definition != null)
+                            {
+                                var pixelOffset = texture.TrimTexture();
+                                RuntimeAtlasSegment ras = ETGMod.Assets.Packer.Pack(texture); //pack your resources beforehand or the outlines will turn out weird
+
+                                Material material = new Material(definition.material);
+                                material.mainTexture = ras.texture;
+                                definition.uvs = ras.uvs;
+                                definition.material = material;
+                                if(definition.materialInst != null)
+                                {
+                                    definition.materialInst = new Material(material);
+                                }
+                                float num = texture.width * 0.0625f;
+                                float num2 = texture.height * 0.0625f;
+                                definition.position0 = new Vector3(0f, 0f, 0f);
+                                definition.position1 = new Vector3(num, 0f, 0f);
+                                definition.position2 = new Vector3(0f, num2, 0f);
+                                definition.position3 = new Vector3(num, num2, 0f);
+                                definition.boundsDataCenter = definition.untrimmedBoundsDataCenter = new Vector3(num / 2f, num2 / 2f, 0f);
+                                definition.boundsDataExtents = definition.untrimmedBoundsDataExtents = new Vector3(num, num2, 0f);
+                                definition.AddOffset(pixelOffset.ToVector2() / 16f);
+                                ids.Add(new KeyValuePair<tk2dSpriteCollectionData, int>(frame.spriteCollection, frame.spriteId));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        public static void AddOffset(this tk2dSpriteDefinition def, Vector2 offset, bool changesCollider = false)
+        {
+            float xOffset = offset.x;
+            float yOffset = offset.y;
+            def.position0 += new Vector3(xOffset, yOffset, 0);
+            def.position1 += new Vector3(xOffset, yOffset, 0);
+            def.position2 += new Vector3(xOffset, yOffset, 0);
+            def.position3 += new Vector3(xOffset, yOffset, 0);
+            def.boundsDataCenter += new Vector3(xOffset, yOffset, 0);
+            def.boundsDataExtents += new Vector3(xOffset, yOffset, 0);
+            def.untrimmedBoundsDataCenter += new Vector3(xOffset, yOffset, 0);
+            def.untrimmedBoundsDataExtents += new Vector3(xOffset, yOffset, 0);
+            if (def.colliderVertices != null && def.colliderVertices.Length > 0 && changesCollider)
+            {
+                def.colliderVertices[0] += new Vector3(xOffset, yOffset, 0);
+            }
+        }
+
+        // totally not stolen from ccm code :)
+        public static IntVector2 TrimTexture(this Texture2D orig)
+        {
+            RectInt bounds = orig.GetTrimmedBounds();
+            Color[][] pixels = new Color[bounds.width][];
+
+            for (int x = bounds.x; x < bounds.x + bounds.width; x++)
+            {
+                for (int y = bounds.y; y < bounds.y + bounds.height; y++)
+                {
+                    if(pixels[x - bounds.x] == null)
+                    {
+                        pixels[x - bounds.x] = new Color[bounds.height];
+                    }
+                    pixels[x - bounds.x][y - bounds.y] = orig.GetPixel(x, y);
+                }
+            }
+
+            orig.Resize(bounds.width, bounds.height);
+
+            for (int x = 0; x < bounds.width; x++)
+            {
+                for (int y = 0; y < bounds.height; y++)
+                {
+                    orig.SetPixel(x, y, pixels[x][y]);
+                }
+            }
+            orig.Apply(false, false);
+            return new IntVector2(bounds.x, bounds.y);
+        }
+
+        public static RectInt GetTrimmedBounds(this Texture2D t)
+        {
+
+            int xMin = t.width;
+            int yMin = t.height;
+            int xMax = 0;
+            int yMax = 0;
+
+            for (int x = 0; x < t.width; x++)
+            {
+                for (int y = 0; y < t.height; y++)
+                {
+                    if (t.GetPixel(x, y).a > 0)
+                    {
+                        if (x < xMin) xMin = x;
+                        if (y < yMin) yMin = y;
+                        if (x > xMax) xMax = x;
+                        if (y > yMax) yMax = y;
+                    }
+                }
+            }
+
+            return new RectInt(xMin, yMin, xMax - xMin + 1, yMax - yMin + 1);
+        }
+
+
+        public static Texture2D GetReadableVersion(this Texture2D tex)
+        {
+            return tex.IsReadable() ? tex : tex.GetRW();
         }
 
         /// <summary>
@@ -183,24 +392,6 @@ namespace SpecialStuffPack
                     colliderYOffset = -(scale.Value.y / 2f);
                 }
                 def.colliderVertices[0] += new Vector3(colliderXOffset, colliderYOffset, 0);
-            }
-        }
-
-        public static void AddOffset(this tk2dSpriteDefinition def, Vector2 offset, bool changesCollider = false)
-        {
-            float xOffset = offset.x;
-            float yOffset = offset.y;
-            def.position0 += new Vector3(xOffset, yOffset, 0);
-            def.position1 += new Vector3(xOffset, yOffset, 0);
-            def.position2 += new Vector3(xOffset, yOffset, 0);
-            def.position3 += new Vector3(xOffset, yOffset, 0);
-            def.boundsDataCenter += new Vector3(xOffset, yOffset, 0);
-            def.boundsDataExtents += new Vector3(xOffset, yOffset, 0);
-            def.untrimmedBoundsDataCenter += new Vector3(xOffset, yOffset, 0);
-            def.untrimmedBoundsDataExtents += new Vector3(xOffset, yOffset, 0);
-            if (def.colliderVertices != null && def.colliderVertices.Length > 0 && changesCollider)
-            {
-                def.colliderVertices[0] += new Vector3(xOffset, yOffset, 0);
             }
         }
 
@@ -328,6 +519,16 @@ namespace SpecialStuffPack
                 result.colliderVertices = null;
             }
             return result;
+        }
+
+        public static tk2dSpriteCollectionData SetupCollection(this GameObject self)
+        {
+            tk2dSpriteCollectionData collection = self.AddComponent<tk2dSpriteCollectionData>();
+            collection.spriteDefinitions = new tk2dSpriteDefinition[0];
+            var name = (self.name + (self.name.ToLowerInvariant().Contains("collection") ? "" : "Collection")).Replace(" ", "");
+            collection.spriteCollectionName = name;
+            collection.assetName = name;
+            return collection;
         }
 
         public static int AddToAmmonomicon(string spritePath)

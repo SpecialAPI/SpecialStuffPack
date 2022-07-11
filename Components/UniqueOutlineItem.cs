@@ -9,7 +9,7 @@ namespace SpecialStuffPack.Components
 {
 	public class UniqueOutlineItem : PassiveItem, IPlayerInteractable
 	{
-		public void Start()
+		public new void Start()
 		{
 			if (!m_pickedUp)
 			{

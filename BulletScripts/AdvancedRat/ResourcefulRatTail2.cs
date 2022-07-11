@@ -14,7 +14,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 		public bool Done;
 		public float FireAngle;
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			EndOnBlank = true;
 			yield return Wait(10);
@@ -79,7 +79,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 				m_isOpposite = isOpposite;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				ManualControl = true;
 				Projectile.specRigidbody.CollideWithTileMap = false;
@@ -138,7 +138,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 				m_parentScript = parentScript;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				while (!m_parentScript.Destroyed && !m_parentScript.IsEnded && !m_parentScript.Done)
 				{

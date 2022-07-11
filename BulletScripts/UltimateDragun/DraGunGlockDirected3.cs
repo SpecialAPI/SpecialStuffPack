@@ -25,7 +25,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			}
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			float num = BraveMathCollege.ClampAngle180(Direction);
 			bool flag = num > -91f && num < -89f;

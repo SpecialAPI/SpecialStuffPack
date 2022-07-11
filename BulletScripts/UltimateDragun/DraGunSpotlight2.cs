@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 {
     public class DraGunSpotlight2 : Script
     {
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			GameManager.Instance.Dungeon.PreventPlayerLightInDarkTerrifyingRooms = true;
 			DraGunController dragunController = BulletBank.GetComponent<DraGunController>();
@@ -89,7 +89,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 				m_t = t;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Vector2 toTarget = m_target - Position;
 				float travelTime = toTarget.magnitude / Speed * 60f - 1f;

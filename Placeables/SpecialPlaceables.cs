@@ -134,6 +134,19 @@ namespace SpecialStuffPack.Placeables
             SpecialAssets.assets.Add(AssetBundleManager.Load<Material>("particles/materials/cosmicparticle"));
         }
 
+        public static void InitDoor()
+        {
+            GameObject pedestal = LoadHelper.LoadAssetFromAnywhere<GameObject>("boss_reward_pedestal");
+            tk2dSpriteCollectionData coll = pedestal.GetComponent<tk2dBaseSprite>().Collection;
+            GameObject door = AssetBundleManager.Load<GameObject>("placeables/door", coll, "Brave/LitTk2dCustomFalloffTintableTilted");
+            door.AddComponent<DoorPlaceable>().talkpoint = door.transform.Find("TalkPoint");
+            door.GetComponent<tk2dBaseSprite>().HeightOffGround = -1f;
+            ETGMod.Databases.Strings.Core.Set("#STRANGE_DOOR_DESC", "A rigidly locked door. Seems impossible to open.");
+            RoomFactory.AddInjection(RoomFactory.BuildFromResource("SpecialStuffPack.Rooms.Door.room").room, "The Door", new List<ProceduralFlowModifierData.FlowModifierPlacementType> {
+                ProceduralFlowModifierData.FlowModifierPlacementType.END_OF_CHAIN }, 0f, new List<DungeonPrerequisite> { new DungeonPrerequisite { prerequisiteType = DungeonPrerequisite.PrerequisiteType.TILESET, requireTileset = true,
+                    requiredTileset = GlobalDungeonData.ValidTilesets.FORGEGEON } }, "The Door Injection");
+        }
+
         public static void InitSomethingSpecialPlaceable()
         {
             GameObject somethingSpecial = AssetBundleManager.Load<GameObject>("placeables/somethingspecialplaceable");
@@ -191,9 +204,9 @@ namespace SpecialStuffPack.Placeables
             ETGMod.Databases.Strings.Core.Set("#SOMETHING_SPECIAL_DIAMOND", "Diamond");
             SpecialAssets.assets.Add(somethingSpecial);
             SpecialAssets.assets.Add(somethingSpecial.transform.Find("Shadow").gameObject);
-            PrototypeDungeonRoom room = DungeonDatabase.GetOrLoadByName("base_bullethell").PatternSettings.flows[0].FirstNode.overrideExactRoom;
-            RoomFactory.AddPlaceableToRoom(room, new Vector2(10f, 10f), "somethingspecialplaceable");
-            SpecialAssets.assets.Add(room);
+            //PrototypeDungeonRoom room = DungeonDatabase.GetOrLoadByName("base_bullethell").PatternSettings.flows[0].FirstNode.overrideExactRoom;
+            //RoomFactory.AddPlaceableToRoom(room, new Vector2(10f, 10f), "somethingspecialplaceable");
+            //SpecialAssets.assets.Add(room);
         }
     }
 }

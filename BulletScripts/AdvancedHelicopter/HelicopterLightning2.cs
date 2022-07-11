@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 {
 	public class HelicopterLightning2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			for (int i = 0; i < 3; i++)
 			{
@@ -38,7 +38,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 				m_truePosition = truePosition;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				if (Projectile != null)
 				{

@@ -33,7 +33,7 @@ namespace SpecialStuffPack
             }
         }
 
-        protected override Vector2 HandlePlayerInput()
+        public override Vector2 HandlePlayerInput()
         {
             Vector2 result = base.HandlePlayerInput();
             if ((canHold && BraveInput.HasInstanceForPlayer(0) && BraveInput.GetInstanceForPlayer(0) != null && BraveInput.GetInstanceForPlayer(0).SpecialInput() != null && BraveInput.GetInstanceForPlayer(0).SpecialInput().ActiveActions != null

@@ -17,7 +17,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			NumRockets = 4;
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			if (s_xValues == null || s_yValues == null)
 			{

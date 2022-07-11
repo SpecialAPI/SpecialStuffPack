@@ -1,4 +1,5 @@
-﻿using Dungeonator;
+﻿global using static SpecialStuffPack.CodeShortcuts;
+using Dungeonator;
 using System;
 using System.Collections.Generic;
 using System.Collections;
@@ -14,6 +15,147 @@ namespace SpecialStuffPack
 {
     public static class CodeShortcuts
     {
+        public static T RandomElement<T>(this IEnumerable<T> collection)
+        {
+            return BraveUtility.RandomElement(collection.ToArray());
+        }
+
+        public static void HandleStealth(PlayerController user, string reason)
+        {
+            user.ChangeSpecialShaderFlag(1, 1f);
+            user.SetIsStealthed(true, reason);
+            user.SetCapableOfStealing(true, reason, null);
+            user.specRigidbody.AddCollisionLayerIgnoreOverride(CollisionMask.LayerToMask(CollisionLayer.EnemyHitBox, CollisionLayer.EnemyCollider));
+            user.PlayEffectOnActor(CoolEffects.smokePoofVFX, Vector3.zero, false, true, false);
+            void BreakStealthOnStolen(PlayerController x, ShopItemController x2)
+            {
+                BreakStealth(x, reason, BreakStealthOnUnstealthy, BreakStealthOnStolen);
+            }
+            void BreakStealthOnUnstealthy(PlayerController x)
+            {
+                BreakStealth(x, reason, BreakStealthOnUnstealthy, BreakStealthOnStolen);
+            }
+            user.OnDidUnstealthyAction += BreakStealthOnUnstealthy;
+            user.OnItemStolen += BreakStealthOnStolen;
+        }
+
+        public static Projectile GetProjectile(int id)
+        {
+            return GetItemById<Gun>(id)?.DefaultModule?.projectiles.FirstOrDefault() ?? GetItemById<Gun>(id)?.DefaultModule?.chargeProjectiles?.FirstOrDefault()?.Projectile;
+        }
+
+        public static void BreakStealth(PlayerController obj, string reason, Action<PlayerController> unstealthyActionDelegate, Action<PlayerController, ShopItemController> stolenDelegate)
+        {
+            obj.PlayEffectOnActor(CoolEffects.smokePoofVFX, Vector3.zero, false, true, false);
+            obj.OnDidUnstealthyAction -= unstealthyActionDelegate;
+            obj.OnItemStolen -= stolenDelegate;
+            obj.specRigidbody.RemoveCollisionLayerIgnoreOverride(CollisionMask.LayerToMask(CollisionLayer.EnemyHitBox, CollisionLayer.EnemyCollider));
+            obj.ChangeSpecialShaderFlag(1, 0f);
+            obj.SetIsStealthed(false, reason);
+            obj.SetCapableOfStealing(false, reason, null);
+            AkSoundEngine.PostEvent("Play_ENM_wizardred_appear_01", obj.gameObject);
+        }
+
+        public static void DecayingStatModifier(this PlayerController player, PlayerStats.StatType stat, float targetValue, float time, bool isMultiplicative = false)
+        {
+            if (player != null)
+            {
+                var modifier = StatModifier.Create(stat, isMultiplicative ? StatModifier.ModifyMethod.MULTIPLICATIVE : StatModifier.ModifyMethod.ADDITIVE, targetValue);
+                player.ownerlessStatModifiers.Add(modifier);
+                player.StartCoroutine(FadeAwayMod(player, modifier, time, isMultiplicative ? 1f : 0f));
+            }
+        }
+
+        public static int GetClipShotsRemaining(this ProjectileModule module, Gun gun)
+        {
+            if (gun.RequiresFundsToShoot && gun.m_owner is PlayerController)
+            {
+                return Mathf.FloorToInt((float)(gun.m_owner as PlayerController).carriedConsumables.Currency / (float)gun.CurrencyCostPerShot);
+            }
+            int num = gun.ammo;
+            if (gun.m_moduleData == null || !gun.m_moduleData.ContainsKey(gun.DefaultModule))
+            {
+                num = ((gun.DefaultModule.GetModNumberOfShotsInClip(gun.CurrentOwner) > 0) ? gun.DefaultModule.GetModNumberOfShotsInClip(gun.CurrentOwner) : gun.ammo);
+            }
+            else
+            {
+                num = ((gun.DefaultModule.GetModNumberOfShotsInClip(gun.CurrentOwner) > 0) ? (gun.DefaultModule.GetModNumberOfShotsInClip(gun.CurrentOwner) - gun.RuntimeModuleData[gun.DefaultModule].numberShotsFired) : gun.ammo);
+            }
+            if (num > gun.ammo)
+            {
+                gun.ClipShotsRemaining = gun.ammo;
+            }
+            return Mathf.Min(num, gun.ammo);
+        }
+
+        public static List<ProjectileModule> GetProjectileModules(this Gun gun)
+        {
+            if(gun?.Volley?.projectiles != null && (gun.Volley.projectiles.Count > 0 || gun.singleModule == null))
+            {
+                return gun.Volley.projectiles;
+            }
+            return new() { gun.singleModule };
+        }
+
+        public static IEnumerator FadeAwayMod(PlayerController player, StatModifier mod, float time, float target)
+        {
+            float ela = 0f;
+            float startValue = mod.amount;
+            while(ela < time)
+            {
+                if(mod == null)
+                {
+                    yield break;
+                }
+                mod.amount = Mathf.Lerp(startValue, target, ela / time);
+                player?.stats?.RecalculateStats(player, false, false);
+                ela += BraveTime.DeltaTime;
+                yield return null;
+            }
+            if (mod == null)
+            {
+                yield break;
+            }
+            player?.ownerlessStatModifiers.Remove(mod);
+            player?.stats?.RecalculateStats(player, false, false);
+            yield break;
+        }
+
+        public static Projectile OwnedShootProjectile(Projectile proj, Vector2 position, float angle, GameActor owner)
+        {
+            var obj = SpawnManager.SpawnProjectile(proj.gameObject, position, Quaternion.Euler(0f, 0f, angle), true);
+            var bullet = obj.GetComponent<Projectile>();
+            if(bullet != null)
+            {
+                bullet.Owner = owner;
+                bullet.Shooter = owner.specRigidbody;
+            }
+            return bullet;
+        }
+
+        public static Vector2 GetRelativeAim(this PlayerController player)
+        {
+            BraveInput instanceForPlayer = BraveInput.GetInstanceForPlayer(player.PlayerIDX);
+            Vector2 a = Vector2.zero;
+            if (instanceForPlayer != null)
+            {
+                if (instanceForPlayer.IsKeyboardAndMouse(false))
+                {
+                    a = player.unadjustedAimPoint.XY() - player.CenterPosition;
+                }
+                else
+                {
+                    bool flag4 = instanceForPlayer.ActiveActions == null;
+                    if (flag4)
+                    {
+                        return a;
+                    }
+                    a = instanceForPlayer.ActiveActions.Aim.Vector;
+                }
+            }
+            return a;
+        }
+
         public static T AddComponent<T>(this Component self) where T : Component
         {
             return self.gameObject.AddComponent<T>();
@@ -26,7 +168,7 @@ namespace SpecialStuffPack
 
         public static T GetItemById<T>(int id) where T : PickupObject
         {
-            return (T)PickupObjectDatabase.GetById(id);
+            return PickupObjectDatabase.GetById(id) as T;
         }
 
         public static Delegate GetEventDelegate(this object self, string eventName)
@@ -72,6 +214,8 @@ namespace SpecialStuffPack
             self.GetEventDelegate<Action<T>>(eventName)?.Invoke(arg1);
         }
 
+        public static VFXPool Empty => new() { type = VFXPoolType.None, effects = new VFXComplex[0] };
+
         public static void RaiseEvent2<T1, T2>(this object self, string eventName, T1 arg1, T2 arg2)
         {
             self.GetEventDelegate<Action<T1, T2>>(eventName)?.Invoke(arg1, arg2);
@@ -85,6 +229,26 @@ namespace SpecialStuffPack
         public static void RaiseEvent4<T1, T2, T3, T4>(this object self, string eventName, T1 arg1, T2 arg2, T3 arg3, T4 arg4)
         {
             self.GetEventDelegate<Action<T1, T2, T3, T4>>(eventName)?.Invoke(arg1, arg2, arg3, arg4);
+        }
+
+        public static UnityEventHandler Events(this Component comp)
+        {
+            return comp.gameObject.Events();
+        }
+
+        public static UnityEventHandler Events(this GameObject obj)
+        {
+            return obj.GetOrAddComponent<UnityEventHandler>();
+        }
+
+        public static Dictionary<T, T2> ToDictionary<T, T2>(this IEnumerable<KeyValuePair<T, T2>> list)
+        {
+            var dict = new Dictionary<T, T2>();
+            foreach (var kvp in list)
+            {
+                dict.Add(kvp.Key, kvp.Value);
+            }
+            return dict;
         }
 
         public static Chest GenerationSpawnChestSetLootTable(Chest chest, RoomHandler targetRoom, IntVector2 positionInRoom, Vector2 offset, float overrideMimicChance, GenericLootTable genericLootTable)

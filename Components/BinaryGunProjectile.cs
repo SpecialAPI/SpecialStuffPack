@@ -10,7 +10,7 @@ namespace SpecialStuffPack.Components
 {
     public class BinaryGunProjectile : HelixProjectile
     {
-        protected override HandleDamageResult HandleDamage(SpeculativeRigidbody rigidbody, PixelCollider hitPixelCollider, out bool killedTarget, PlayerController player, bool alreadyPlayerDelayed = false)
+        public override HandleDamageResult HandleDamage(SpeculativeRigidbody rigidbody, PixelCollider hitPixelCollider, out bool killedTarget, PlayerController player, bool alreadyPlayerDelayed = false)
         {
             if(rigidbody != null)
             {

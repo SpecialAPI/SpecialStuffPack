@@ -13,7 +13,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
         public abstract float StartAngle { get; }
         public abstract float EndAngle { get; }
 
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
             for (int i = 0; i < 30; i++)
             {

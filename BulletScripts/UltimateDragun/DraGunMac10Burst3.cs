@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 {
     public class DraGunMac10Burst3 : Script
     {
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			yield return Wait(1);
 			Vector2 lastPosition = Position;
@@ -43,7 +43,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				yield return Wait(30);
 				Fire(new Direction(UnityEngine.Random.Range(-45f, 45f), DirectionType.Relative, -1f), new Speed(12f, SpeedType.Absolute), new Bullet("UziBurst", false, false, false));

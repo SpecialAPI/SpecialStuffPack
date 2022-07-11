@@ -9,7 +9,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 {
     public class DraGunFlameBreath3 : Script
     {
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			StopYHeight = BulletBank.aiActor.ParentRoom.area.UnitBottomLeft.y + 21f;
 			int pocketResetTimer = 0;
@@ -58,7 +58,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 				bouncy = doesBounce;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
                 if (bouncy)
                 {

@@ -1,25 +1,28 @@
-﻿using ETGGUI.Inspector;
-using SpecialStuffPack.Components;
-using SpecialStuffPack.GungeonAPI;
-using SpecialStuffPack.ItemAPI;
-using SpecialStuffPack.Items;
-using SpecialStuffPack.SaveAPI;
-using SpecialStuffPack.SynergyAPI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Collections;
-using System.Reflection;
-using System.Text;
-using Gungeon;
-using MonoMod.RuntimeDetour;
-using UnityEngine;
-using System.Diagnostics;
-using SpecialStuffPack.Placeables;
-using SpecialStuffPack.Enemies;
-using Dungeonator;
-using SpecialStuffPack.SoundAPI;
-using SpecialStuffPack.Controls;
+﻿global using SpecialStuffPack.Components;
+global using SpecialStuffPack.GungeonAPI;
+global using SpecialStuffPack.ItemAPI;
+global using SpecialStuffPack.Items;
+global using SpecialStuffPack.SaveAPI;
+global using SpecialStuffPack.SynergyAPI;
+global using System;
+global using System.Collections.Generic;
+global using System.Linq;
+global using System.Collections;
+global using System.Reflection;
+global using System.Text;
+global using Gungeon;
+global using MonoMod.RuntimeDetour;
+global using UnityEngine;
+global using SpecialStuffPack.Placeables;
+global using SpecialStuffPack.Enemies;
+global using Dungeonator;
+global using SpecialStuffPack.SoundAPI;
+global using SpecialStuffPack.Controls;
+global using Random = UnityEngine.Random;
+global using Object = UnityEngine.Object;
+global using SpecialStuffPack.Items.Passives;
+global using SpecialStuffPack.Items.Guns;
+global using SpecialStuffPack.Items.Actives;
 
 namespace SpecialStuffPack
 {
@@ -75,7 +78,6 @@ namespace SpecialStuffPack
             AsteroidBelt.Init();
             GravediggerShovel.Init();
             HandheldCatapult.Init();
-            LightningHornController.Init();
             GoldKey.Init();
             AmethystItem.Init();
             OpalItem.Init();
@@ -92,6 +94,24 @@ namespace SpecialStuffPack
             Watermelon.Init();
             ConsoleController.Init();
             StaticRoll.Init();
+            MirroredBullet.Init();
+            BloodyScales.Init();
+            Plushie.Init();
+            BossChest.Init();
+            Chaos.Init();
+            Launcher.Init();
+            BalancingPole.Init();
+            InfinityCrystal.Init();
+            EnergyDrink.Init();
+            AmmoFlower.Init();
+            FlatBullets.Init();
+            AkNAN.Init();
+            CactiClub.Init();
+            HelloWorld.Init();
+            Frogun.Init();
+            Revolvever.Init();
+            //SoulGun.Init();
+
             //PastsRewardItem.Init();
             //ForceOfTwilight.Init();
 
@@ -100,19 +120,24 @@ namespace SpecialStuffPack
 
             //init enemies
             SpecialEnemies.AddAdvancedDragunAmmonomiconEntry();
-            SpecialEnemies.SetupWizardKnightPrefab();
+            SpecialEnemies.AddNinja();
             SpecialEnemies.SetupAk47VeteranPrefab();
 
             //init placeables
             SpecialPlaceables.InitLockUnlockPedestal();
             SpecialPlaceables.InitDiamondShrine();
             SpecialPlaceables.InitSomethingSpecialPlaceable();
+            SpecialPlaceables.InitDoor();
 
             //add other stuff
             EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();
 
             //add hooks
             new Hook(typeof(GameUIItemController).GetMethod("UpdateItem"), typeof(SpecialStuffModule).GetMethod("ItemUIUpdateHook"));
+            new Hook(
+                 typeof(RoomHandler).GetMethod("PostGenerationCleanup", BindingFlags.Instance | BindingFlags.Public),
+                 typeof(SpecialStuffModule).GetMethod("FixBadDodgerollCode")
+             );
             //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
 
             //add console commands
@@ -163,6 +188,13 @@ namespace SpecialStuffPack
             TCultistHandler.Init();
             SpecialOptions.Setup();
             SpecialInput.Setup();
+        }
+
+        public static void FixBadDodgerollCode(Action<RoomHandler> orig, RoomHandler room)
+        {
+            PrototypeDungeonRoom old = room.area.prototypeRoom;
+            orig(room);
+            room.area.prototypeRoom ??= old;
         }
 
         public static bool HandleChargeBurst(Func<Gun, ProjectileModule, bool, ProjectileData, bool, bool> orig, Gun self, ProjectileModule module, bool canAttack, ProjectileData overrideProjectileData, bool playEffects)

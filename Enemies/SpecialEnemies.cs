@@ -11,6 +11,8 @@ using SpecialStuffPack.BulletScripts;
 using SpecialStuffPack.BulletScripts.WizardKnight.Sword;
 using SpecialStuffPack.Components;
 using SpecialStuffPack.Behaviors.WizardKnight;
+using SpecialStuffPack.Behaviors.Ninja;
+using SpecialStuffPack.BulletScripts.Ninja;
 
 namespace SpecialStuffPack.Enemies
 {
@@ -442,8 +444,9 @@ namespace SpecialStuffPack.Enemies
             return aiactor;
         }
 
-        public static void AddEnemyToDatabase(GameObject aiactorPrefab, string guid, bool isInBossTab = false, bool isNormalEnemy = true, bool addToConsole = true, bool addToEncounterDatabase = true)
+        public static void AddEnemyToDatabase(GameObject aiactorPrefab, bool isInBossTab = false, bool isNormalEnemy = true, bool addToConsole = true, bool addToAmmonomicon = true, string guid = null)
         {
+            guid ??= aiactorPrefab?.GetComponentInChildren<AIActor>()?.EnemyGuid;
             AdvancedEnemyDatabaseEntry item = new AdvancedEnemyDatabaseEntry
             {
                 myGuid = guid,
@@ -455,7 +458,7 @@ namespace SpecialStuffPack.Enemies
                 encounterGuid = guid
             };
             EnemyDatabase.Instance.Entries.Add(item);
-            if (addToEncounterDatabase)
+            if (addToAmmonomicon)
             {
                 EncounterDatabaseEntry encounterDatabaseEntry = new EncounterDatabaseEntry(aiactorPrefab.GetComponent<AIActor>().encounterTrackable)
                 {
@@ -486,549 +489,9 @@ namespace SpecialStuffPack.Enemies
             return result;
         }
 
-        public static void SetupGoldKinAkeyPrefab()
+        public static tk2dSpriteAnimationFrame[] ToFrames(this IEnumerable<string> names, tk2dSpriteCollectionData collection)
         {
-            AIActor ai = SetupAIActorDummyFromAssetBundle("enemies/goldkinakey", new IntVector2(1, 1), new IntVector2(10, 17));
-            ai.EnemyGuid = "goldkin_akey";
-            ai.ActorName = "AKEY47 GoldKin";
-            ai.healthHaver.SetHealthMaximum(25);
-            BehaviorSpeculator spec = ai.GetComponent<BehaviorSpeculator>();
-            spec.AttackBehaviors = new List<AttackBehaviorBase>
-            {
-                new AttackBehaviorGroup()
-                {
-                    AttackBehaviors = new List<AttackBehaviorGroup.AttackGroupItem>
-                    {
-                        new AttackBehaviorGroup.AttackGroupItem
-                        {
-                            NickName = "Sword Spin",
-                            Probability = 0f,
-                            Behavior = new WizardKnightChangeStateBehavior
-                            {
-                                Cooldown = 2f,
-                                InitialCooldown = 0f,
-                                CooldownVariance = 0f,
-                                StateToSwitchTo = WizardKnightController.State.SwordSpin,
-                                ContinueStateTime = 3f
-                            }
-                        },
-                        new AttackBehaviorGroup.AttackGroupItem
-                        {
-                            NickName = "Sword Spin Slash",
-                            Probability = 0f,
-                            Behavior = new WizardKnightChangeStateBehavior
-                            {
-                                Cooldown = 2f,
-                                InitialCooldown = 0f,
-                                CooldownVariance = 0f,
-                                StateToSwitchTo = WizardKnightController.State.SwordSpinSlash,
-                                ContinueStateTime = 0.5f
-                            }
-                        },
-                        new AttackBehaviorGroup.AttackGroupItem
-                        {
-                            NickName = "Sword Swipe",
-                            Probability = 1f,
-                            Behavior = new SequentialAttackBehaviorGroup()
-                            {
-                                AttackBehaviors = new List<AttackBehaviorBase>
-                                {
-                                    new WizardKnightChangeStateBehavior
-                                    {
-                                        Cooldown = 0f,
-                                        InitialCooldown = 0f,
-                                        CooldownVariance = 0f,
-                                        StateToSwitchTo = WizardKnightController.State.SwordSwipeBegin,
-                                        ContinueStateTime = 0.125f
-                                    },
-                                    new WizardKnightChangeStateBehavior
-                                    {
-                                        Cooldown = 0f,
-                                        InitialCooldown = 0f,
-                                        CooldownVariance = 0f,
-                                        StateToSwitchTo = WizardKnightController.State.SwordSwipe,
-                                        ContinueStateTime = 0.25f
-                                    },
-                                    new WizardKnightChangeStateBehavior
-                                    {
-                                        Cooldown = 2f,
-                                        InitialCooldown = 0f,
-                                        CooldownVariance = 0f,
-                                        StateToSwitchTo = WizardKnightController.State.SwordSwipeReturn,
-                                        ContinueStateTime = 0.5f
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    ShareCooldowns = true
-                }
-            };
-            spec.MovementBehaviors = new List<MovementBehaviorBase>();
-            spec.TargetBehaviors = new List<TargetBehaviorBase>
-            {
-                new TargetPlayerBehavior()
-                {
-                    LineOfSight = false,
-                    ObjectPermanence = false,
-                    PauseOnTargetSwitch = false,
-                    PauseTime = 0f,
-                    Radius = 12f,
-                    SearchInterval = 0.25f
-                }
-            };
-            spec.OtherBehaviors = new List<BehaviorBase>();
-            spec.OverrideBehaviors = new List<OverrideBehaviorBase>();
-            GameObject coll = AssetBundleManager.Load<GameObject>("spritecollections/wizardknightcollection");
-            GameObject anim = AssetBundleManager.Load<GameObject>("spriteanimations/wizardknightanimation");
-            tk2dSpriteCollectionData collection = coll.AddComponent<tk2dSpriteCollectionData>();
-            collection.spriteDefinitions = new tk2dSpriteDefinition[0];
-            collection.spriteCollectionName = "WizardKnightCollection";
-            collection.assetName = "WizardKnightCollection";
-            tk2dSprite sprite = ai.GetComponent<tk2dSprite>();
-            sprite.SetSprite(collection, AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_001", collection));
-            tk2dSpriteAnimator animator = ai.AddComponent<tk2dSpriteAnimator>();
-            tk2dSpriteAnimation animation = anim.AddComponent<tk2dSpriteAnimation>();
-            animator.Library = animation;
-            List<int> idleLeftSpriteIds = new List<int>
-            {
-                sprite.spriteId,
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_004", collection)
-            };
-            List<int> idleRightSpriteIds = new List<int>
-            {
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_001", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_004", collection)
-            };
-            List<int> idleBLeftSpriteIds = new List<int>
-            {
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_001", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_004", collection)
-            };
-            List<int> idleBRightSpriteIds = new List<int>
-            {
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_001", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_004", collection)
-            };
-            tk2dSpriteAnimationClip idleLeftClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_frontleft",
-                frames = idleLeftSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip idleRightClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_frontright",
-                frames = idleRightSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip idleBLeftClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_backleft",
-                frames = idleBLeftSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip idleBRightClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_backright",
-                frames = idleBRightSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            idleLeftClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0) });
-            idleBLeftClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0) });
-            idleRightClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0) });
-            idleBRightClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0) });
-            animation.clips = new tk2dSpriteAnimationClip[] { idleLeftClip, idleRightClip, idleBLeftClip, idleBRightClip };
-            AIAnimator aianimator = ai.AddComponent<AIAnimator>();
-            aianimator.IdleAnimation = new DirectionalAnimation
-            {
-                Type = DirectionalAnimation.DirectionType.SixWay,
-                AnimNames = new string[] { "idle_back", "idle_backright", "idle_frontright", "idle_front", "idle_frontleft", "idle_backleft" },
-                Prefix = string.Empty,
-                Flipped = new DirectionalAnimation.FlipType[6]
-            };
-            aianimator.MoveAnimation = new DirectionalAnimation { Type = DirectionalAnimation.DirectionType.None };
-            aianimator.FlightAnimation = new DirectionalAnimation { Type = DirectionalAnimation.DirectionType.None };
-            aianimator.facingType = AIAnimator.FacingType.Target;
-            aianimator.OtherAnimations = new List<AIAnimator.NamedDirectionalAnimation>();
-            EncounterTrackable track = ai.AddComponent<EncounterTrackable>();
-            track.EncounterGuid = ai.EnemyGuid;
-            track.ProxyEncounterGuid = string.Empty;
-            track.prerequisites = new DungeonPrerequisite[0];
-            track.journalData = new JournalEntry()
-            {
-                PrimaryDisplayName = "#LOCK_GHOST_NAME",
-                NotificationPanelDescription = "",
-                AmmonomiconFullEntry = "",
-                IsEnemy = true,
-                SuppressInAmmonomicon = true,
-                enemyPortraitSprite = null,
-                AmmonomiconSprite = ""
-            };
-            AddEnemyToDatabase(ai.gameObject, ai.EnemyGuid, true, true, true, true);
-        }
-
-        public static void SetupWizardKnightPrefab()
-        {
-            AIActor ai = SetupAIActorDummyFromAssetBundle("wizardknight", new IntVector2(0, 0), new IntVector2(10, 10));
-            ai.EnemyGuid = "wizardknight";
-            ai.ActorName = "The Knight of Sword and Gun";
-            ai.healthHaver.SetHealthMaximum(150);
-            ai.healthHaver.bossHealthBar = HealthHaver.BossBarType.MainBar;
-            ai.AddComponent<WizardKnightController>().EnemiesToSpawnOnSpawn = new List<string>
-            {
-                "wizardknightsword"
-            };
-            BehaviorSpeculator spec = ai.GetComponent<BehaviorSpeculator>();
-            spec.AttackBehaviors = new List<AttackBehaviorBase>
-            {
-                new AttackBehaviorGroup()
-                {
-                    AttackBehaviors = new List<AttackBehaviorGroup.AttackGroupItem>
-                    {
-                        new AttackBehaviorGroup.AttackGroupItem
-                        {
-                            NickName = "Sword Spin",
-                            Probability = 0f,
-                            Behavior = new WizardKnightChangeStateBehavior
-                            {
-                                Cooldown = 2f,
-                                InitialCooldown = 0f,
-                                CooldownVariance = 0f,
-                                StateToSwitchTo = WizardKnightController.State.SwordSpin,
-                                ContinueStateTime = 3f
-                            }
-                        },
-                        new AttackBehaviorGroup.AttackGroupItem
-                        {
-                            NickName = "Sword Spin Slash",
-                            Probability = 0f,
-                            Behavior = new WizardKnightChangeStateBehavior
-                            {
-                                Cooldown = 2f,
-                                InitialCooldown = 0f,
-                                CooldownVariance = 0f,
-                                StateToSwitchTo = WizardKnightController.State.SwordSpinSlash,
-                                ContinueStateTime = 0.5f
-                            }
-                        },
-                        new AttackBehaviorGroup.AttackGroupItem
-                        {
-                            NickName = "Sword Swipe",
-                            Probability = 1f,
-                            Behavior = new SequentialAttackBehaviorGroup()
-                            {
-                                AttackBehaviors = new List<AttackBehaviorBase>
-                                {
-                                    new WizardKnightChangeStateBehavior
-                                    {
-                                        Cooldown = 0f,
-                                        InitialCooldown = 0f,
-                                        CooldownVariance = 0f,
-                                        StateToSwitchTo = WizardKnightController.State.SwordSwipeBegin,
-                                        ContinueStateTime = 0.125f
-                                    },
-                                    new WizardKnightChangeStateBehavior
-                                    {
-                                        Cooldown = 0f,
-                                        InitialCooldown = 0f,
-                                        CooldownVariance = 0f,
-                                        StateToSwitchTo = WizardKnightController.State.SwordSwipe,
-                                        ContinueStateTime = 0.25f
-                                    },
-                                    new WizardKnightChangeStateBehavior
-                                    {
-                                        Cooldown = 2f,
-                                        InitialCooldown = 0f,
-                                        CooldownVariance = 0f,
-                                        StateToSwitchTo = WizardKnightController.State.SwordSwipeReturn,
-                                        ContinueStateTime = 0.5f
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    ShareCooldowns = true
-                }
-            };
-            spec.MovementBehaviors = new List<MovementBehaviorBase>();
-            spec.TargetBehaviors = new List<TargetBehaviorBase>
-            {
-                new TargetPlayerBehavior()
-                {
-                    LineOfSight = false,
-                    ObjectPermanence = false,
-                    PauseOnTargetSwitch = false,
-                    PauseTime = 0f,
-                    Radius = 12f,
-                    SearchInterval = 0.25f
-                }
-            };
-            spec.OtherBehaviors = new List<BehaviorBase>();
-            spec.OverrideBehaviors = new List<OverrideBehaviorBase>();
-            GameObject coll = AssetBundleManager.Load<GameObject>("spritecollections/wizardknightcollection");
-            GameObject anim = AssetBundleManager.Load<GameObject>("spriteanimations/wizardknightanimation");
-            tk2dSpriteCollectionData collection = coll.AddComponent<tk2dSpriteCollectionData>();
-            collection.spriteDefinitions = new tk2dSpriteDefinition[0];
-            collection.spriteCollectionName = "WizardKnightCollection";
-            collection.assetName = "WizardKnightCollection";
-            tk2dSprite sprite = ai.GetComponent<tk2dSprite>();
-            sprite.SetSprite(collection, AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_001", collection));
-            tk2dSpriteAnimator animator = ai.AddComponent<tk2dSpriteAnimator>();
-            tk2dSpriteAnimation animation = anim.AddComponent<tk2dSpriteAnimation>();
-            animator.Library = animation;
-            List<int> idleLeftSpriteIds = new List<int>
-            {
-                sprite.spriteId,
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontleft_004", collection)
-            };
-            List<int> idleRightSpriteIds = new List<int>
-            {
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_001", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_frontright_004", collection)
-            };
-            List<int> idleBLeftSpriteIds = new List<int>
-            {
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_001", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backleft_004", collection)
-            };
-            List<int> idleBRightSpriteIds = new List<int>
-            {
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_001", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_002", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_003", collection),
-                AddSpriteToCollection("enemysprites/wizardknight/wizknight_idle_backright_004", collection)
-            };
-            tk2dSpriteAnimationClip idleLeftClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_frontleft",
-                frames = idleLeftSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip idleRightClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_frontright",
-                frames = idleRightSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip idleBLeftClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_backleft",
-                frames = idleBLeftSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip idleBRightClip = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "idle_backright",
-                frames = idleBRightSpriteIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray()
-            };
-            tk2dSpriteAnimationClip hitRight = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Once,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "hit_right",
-                frames = new tk2dSpriteAnimationFrame[] { new tk2dSpriteAnimationFrame { spriteId = AddSpriteToCollection("enemysprites/wizardknight/wizknight_hit_right_001", collection), spriteCollection = collection } }
-            };
-            tk2dSpriteAnimationClip hitLeft = new tk2dSpriteAnimationClip
-            {
-                fps = 4,
-                loopStart = 0,
-                wrapMode = tk2dSpriteAnimationClip.WrapMode.Once,
-                maxFidgetDuration = 0f,
-                minFidgetDuration = 0f,
-                name = "hit_left",
-                frames = new tk2dSpriteAnimationFrame[] { new tk2dSpriteAnimationFrame { spriteId = AddSpriteToCollection("enemysprites/wizardknight/wizknight_hit_left_001", collection), spriteCollection = collection } }
-            };
-            idleLeftClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0) });
-            idleBLeftClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0), new IntVector2(-2, 0) });
-            idleRightClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0) });
-            idleBRightClip.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0), new IntVector2(-7, 0) });
-            hitLeft.ApplyOffsetsToAnimation(new List<IntVector2>() { new IntVector2(-14, 0), new IntVector2(-14, 0), new IntVector2(-14, 0), new IntVector2(-14, 0) });
-            animation.clips = new tk2dSpriteAnimationClip[] { idleLeftClip, idleRightClip, idleBLeftClip, idleBRightClip, hitLeft, hitRight };
-            AIAnimator aianimator = ai.AddComponent<AIAnimator>();
-            aianimator.IdleAnimation = new DirectionalAnimation
-            {
-                Type = DirectionalAnimation.DirectionType.FourWay,
-                AnimNames = new string[] { "idle_backright", "idle_frontright", "idle_frontleft", "idle_backleft"},
-                Prefix = string.Empty,
-                Flipped = new DirectionalAnimation.FlipType[4]
-            };
-            aianimator.MoveAnimation = new DirectionalAnimation { Type = DirectionalAnimation.DirectionType.None };
-            aianimator.FlightAnimation = new DirectionalAnimation { Type = DirectionalAnimation.DirectionType.None };
-            aianimator.HitAnimation = new DirectionalAnimation
-            {
-                Type = DirectionalAnimation.DirectionType.TwoWayHorizontal,
-                AnimNames = new string[] { "hit_right", "hit_left" },
-                Prefix = string.Empty,
-                Flipped = new DirectionalAnimation.FlipType[2]
-            };
-            aianimator.facingType = AIAnimator.FacingType.Target;
-            aianimator.OtherAnimations = new List<AIAnimator.NamedDirectionalAnimation>();
-            EncounterTrackable track = ai.AddComponent<EncounterTrackable>();
-            track.EncounterGuid = ai.EnemyGuid;
-            track.ProxyEncounterGuid = string.Empty;
-            track.prerequisites = new DungeonPrerequisite[0];
-            track.journalData = new JournalEntry()
-            {
-                PrimaryDisplayName = "#WIZARDKNIGHT_NAME",
-                NotificationPanelDescription = "#WIZARDKNIGHT_SHORTDESC",
-                AmmonomiconFullEntry = "#WIZARDKNIGHT_LONGDESC",
-                IsEnemy = true,
-                SuppressInAmmonomicon = false,
-                enemyPortraitSprite = AssetBundleManager.Load<Texture2D>("enemysprites/ammonomicon/wizardknight_portrait_001"),
-                AmmonomiconSprite = "boss_icon_wizardknight_001"
-            };
-            ETGMod.Databases.Strings.Enemies.Set("#WIZARDKNIGHT_NAME", "The Knight of Sword and Gun");
-            ETGMod.Databases.Strings.Enemies.Set("#WIZARDKNIGHT_SHORTDESC", "Wizarding Knight");
-            ETGMod.Databases.Strings.Enemies.Set("#WIZARDKNIGHT_LONGDESC", "An apprentice gunjurer with a Gun Nut's armor and weapons. Unlike other gunjurers who wield their weapons themselves once becoming Gun Nuts, this one controls his weapons with" +
-                " magic.");
-            AddEnemyToDatabase(ai.gameObject, ai.EnemyGuid, true, true, true, true);
-            SetupWizardKnightSwordPrefab();
-        }
-
-        public static void SetupWizardKnightSwordPrefab()
-        {
-            AIActor ai = SetupAIActorDummyFromAssetBundle("wizardknightsword", new IntVector2(0, 0), new IntVector2(10, 10), true);
-            ai.EnemyGuid = "wizardknightsword";
-            ai.ActorName = "Wizard Knight Sword";
-            ai.healthHaver.SetHealthMaximum(600);
-            ai.AddComponent<tk2dSpriteAnimator>();
-            ai.specRigidbody.CollideWithTileMap = false;
-            BehaviorSpeculator spec = ai.GetComponent<BehaviorSpeculator>();
-            spec.AttackBehaviors = new List<AttackBehaviorBase>()
-            {
-                new WizardKnightSwordSpinBehaviour()
-                {
-                    Cooldown = 0f,
-                    AttackCooldown = 0f,
-                    InitialCooldown = 0f,
-                    DegreesPerSecond = 360f,
-                    SpinBulletScript = new CustomBulletScriptSelector(typeof(WizardKnightSwordSpin1)),
-                    BulletScriptShootPoint = ai.transform.Find("RotationParent").Find("Sprite"),
-                    RotationTransform = ai.transform.Find("RotationParent").Find("Sprite"),
-                    RequiredState = WizardKnightController.State.SwordSpin
-                },
-                new WizardKnightSwordSpinSlashBehavior()
-                {
-                    Cooldown = 0f,
-                    AttackCooldown = 0f,
-                    InitialCooldown = 0f,
-                    SpinBulletScript = new CustomBulletScriptSelector(typeof(WizardKnightSwordSpinSlash1)),
-                    BulletScriptShootPoint = ai.transform.Find("RotationParent").Find("Sprite").Find("Tip"),
-                    RotationTransform = ai.transform.Find("RotationParent"),
-                    RequiredState = WizardKnightController.State.SwordSpinSlash
-                },
-                new WizardKnightSwordSwipeBehavior()
-                {
-                    Cooldown = 0f,
-                    AttackCooldown = 0f,
-                    InitialCooldown = 0f,
-                    SwipeScript = new CustomBulletScriptSelector(typeof(WizardKnightSwordSwipe1)),
-                    ScriptSpawnTransform = ai.transform.Find("RotationParent").Find("Sprite").Find("Tip"),
-                    RotationTransform = ai.transform.Find("RotationParent"),
-                    StartSwipeAngle = -90f,
-                    EndSwipeAngle = 45f,
-                    ScriptFirePercentage = 0.67f
-                }
-            };
-            spec.MovementBehaviors = new List<MovementBehaviorBase>
-            {
-                new WizardKnightSwordMoveBehaviour()
-                {
-                    MaxSpeed = 19f,
-                    MinSpeed = 7f,
-                    MinSpeedDistance = 12f,
-                    MaxSpeedDistance = 21f,
-                    PreferredDistance = 9f,
-                    RotationTransform = "RotationParent"
-                }
-            };
-            spec.TargetBehaviors = new List<TargetBehaviorBase>
-            {
-                new TargetPlayerBehavior()
-                {
-                    LineOfSight = false,
-                    ObjectPermanence = false,
-                    PauseOnTargetSwitch = false,
-                    PauseTime = 0f,
-                    Radius = 12f,
-                    SearchInterval = 0.25f
-                }
-            };
-            AIBulletBank bank = ai.AddComponent<AIBulletBank>();
-            bank.Bullets = new List<AIBulletBank.Entry>()
-            {
-                new AIBulletBank.Entry(EnemyDatabase.GetOrLoadByGuid("01972dee89fc4404a5c408d50007dad5").bulletBank.GetBullet())
-            };
-            ai.AddComponent<WizardKnightSwordController>();
-            spec.OtherBehaviors = new List<BehaviorBase>();
-            spec.OverrideBehaviors = new List<OverrideBehaviorBase>();
-            GameObject coll = AssetBundleManager.Load<GameObject>("spritecollections/wizardknightcollection");
-            tk2dSpriteCollectionData collection = coll.GetComponent<tk2dSpriteCollectionData>();
-            tk2dSprite sprite = ai.transform.Find("RotationParent").Find("Sprite").AddComponent<tk2dSprite>();
-            AfterImageTrailController trail = sprite.AddComponent<AfterImageTrailController>();
-            trail.spawnShadows = true;
-            trail.shadowTimeDelay = 0.05f;
-            trail.shadowLifetime = 0.3f;
-            trail.minTranslation = -1f;
-            trail.dashColor = Color.red;
-            sprite.SetSprite(collection, AddSpriteToCollection("enemysprites/wizardknight/wizknight_sword_idle_001", collection));
-            float d = Vector2.Distance(sprite.GetBounds().min + sprite.GetBounds().extents, sprite.GetBounds().min.WithX(0) + sprite.GetBounds().extents.WithX(0));
-            ai.transform.Find("RotationParent").localPosition = new Vector3(0f, 0f);
-            ai.transform.Find("RotationParent").Find("Sprite").localPosition = new Vector3(d, 0f);
-            ai.transform.Find("RotationParent").Find("Sprite").Find("Tip").localPosition = new Vector3(d, 0f);
-            sprite.GetCurrentSpriteDef().ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter, null, false, false);
-            AddEnemyToDatabase(ai.gameObject, ai.EnemyGuid, true, true, false, false);
+            return names.Select(x => new tk2dSpriteAnimationFrame() { spriteId = AddSpriteToCollection(x, collection), spriteCollection = collection }).ToArray();
         }
 
         public static void SetupAk47VeteranPrefab()
@@ -1151,21 +614,238 @@ namespace SpecialStuffPack.Enemies
             spec.RemoveDelayOnReinforce = bulletkin.behaviorSpeculator.RemoveDelayOnReinforce;
             spec.OverrideStartingFacingDirection = bulletkin.behaviorSpeculator.OverrideStartingFacingDirection;
             spec.SkipTimingDifferentiator = bulletkin.behaviorSpeculator.SkipTimingDifferentiator;
-            AddEnemyToDatabase(aiactor.gameObject, aiactor.EnemyGuid, false, true, true, false);
+            AddEnemyToDatabase(aiactor.gameObject, false, true, true, false);
         }
 
-        public static void SetupBasicWoodenMalletPrefab(GameObject obj)
+        public static void AddNinja()
         {
-            ForgeHammerController hammer = obj.AddComponent<ForgeHammerController>();
-            hammer.Hammer_Anim_In_Left = "mallet_in_left";
-            hammer.Hammer_Anim_In_Right = "mallet_in_right";
-            hammer.Hammer_Anim_Out_Left = "mallet_out_left";
-            hammer.Hammer_Anim_Out_Right = "mallet_out_right";
-            hammer.DoGoopOnImpact = false;
-            hammer.DoesBulletsOnImpact = false;
-            hammer.DamageToEnemies = 100f;
-            hammer.DoScreenShake = false;
-            tk2dSprite hammerSprite = obj.AddComponent<tk2dSprite>();
+            AIActor aiactor = SetupAIActorDummyFromAssetBundle("ninja", new IntVector2(2, 2), new IntVector2(12, 15));
+            GameObject coll = AssetBundleManager.Load<GameObject>("spritecollections/ninjacollection");
+            GameObject anim = AssetBundleManager.Load<GameObject>("spriteanimations/ninjaanimation");
+            tk2dSpriteCollectionData collection = coll.AddComponent<tk2dSpriteCollectionData>();
+            collection.spriteDefinitions = new tk2dSpriteDefinition[0];
+            collection.spriteCollectionName = "NinjaCollection";
+            collection.assetName = "NinjaCollection";
+            aiactor.ActorName = "Ninja";
+            aiactor.EnemyGuid = "ninja";
+            aiactor.MovementSpeed = 6f;
+            aiactor.AddComponent<PoofOnDeath>();
+            //aiactor.ActorShadowOffset = new(0.5f, 0f, 0f);
+            aiactor.healthHaver.SetHealthMaximum(30, null, true);
+            aiactor.sprite.SetSprite(collection, AddSpriteToCollection("enemysprites/ninja/ninja_idle_front_hand1", collection));
+            tk2dSpriteAnimator animator = aiactor.gameObject.AddComponent<tk2dSpriteAnimator>();
+            animator.playAutomatically = true;
+            animator.Library = anim.AddComponent<tk2dSpriteAnimation>();
+            int idlefps = 10;
+            int runfps = 10;
+            animator.Library.clips = new tk2dSpriteAnimationClip[]
+            {
+                new()
+                {
+                    name = "ninja_idle_front",
+                    fps = idlefps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_idle_front_hand1",
+                        "enemysprites/ninja/ninja_idle_front_hand2",
+                        "enemysprites/ninja/ninja_idle_front_hand3",
+                        "enemysprites/ninja/ninja_idle_front_hand4"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_idle_back",
+                    fps = idlefps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_idle_back_001",
+                        "enemysprites/ninja/ninja_idle_back_002",
+                        "enemysprites/ninja/ninja_idle_back_003",
+                        "enemysprites/ninja/ninja_idle_back_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_idle_left",
+                    fps = idlefps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_idle_left_001",
+                        "enemysprites/ninja/ninja_idle_left_002",
+                        "enemysprites/ninja/ninja_idle_left_003",
+                        "enemysprites/ninja/ninja_idle_left_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_idle_right",
+                    fps = idlefps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_idle_right_001",
+                        "enemysprites/ninja/ninja_idle_right_002",
+                        "enemysprites/ninja/ninja_idle_right_003",
+                        "enemysprites/ninja/ninja_idle_right_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_run_front",
+                    fps = runfps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_run_front_001",
+                        "enemysprites/ninja/ninja_run_front_002",
+                        "enemysprites/ninja/ninja_run_front_003",
+                        "enemysprites/ninja/ninja_run_front_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_run_back",
+                    fps = runfps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_run_back_001",
+                        "enemysprites/ninja/ninja_run_back_002",
+                        "enemysprites/ninja/ninja_run_back_003",
+                        "enemysprites/ninja/ninja_run_back_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_run_left",
+                    fps = runfps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_run_left_001",
+                        "enemysprites/ninja/ninja_run_left_002",
+                        "enemysprites/ninja/ninja_run_left_003",
+                        "enemysprites/ninja/ninja_run_left_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "ninja_run_right",
+                    fps = runfps,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_run_right_001",
+                        "enemysprites/ninja/ninja_run_right_002",
+                        "enemysprites/ninja/ninja_run_right_003",
+                        "enemysprites/ninja/ninja_run_right_004"
+                    }.ToFrames(collection)
+                },
+                new()
+                {
+                    name = "spawn",
+                    fps = 12,
+                    frames = new List<string>()
+                    {
+                        "enemysprites/ninja/ninja_spawn_001",
+                        "enemysprites/ninja/ninja_spawn_002",
+                        "enemysprites/ninja/ninja_spawn_003",
+                        "enemysprites/ninja/ninja_spawn_004",
+                        "enemysprites/ninja/ninja_spawn_005",
+                        "enemysprites/ninja/ninja_spawn_006",
+                        "enemysprites/ninja/ninja_spawn_007",
+                        "enemysprites/ninja/ninja_spawn_008",
+                        "enemysprites/ninja/ninja_spawn_009",
+                        "enemysprites/ninja/ninja_spawn_010",
+                        "enemysprites/ninja/ninja_spawn_011"
+                    }.ToFrames(collection)
+                }
+            };
+            AIAnimator aianimator = aiactor.gameObject.AddComponent<AIAnimator>();
+            aianimator.IdleAnimation = new()
+            {
+                Type = DirectionalAnimation.DirectionType.FourWayCardinal,
+                AnimNames = new string[]
+                {
+                    "ninja_idle_back",
+                    "ninja_idle_right",
+                    "ninja_idle_front",
+                    "ninja_idle_left"
+                },
+                Prefix = string.Empty,
+                Flipped = new DirectionalAnimation.FlipType[4]
+            };
+            aianimator.MoveAnimation = new()
+            {
+                Type = DirectionalAnimation.DirectionType.FourWayCardinal,
+                AnimNames = new string[]
+                {
+                    "ninja_run_back",
+                    "ninja_run_right",
+                    "ninja_run_front",
+                    "ninja_run_left"
+                },
+                Prefix = string.Empty,
+                Flipped = new DirectionalAnimation.FlipType[4]
+            };
+            aianimator.FlightAnimation = new() { AnimNames = new string[0], Type = DirectionalAnimation.DirectionType.None, Flipped = new DirectionalAnimation.FlipType[0] };
+            aianimator.OtherAnimations = new();
+            aianimator.spriteAnimator = animator;
+            aiactor.aiAnimator = aianimator;
+            var behav = aiactor.behaviorSpeculator;
+            behav.AttackBehaviors = new()
+            {
+                new AttackBehaviorGroup()
+                {
+                    AttackBehaviors = new()
+                    {
+                        new()
+                        {
+                            NickName = "Teleport",
+                            Behavior = new NinjaTeleportBehavior()
+                            {
+                                GoneTime = 0.25f,
+                                PreTeleportTime = 0.5f,
+                                Cooldown = 3f,
+                                BulletScript = new CustomBulletScriptSelector(typeof(NinjaPostTeleport)),
+                                ShootPoint = aiactor.transform.Find("ShootPoint").gameObject
+                            },
+                            Probability = 1f
+                        }
+                    },
+                    ShareCooldowns = true
+                }
+            };
+            behav.MovementBehaviors = new()
+            {
+                new SeekTargetBehavior()
+                {
+                    LineOfSight = false,
+                    CustomRange = 0f,
+                    ExternalCooldownSource = false,
+                    MaxActiveRange = 25f,
+                    MinActiveRange = 0f,
+                    PathInterval = 0.2f,
+                    ReturnToSpawn = false,
+                    StopWhenInRange = false,
+                    SpecifyRange = false
+                }
+            };
+            behav.TargetBehaviors = new()
+            {
+                new TargetPlayerBehavior()
+                {
+                    LineOfSight = false,
+                    SearchInterval = 0.2f,
+                    PauseOnTargetSwitch = false,
+                    PauseTime = 0f,
+                    Radius = 25f
+                }
+            };
+            behav.OverrideBehaviors = new();
+            behav.OtherBehaviors = new();
+            behav.PostAwakenDelay = 0.5f;
+            AIBulletBank bb = aiactor.gameObject.AddComponent<AIBulletBank>();
+            bb.Bullets = new()
+            {
+                EnemyDatabase.GetOrLoadByGuid("01972dee89fc4404a5c408d50007dad5").bulletBank.GetBullet()
+            };
+            AddEnemyToDatabase(aiactor.gameObject, addToAmmonomicon: false);
         }
 
         public static GameObject LockGhostPrefab;

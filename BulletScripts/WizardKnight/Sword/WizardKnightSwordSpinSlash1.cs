@@ -9,7 +9,7 @@ namespace SpecialStuffPack.BulletScripts.WizardKnight.Sword
 {
     public class WizardKnightSwordSpinSlash1 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
             PostWwiseEvent("Play_ENM_gunknight_shockwave_01");
             for (; ; )

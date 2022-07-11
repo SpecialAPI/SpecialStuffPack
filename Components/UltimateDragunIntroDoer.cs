@@ -11,7 +11,7 @@ namespace SpecialStuffPack.Components
     [RequireComponent(typeof(GenericIntroDoer))]
     public class UltimateDraGunIntroDoer : SpecificIntroDoer
     {
-		protected override void OnDestroy()
+		public override void OnDestroy()
 		{
 			base.OnDestroy();
 		}

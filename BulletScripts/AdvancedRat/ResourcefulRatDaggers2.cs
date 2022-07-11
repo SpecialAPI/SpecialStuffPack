@@ -16,7 +16,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 			m_reticles = new List<GameObject>();
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			yield return Wait(18);
 			float[] angles = new float[17];
@@ -138,7 +138,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 				m_trapTriggerTime = trapTriggerTime;
             }
 
-            protected override IEnumerator Top()
+            public override IEnumerator Top()
             {
                 while (Projectile != null)
                 {

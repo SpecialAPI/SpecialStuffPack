@@ -9,7 +9,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 {
 	public class HelicopterRandomSimple2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			if (UnityEngine.Random.value < 0.5f)
 			{
@@ -62,7 +62,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Projectile.Ramp(UnityEngine.Random.Range(2f, 3f), 2f);
 				return null;

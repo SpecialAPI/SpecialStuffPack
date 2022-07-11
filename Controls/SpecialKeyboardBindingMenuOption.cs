@@ -37,7 +37,7 @@ namespace SpecialStuffPack.Controls
 			}
 		}
 
-		private void InitializeController()
+		private new void InitializeController()
 		{
 			SpecialGungeonActions activeActions = GetBestInputInstance().SpecialInput().ActiveActions;
 			PlayerAction actionFromType = activeActions.GetActionFromType(SpecialActionType);
@@ -101,7 +101,7 @@ namespace SpecialStuffPack.Controls
 			CommandLabel.RelativePosition = CommandLabel.RelativePosition.WithX(0f);
 		}
 
-		private void InitializeKeyboard()
+		private new void InitializeKeyboard()
 		{
 			if (GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER)
 			{
@@ -202,7 +202,7 @@ namespace SpecialStuffPack.Controls
 			StartCoroutine(WaitForAssignmentModeToEnd());
 		}
 
-		private void Update()
+		private new void Update()
 		{
 			if (Input.GetKeyDown(KeyCode.Delete))
 			{
@@ -253,7 +253,7 @@ namespace SpecialStuffPack.Controls
 			}
 		}
 
-		private IEnumerator WaitForAssignmentModeToEnd()
+		private new IEnumerator WaitForAssignmentModeToEnd()
 		{
 			SpecialGungeonActions activeActions = GetBestInputInstance().SpecialInput().ActiveActions;
 			PlayerAction targetAction = activeActions.GetActionFromType(SpecialActionType);
@@ -347,7 +347,7 @@ namespace SpecialStuffPack.Controls
 		}
 
 		public SpecialGungeonActions.SpecialGungeonActionType SpecialActionType;
-		private FullOptionsMenuController m_parentOptionsMenu;
+		private new FullOptionsMenuController m_parentOptionsMenu;
 	}
 
 }

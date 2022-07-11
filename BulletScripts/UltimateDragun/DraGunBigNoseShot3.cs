@@ -16,7 +16,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			NumTraps = 4;
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			if (s_xValues == null || s_yValues == null)
 			{
@@ -63,7 +63,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 				this.ticksToExpand = ticksToExpand;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
                 if (small)
                 {

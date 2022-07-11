@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 {
 	public class MetalGearRatMissiles2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			int leftDelay = 0;
 			int rightDelay = 60;
@@ -86,7 +86,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 				base.Initialize();
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				if (m_fireDelay > 0)
 				{

@@ -11,7 +11,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 {
 	public class ResourcefulRatMouseTraps2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			yield return Wait(56);
 			if (s_xValues == null || s_yValues == null)
@@ -78,7 +78,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 				m_triggerTime = triggerTime;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				ManualControl = true;
 				Direction = (m_goalPos - Position).ToAngle();

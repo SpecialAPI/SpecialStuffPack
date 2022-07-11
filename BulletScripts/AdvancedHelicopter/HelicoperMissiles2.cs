@@ -21,7 +21,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 			};
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			for (int i = 0; i < 12; i++)
 			{
@@ -53,7 +53,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 				base.Initialize();
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				StartTask(HandleTrail());
 				Vector2 toTarget = m_target - Position;
@@ -105,7 +105,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 				m_lifetime = lifetime;
             }
 
-            protected override IEnumerator Top()
+            public override IEnumerator Top()
             {
 				yield return Wait(m_lifetime);
 				Vanish(true);

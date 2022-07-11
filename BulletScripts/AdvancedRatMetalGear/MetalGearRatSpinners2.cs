@@ -19,7 +19,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 		private Vector2 CenterPoint;
 		private bool Done;
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			yield return Wait(30);
 			EndOnBlank = true;
@@ -164,7 +164,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 				m_initialRadiusBoost = initialRadiusBoostBoost;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				float radius = m_centerRadius;
 				ManualControl = true;
@@ -220,7 +220,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 				m_isPassive = isPassive;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Projectile.specRigidbody.AddCollisionLayerIgnoreOverride(CollisionMask.LayerToMask(CollisionLayer.HighObstacle, CollisionLayer.LowObstacle));
 				int remainingLife = -1;
@@ -295,7 +295,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 				m_initialRadiusBoost = initialRadiusBoost;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Projectile.specRigidbody.AddCollisionLayerIgnoreOverride(CollisionMask.LayerToMask(CollisionLayer.HighObstacle, CollisionLayer.LowObstacle));
 				float radius = m_radius;

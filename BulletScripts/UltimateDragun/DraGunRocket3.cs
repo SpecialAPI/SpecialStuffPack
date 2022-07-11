@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 {
     public class DraGunRocket3 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
             Fire(new Direction(-90f, DirectionType.Absolute, -1f), new Speed(40f, SpeedType.Absolute), new Rocket());
 			yield return Wait(120);
@@ -26,7 +26,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				return null;
 			}
@@ -69,7 +69,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				return null;
 			}
@@ -112,7 +112,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				ChangeSpeed(new Speed(12f, SpeedType.Absolute), 60);
 				BounceProjModifier bounce = Projectile.GetComponent<BounceProjModifier>();

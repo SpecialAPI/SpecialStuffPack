@@ -9,7 +9,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 {
     public class DraGunSweepFlameBreath3 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
 			for (; ; )
 			{

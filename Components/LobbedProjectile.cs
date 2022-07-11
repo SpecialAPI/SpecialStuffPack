@@ -45,7 +45,7 @@ namespace SpecialStuffPack.Components
             }
         }
 
-        protected override void OnPreCollision(SpeculativeRigidbody body, PixelCollider collider, SpeculativeRigidbody collision, PixelCollider collisionCollider)
+        public override void OnPreCollision(SpeculativeRigidbody body, PixelCollider collider, SpeculativeRigidbody collision, PixelCollider collisionCollider)
         {
             if(!m_canCollide && collision.GetComponentInParent<DungeonDoorController>() == null && (collision.GetComponent<MajorBreakable>() == null || !collision.GetComponent<MajorBreakable>().IsSecretDoor))
             {
@@ -94,7 +94,7 @@ namespace SpecialStuffPack.Components
             return time;
         }
 
-        protected override void Move()
+        public override void Move()
         {
             if(angularVelocity != 0f)
             {
@@ -106,7 +106,7 @@ namespace SpecialStuffPack.Components
             angularVelocity += original;
         }
 
-        protected override void OnRigidbodyCollision(CollisionData rigidbodyCollision)
+        public override void OnRigidbodyCollision(CollisionData rigidbodyCollision)
         {
             base.OnRigidbodyCollision(rigidbodyCollision);
             m_hasPierced = false;

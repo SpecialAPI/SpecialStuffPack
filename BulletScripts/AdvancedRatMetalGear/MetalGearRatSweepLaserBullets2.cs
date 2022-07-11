@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 {
     public class MetalGearRatSweepLaserBullets2 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
             AIBeamShooter[] beams = BulletBank.GetComponents<AIBeamShooter>();
             yield return Wait(15);

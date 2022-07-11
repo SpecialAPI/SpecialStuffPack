@@ -16,7 +16,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 			m_reticles = new List<GameObject>();
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			float[] angles = new float[4];
 			CellArea area = BulletBank.aiActor.ParentRoom.area;

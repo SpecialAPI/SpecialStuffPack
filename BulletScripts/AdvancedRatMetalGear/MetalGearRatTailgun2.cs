@@ -13,7 +13,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 		private bool Center;
 		private bool Done;
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			EndOnBlank = true;
 			TargetDummy targetDummy = new TargetDummy();
@@ -58,7 +58,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 			{
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				for (; ; )
 				{
@@ -86,7 +86,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 				m_targetDummy = targetDummy;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Vector2 toCenter = Position - m_targetDummy.Position;
 				float angle = toCenter.ToAngle();
@@ -130,7 +130,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 				base.Initialize();
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Projectile.specRigidbody.CollideWithTileMap = false;
 				Projectile.specRigidbody.CollideWithOthers = false;

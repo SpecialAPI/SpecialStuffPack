@@ -49,6 +49,16 @@ namespace SpecialStuffPack
             SynergyBuilder.CreateSynergy("The zombies are coming", new List<int> { ItemBuilder.ItemIds["gravediggershovel"] }, new List<int> { 528, 29, 45 });
             SynergyBuilder.CreateSynergy("Armored Support", new List<int> { ItemBuilder.ItemIds["frailheart"] }, new List<int> { 114, 273, 298, 314 });
             SynergyBuilder.CreateSynergy("I am YesEngine", new List<int> { ItemBuilder.ItemIds["consolecontroller"] }, new List<int> { 177, 401 });
+            SynergyBuilder.CreateSynergy("Stone x2", new List<int>() { ItemBuilder.ItemIds["catapult"], 382 });
+            SynergyBuilder.CreateSynergy("Super Launch", new List<int>() { ItemBuilder.ItemIds["catapult"], ItemBuilder.ItemIds["launcher"] }, activeWhenGunsUnequipped: false, statModifiers: new()
+            {
+                StatModifier.Create(PlayerStats.StatType.ProjectileSpeed, StatModifier.ModifyMethod.MULTIPLICATIVE, 3f),
+                StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.MULTIPLICATIVE, 2f)
+            });
+            SynergyBuilder.CreateSynergy("static readonly", new List<int>() { ItemBuilder.ItemIds["staticroll"] }, new() { 487, 814, 281 });
+            SynergyBuilder.CreateSynergy("static void", new List<int>() { ItemBuilder.ItemIds["staticroll"] }, new() { 593, 32, 55, 58 });
+            SynergyBuilder.CreateSynergy("private static", new List<int>() { ItemBuilder.ItemIds["staticroll"] }, new() { 182, 543, 462, 216, 458 });
+            SynergyBuilder.CreateSynergy("Infinite Mirror", new List<int>() { ItemBuilder.ItemIds["mirrorbullet"], ItemBuilder.ItemIds["truthmirror"] });
 
             //add this long synergy
             List<StatModifier> sm = new List<StatModifier>();

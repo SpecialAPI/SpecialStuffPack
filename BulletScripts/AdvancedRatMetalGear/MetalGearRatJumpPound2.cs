@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRatMetalGear
 {
 	public class MetalGearRatJumpPound2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			float deltaAngle = 8.372093f;
 			for (int i = 0; i < 4; i++)

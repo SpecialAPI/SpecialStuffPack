@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedRat
 {
     public class ResourcefulRatSpinFire2 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
 			yield return Wait(5);
 			float deltaAngle = 15.652174f;

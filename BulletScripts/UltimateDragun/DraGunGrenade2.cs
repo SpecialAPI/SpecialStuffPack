@@ -17,7 +17,7 @@ namespace SpecialStuffPack.BulletScripts.UltimateDragun
 			Magnitude = 4.5f;
 		}
 
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			bool reverse = BraveUtility.RandomBool();
 			StartTask(FireWave(reverse, false, 0f));

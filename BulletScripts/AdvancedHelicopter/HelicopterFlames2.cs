@@ -10,7 +10,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 {
 	public class HelicopterFlames2 : Script
 	{
-		protected override IEnumerator Top()
+		public override IEnumerator Top()
 		{
 			List<AIActor> spawnedActors = new List<AIActor>();
 			Vector2 basePos = BulletBank.aiActor.ParentRoom.area.UnitBottomLeft + new Vector2(5f, 22.8f);
@@ -71,7 +71,7 @@ namespace SpecialStuffPack.BulletScripts.AdvancedHelicopter
 				m_flightTime = flightTime;
 			}
 
-			protected override IEnumerator Top()
+			public override IEnumerator Top()
 			{
 				Projectile.IgnoreTileCollisionsFor((float)(m_flightTime - 5) / 60f);
 				Projectile.spriteAnimator.Play();

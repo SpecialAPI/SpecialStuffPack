@@ -8,7 +8,7 @@ namespace SpecialStuffPack.Components
 {
     public class SpawnBulletScriptOnDestroy : BraveBehaviour
     {
-        protected override void OnDestroy()
+        public override void OnDestroy()
         {
             SpawnManager.SpawnBulletScript(owner, script, GetComponentInChildren<tk2dBaseSprite>().WorldCenter, null, false, null);
             base.OnDestroy();

@@ -9,7 +9,7 @@ namespace SpecialStuffPack.BulletScripts.WizardKnight.Sword
 {
     public class WizardKnightSwordSwipe1 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
             float angleGap = 5f;
             int numBullets = 16;

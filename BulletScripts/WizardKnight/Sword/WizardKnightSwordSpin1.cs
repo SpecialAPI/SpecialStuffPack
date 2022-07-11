@@ -9,7 +9,7 @@ namespace SpecialStuffPack.BulletScripts.WizardKnight.Sword
 {
     public class WizardKnightSwordSpin1 : Script
     {
-        protected override IEnumerator Top()
+        public override IEnumerator Top()
         {
             for(; ;)
             {
