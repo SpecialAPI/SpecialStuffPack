@@ -60,7 +60,6 @@ namespace SpecialStuffPack
             new Hook(typeof(OneAxisInputControl).GetProperty("WasPressed", BindingFlags.Public | BindingFlags.Instance).GetGetMethod(), typeof(TCultistHandler).GetMethod("WasPressedOverride"));
             new Hook(typeof(OneAxisInputControl).GetProperty("IsPressed", BindingFlags.Public | BindingFlags.Instance).GetGetMethod(), typeof(TCultistHandler).GetMethod("IsPressedOverride"));
             new Hook(typeof(OneAxisInputControl).GetProperty("WasReleased", BindingFlags.Public | BindingFlags.Instance).GetGetMethod(), typeof(TCultistHandler).GetMethod("WasReleasedOverride"));
-            new Hook(typeof(PlayerController).GetProperty("CurrentInputState").GetSetMethod(), typeof(TCultistHandler).GetMethod("LogAllInputSource"));
         }
 
         public static void LogAllInputSource(Action<PlayerController, PlayerInputState> orig, PlayerController self, PlayerInputState state)

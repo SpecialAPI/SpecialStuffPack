@@ -7,6 +7,7 @@ using System.IO;
 using UnityEngine;
 using Dungeonator;
 using FloorType = Dungeonator.CellVisualData.CellFloorType;
+using BepInEx;
 
 namespace SpecialStuffPack.GungeonAPI
 {
@@ -22,7 +23,7 @@ namespace SpecialStuffPack.GungeonAPI
 
         public static string RoomDirectory()
         {
-            return Path.GetFullPath(Path.Combine(ETGMod.GameFolder, "CustomRoomData")) + Path.DirectorySeparatorChar;
+            return Path.GetFullPath(Path.Combine(Paths.GameRootPath, "CustomRoomData")) + Path.DirectorySeparatorChar;
         }
 
         public static RoomData BuildFromResource(string roomPath)

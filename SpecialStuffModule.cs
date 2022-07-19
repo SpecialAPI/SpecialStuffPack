@@ -23,11 +23,17 @@ global using Object = UnityEngine.Object;
 global using SpecialStuffPack.Items.Passives;
 global using SpecialStuffPack.Items.Guns;
 global using SpecialStuffPack.Items.Actives;
+using BepInEx;
 
 namespace SpecialStuffPack
 {
-    public class SpecialStuffModule : ETGModule
+    [BepInPlugin(GUID, NAME, VERSION)]
+    public class SpecialStuffModule : BaseUnityPlugin
     {
+        public const string GUID = "spapi.etg.specialstuffpack";
+        public const string NAME = "SpecialAPI's Stuff";
+        public const string VERSION = "1.0.0";
+
         public static int? GetActiveItemUICount(PlayerItem input)
         {
             if (input is GreenCandle)
@@ -37,7 +43,7 @@ namespace SpecialStuffPack
             return null;
         }
 
-        public override void Init()
+        public void Awake()
         {
             //asset bundle setup
             AssetBundleManager.LoadBundle();
@@ -47,147 +53,127 @@ namespace SpecialStuffPack
             SaveAPIManager.Setup("spapistuff");
         }
 
-        public override void Start()
+        public void Start()
         {
-            //init apis
-            ItemBuilder.Init();
-            SynergyBuilder.Init();
-            GungeonAPIMain.Init();
-            GoopDatabase.Init();
+            ETGModMainBehaviour.WaitForGameManagerStart(GMStart);
+        }
 
-            //init items
-            WoodenToken.Init();
-            PayToWin.Init();
-            FusedAmmolet.Init();
-            BoxOfStuff.Init();
-            ProtectiveArmorItem.Init();
-            ShacklesItem.Init();
-            RatWhistle.Init();
-            SubscribeButton.Init();
-            ExtraChestItem.Init();
-            MirrorOfTruth.Init();
-            BadLuckClover.Init();
-            Calendar.Init();
-            GreenCandle.Init();
-            GlassBell.Init();
-            ShootingStar.Init();
-            WishingOrb.Init();
-            Butter.Init();
-            LegitCoupon.Init();
-            BinaryGun.Init();
-            AsteroidBelt.Init();
-            GravediggerShovel.Init();
-            HandheldCatapult.Init();
-            GoldKey.Init();
-            AmethystItem.Init();
-            OpalItem.Init();
-            EmeraldItem.Init();
-            AquamarineItem.Init();
-            RubyItem.Init();
-            DiamondItem.Init();
-            OtherworldlyAssistance.Init();
-            HotCoal.Init();
-            GuardianOfTime.Init();
-            MarblesItem.Init();
-            FrailHeart.Init();
-            UndyingTotem.Init();
-            Watermelon.Init();
-            ConsoleController.Init();
-            StaticRoll.Init();
-            MirroredBullet.Init();
-            BloodyScales.Init();
-            Plushie.Init();
-            BossChest.Init();
-            Chaos.Init();
-            Launcher.Init();
-            BalancingPole.Init();
-            InfinityCrystal.Init();
-            EnergyDrink.Init();
-            AmmoFlower.Init();
-            FlatBullets.Init();
-            AkNAN.Init();
-            CactiClub.Init();
-            HelloWorld.Init();
-            Frogun.Init();
-            Revolvever.Init();
-            //SoulGun.Init();
-
-            //PastsRewardItem.Init();
-            //ForceOfTwilight.Init();
-
-            //init synergies
-            SpecialSynergies.Init();
-
-            //init enemies
-            SpecialEnemies.AddAdvancedDragunAmmonomiconEntry();
-            SpecialEnemies.AddNinja();
-            SpecialEnemies.SetupAk47VeteranPrefab();
-
-            //init placeables
-            SpecialPlaceables.InitLockUnlockPedestal();
-            SpecialPlaceables.InitDiamondShrine();
-            SpecialPlaceables.InitSomethingSpecialPlaceable();
-            SpecialPlaceables.InitDoor();
-
-            //add other stuff
-            EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();
-
-            //add hooks
-            new Hook(typeof(GameUIItemController).GetMethod("UpdateItem"), typeof(SpecialStuffModule).GetMethod("ItemUIUpdateHook"));
-            new Hook(
-                 typeof(RoomHandler).GetMethod("PostGenerationCleanup", BindingFlags.Instance | BindingFlags.Public),
-                 typeof(SpecialStuffModule).GetMethod("FixBadDodgerollCode")
-             );
-            //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
-
-            //add console commands
-            ItemAutocompletion = new AutocompletionSettings(delegate (string input)
+        public void GMStart(GameManager g)
+        {
+            try
             {
-                List<string> list = new List<string>();
-                foreach (string text in Game.Items.IDs)
+                //init apis
+                ItemBuilder.Init();
+                SynergyBuilder.Init();
+                GungeonAPIMain.Init();
+                GoopDatabase.Init();
+
+                //init items
+                WoodenToken.Init();
+                PayToWin.Init();
+                FusedAmmolet.Init();
+                BoxOfStuff.Init();
+                ProtectiveArmorItem.Init();
+                ShacklesItem.Init();
+                RatWhistle.Init();
+                SubscribeButton.Init();
+                ExtraChestItem.Init();
+                MirrorOfTruth.Init();
+                BadLuckClover.Init();
+                Calendar.Init();
+                GreenCandle.Init();
+                GlassBell.Init();
+                ShootingStar.Init();
+                WishingOrb.Init();
+                Butter.Init();
+                LegitCoupon.Init();
+                BinaryGun.Init();
+                AsteroidBelt.Init();
+                GravediggerShovel.Init();
+                HandheldCatapult.Init();
+                GoldKey.Init();
+                AmethystItem.Init();
+                OpalItem.Init();
+                EmeraldItem.Init();
+                AquamarineItem.Init();
+                RubyItem.Init();
+                DiamondItem.Init();
+                OtherworldlyAssistance.Init();
+                HotCoal.Init();
+                GuardianOfTime.Init();
+                MarblesItem.Init();
+                FrailHeart.Init();
+                UndyingTotem.Init();
+                Watermelon.Init();
+                ConsoleController.Init();
+                StaticRoll.Init();
+                MirroredBullet.Init();
+                BloodyScales.Init();
+                Plushie.Init();
+                BossChest.Init();
+                Chaos.Init();
+                Launcher.Init();
+                BalancingPole.Init();
+                InfinityCrystal.Init();
+                EnergyDrink.Init();
+                AmmoFlower.Init();
+                FlatBullets.Init();
+                AkNAN.Init();
+                CactiClub.Init();
+                HelloWorld.Init();
+                Frogun.Init();
+                Revolvever.Init();
+                AkPI.Init();
+                RoundBullets.Init();
+                //SoulGun.Init();
+
+                //PastsRewardItem.Init();
+                //ForceOfTwilight.Init();
+
+                //init synergies
+                SpecialSynergies.Init();
+
+                //init enemies
+                SpecialEnemies.AddAdvancedDragunAmmonomiconEntry();
+                SpecialEnemies.AddNinja();
+                SpecialEnemies.SetupAk47VeteranPrefab();
+
+                //init placeables
+                SpecialPlaceables.InitLockUnlockPedestal();
+                SpecialPlaceables.InitDiamondShrine();
+                SpecialPlaceables.InitSomethingSpecialPlaceable();
+                SpecialPlaceables.InitDoor();
+
+                //add other stuff
+                EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();
+
+                //add hooks
+                new Hook(typeof(GameUIItemController).GetMethod("UpdateItem"), typeof(SpecialStuffModule).GetMethod("ItemUIUpdateHook"));
+                new Hook(
+                     typeof(RoomHandler).GetMethod("PostGenerationCleanup", BindingFlags.Instance | BindingFlags.Public),
+                     typeof(SpecialStuffModule).GetMethod("FixBadDodgerollCode")
+                 );
+                //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
+
+                ETGModConsole.Commands.AddUnit("play_sound", (string[] args) => ETGModConsole.Log(AkSoundEngine.PostEvent(args[0], GameManager.Instance.PrimaryPlayer.gameObject).ToString()));
+                ETGModConsole.Commands.AddUnit("set_state", (string[] args) => ETGModConsole.Log(AkSoundEngine.SetState(args[0], args[1]).ToString()));
+                ETGModConsole.Commands.AddUnit("use", UseItem, ETGModConsole.GiveAutocompletionSettings);
+                ETGModConsole.Commands.AddUnit("reset_ss_completion", delegate (string[] s)
                 {
-                    if (text.AutocompletionMatch(input.ToLower()))
-                    {
-                        Console.WriteLine(string.Concat(new string[]
-                        {
-                        "INPUT ",
-                        input,
-                        " KEY ",
-                        text,
-                        " MATCH!"
-                        }));
-                        list.Add(text.Replace("gungeon:", ""));
-                    }
-                    else
-                    {
-                        Console.WriteLine(string.Concat(new string[]
-                        {
-                        "INPUT ",
-                        input,
-                        " KEY ",
-                        text,
-                        " NO MATCH!"
-                        }));
-                    }
-                }
-                return list.ToArray();
-            });
-            ETGModConsole.Commands.GetGroup("spawn").AddUnit("item", SpawnItem, ItemAutocompletion);
-            ETGModConsole.Commands.AddUnit("play_sound", (string[] args) => ETGModConsole.Log(AkSoundEngine.PostEvent(args[0], GameManager.Instance.PrimaryPlayer.gameObject).ToString()));
-            ETGModConsole.Commands.AddUnit("set_state", (string[] args) => ETGModConsole.Log(AkSoundEngine.SetState(args[0], args[1]).ToString()));
-            ETGModConsole.Commands.AddUnit("componentsinroom", delegate(string[] args) { foreach (Component com in GameManager.Instance.PrimaryPlayer.CurrentRoom.GetComponentsInRoom<Component>()) { ETGModConsole.Log(com.GetType() + com.name); } });
-            ETGModConsole.Commands.AddUnit("use", UseItem, ItemAutocompletion);
-            ETGModConsole.Commands.AddUnit("reset_ss_completion", delegate (string[] s)
+                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST, false);
+                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_OPAL, false);
+                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_EMERALD, false);
+                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, false);
+                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, false);
+                });
+                TCultistHandler.Init();
+                SpecialOptions.Setup();
+                SpecialInput.Setup();
+            }
+            catch (Exception ex)
             {
-                SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST, false);
-                SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_OPAL, false);
-                SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_EMERALD, false);
-                SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, false);
-                SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, false);
-            });
-            TCultistHandler.Init();
-            SpecialOptions.Setup();
-            SpecialInput.Setup();
+                ETGModConsole.Log("Something bad happened while loading SpecialAPI's Stuff Reloaded: " + ex);
+            }
         }
 
         public static void FixBadDodgerollCode(Action<RoomHandler> orig, RoomHandler room)
@@ -277,17 +263,12 @@ namespace SpecialStuffPack
             }
             for(int i = 0; i < numToSpawn; i++)
             {
-                GameObject item = UnityEngine.Object.Instantiate(Game.Items[args[0]].gameObject, GameManager.Instance.PrimaryPlayer.CenterPosition, Quaternion.identity);
+                GameObject item = Instantiate(Game.Items[args[0]].gameObject, GameManager.Instance.PrimaryPlayer.CenterPosition, Quaternion.identity);
                 typeof(PlayerItem).GetMethod("DoEffect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(item.GetComponent<PlayerItem>(), new object[] { GameManager.Instance.PrimaryPlayer });
-                UnityEngine.Object.Destroy(item);
+                Destroy(item);
             }
         }
 
-        public override void Exit()
-        {
-        }
-
         public static string globalPrefix = "chmb";
-        public static AutocompletionSettings ItemAutocompletion;
     }
 }

@@ -78,22 +78,6 @@ namespace SpecialStuffPack.ItemAPI
         public static T EasyInit<T>(string objectPath, string spritePath, string name, string shortDesc, string longDesc, PickupObject.ItemQuality quality, string consolePrefix, int? ammonomiconPlacement = null, string overrideConsoleID = null) 
             where T : PickupObject
         {
-            if (!objectPath.StartsWith("assets/"))
-            {
-                objectPath = "assets/" + objectPath;
-            }
-            if (!objectPath.EndsWith(".prefab"))
-            {
-                objectPath += ".prefab";
-            }
-            if (!spritePath.StartsWith("assets/"))
-            {
-                spritePath = "assets/" + spritePath;
-            }
-            if (!spritePath.EndsWith(".png"))
-            {
-                spritePath += ".png";
-            }
             GameObject go = AssetBundleManager.Load<GameObject>(objectPath);
             tk2dSprite.AddComponent(go, SpriteBuilder.itemCollection, AddSpriteToCollection(AssetBundleManager.Load<Texture2D>(spritePath), SpriteBuilder.itemCollection));
             T item = go.AddComponent<T>();

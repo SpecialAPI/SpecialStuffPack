@@ -9,7 +9,7 @@ namespace SpecialStuffPack.Items.Guns
     {
         public static void Init()
         {
-            string name = "Ak-NAN";
+            string name = "AK-NaN";
             string shortdesc = "0f / 0f";
             string longdesc = "s Shotgun fires a si||???()NLOCK: Unlock this weapon by de</>**d Lord - Single target, semi-automots in a V patail of water. Clip this weapon by reaching Bullng a new room while under!&&!!";
             var gun = GunBuilder.EasyGunInit("guns/nank", name, shortdesc, longdesc, "nank_idle_001", "gunsprites/ammonomicon/nank_idle_001", "gunsprites/aknan", 500, 0.5f, Vector3.zero,

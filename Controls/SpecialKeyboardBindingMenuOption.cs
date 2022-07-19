@@ -5,7 +5,6 @@ using UnityEngine;
 using InControl;
 using System.Collections;
 using System.Text;
-using System.CodeDom;
 
 namespace SpecialStuffPack.Controls
 {
