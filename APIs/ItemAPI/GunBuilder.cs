@@ -375,9 +375,9 @@ namespace SpecialStuffPack.ItemAPI
             finish = delegate ()
             {
                 ETGMod.Databases.Items.AddSpecific(gun, false, "ANY");
-                ItemBuilder.ItemIds.Add(notSpapiName.ToLower(), gun.PickupObjectId);
-                ItemBuilder.Guns.Add(notSpapiName.ToLower(), gun);
-                ItemBuilder.Item.Add(notSpapiName.ToLower(), gun);
+                ItemIds.Add(notSpapiName.ToLower(), gun.PickupObjectId);
+                Guns.Add(notSpapiName.ToLower(), gun);
+                Item.Add(notSpapiName.ToLower(), gun);
             };
             return gun;
         }

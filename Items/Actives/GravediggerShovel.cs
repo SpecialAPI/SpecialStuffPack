@@ -15,10 +15,10 @@ namespace SpecialStuffPack.Items
             string name = "Gravedigger's Shovel";
             string shortdesc = "A Grave Mistake";
             string longdesc = "Turns all enemies in the room into Tombstoners. Destroys all tombstoners that are already in the room.\n\nA steel shovel used for digging graves, still effective in Gungeon!";
-            GravediggerShovel item = ItemBuilder.EasyInit<GravediggerShovel>("items/gravediggershovel", "sprites/gravedigger_shovel_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
+            GravediggerShovel item = EasyInitItem<GravediggerShovel>("items/gravediggershovel", "sprites/gravedigger_shovel_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
             item.TransformEnemyGuid = "cf27dd464a504a428d87a8b2560ad40a";
             item.TransformEnemyGuidSynergy = "249db525a9464e5282d02162c88e0357";
-            item.SetCooldownType(ItemBuilder.CooldownType.Damage, 250);
+            item.SetCooldownType(CooldownType.Damage, 250);
         }
 
         public override void DoEffect(PlayerController user)

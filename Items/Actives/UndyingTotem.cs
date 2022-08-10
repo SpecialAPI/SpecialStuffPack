@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Totem of Gundying";
             string shortdesc = "Cheat Death";
             string longdesc = "Revives the owner, but only once.\n\nFound in a mansion in the woods.";
-            UndyingTotem item = ItemBuilder.EasyInit<UndyingTotem>("items/totem", "sprites/totem_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
+            UndyingTotem item = EasyInitItem<UndyingTotem>("items/totem", "sprites/totem_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
             item.InvulnerabilityDuration = 3f;
             item.HeartsToSpawn = 5f;
             item.ArmorToGive = 3;

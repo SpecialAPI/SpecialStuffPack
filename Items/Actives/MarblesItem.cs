@@ -15,10 +15,10 @@ namespace SpecialStuffPack.Items
             string name = "Marbles";
             string shortdesc = "Powerful";
             string longdesc = "Just ten marbles. You can launch them at your foes.";
-            MarblesItem item = ItemBuilder.EasyInit<MarblesItem>("items/marbles", "sprites/marbles_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            MarblesItem item = EasyInitItem<MarblesItem>("items/marbles", "sprites/marbles_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.numberOfUses = 10;
             item.consumable = true;
-            item.SetCooldownType(ItemBuilder.CooldownType.Timed, 0.5f);
+            item.SetCooldownType(CooldownType.Timed, 0.5f);
             item.Projectiles = new List<Projectile>();
             foreach(ProjectileModule module in CodeShortcuts.GetItemById<Gun>(480).RawSourceVolley.projectiles) 
             { 

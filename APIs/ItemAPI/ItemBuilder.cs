@@ -79,7 +79,7 @@ namespace SpecialStuffPack.ItemAPI
             return SpriteBuilder.AddSpriteToCollection(tex, collection, "tk2d/CutoutVertexColorTintableTilted");
         }
 
-        public static T EasyInit<T>(string objectPath, string spritePath, string name, string shortDesc, string longDesc, PickupObject.ItemQuality quality, int? ammonomiconPlacement = null, string overrideConsoleID = null) 
+        public static T EasyInitItem<T>(string objectPath, string spritePath, string name, string shortDesc, string longDesc, PickupObject.ItemQuality quality, int? ammonomiconPlacement = null, string overrideConsoleID = null) 
             where T : PickupObject
         {
             GameObject go = AssetBundleManager.Load<GameObject>(objectPath);

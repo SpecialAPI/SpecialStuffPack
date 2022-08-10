@@ -31,9 +31,9 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Old and Long Forgotten";
             string longdesc = "A shiny golden key found in the walls of the Abbey. Resonates with power.\n\nThere are directions written on it:\n\"FIRST, TO THE LAYER OF THE BOTHERSOME RAT\"\n\"THEN, TO THE GREAT CELL BENEATH THE HOLLOW\"\n" +
                 "\"THEN, TO THE HEART OF THE FORGE\"\n\"AND FINALLY, TO THE VOID OF BULLETS, YOUR DESTINATION\"";
-            GoldKey item = ItemBuilder.EasyInit<GoldKey>("items/goldkey", "sprites/golden_key_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
-            ItemBuilder.AddSpriteToCollection("sprites/key_bit_001", item.sprite.Collection);
-            ItemBuilder.AddSpriteToCollection("sprites/emerald_bit_001", item.sprite.Collection);
+            GoldKey item = EasyInitItem<GoldKey>("items/goldkey", "sprites/golden_key_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
+            AddSpriteToCollection("sprites/key_bit_001", item.sprite.Collection);
+            AddSpriteToCollection("sprites/emerald_bit_001", item.sprite.Collection);
             item.ShatterVFX = (GameObject)BraveResources.Load("Global VFX/BlankVFX_Ghost", ".prefab");
             GoldKeyId = item.PickupObjectId;
             EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).usesPurpleNotifications = true;

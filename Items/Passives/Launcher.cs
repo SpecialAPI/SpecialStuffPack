@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Launcher";
             string shortdesc = "Launch your bullets!";
             string longdesc = "Bullets are launched into the air when fired, but increases accuracy and damage.";
-            var launcher = ItemBuilder.EasyInit<Launcher>("items/launcher", "sprites/jumppad_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
+            var launcher = EasyInitItem<Launcher>("items/launcher", "sprites/jumppad_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
             launcher.AddPassiveStatModifier(PlayerStats.StatType.Accuracy, 0.25f, StatModifier.ModifyMethod.MULTIPLICATIVE);
             launcher.AddPassiveStatModifier(PlayerStats.StatType.Damage, 0.5f, StatModifier.ModifyMethod.ADDITIVE);
             launcher.AddToTrorkShop();
@@ -22,7 +22,7 @@ namespace SpecialStuffPack.Items.Passives
         {
             if (!BraveInput.GetInstanceForPlayer(player.PlayerIDX).IsKeyboardAndMouse(true) && !m_pickedUpThisRun)
             {
-                var consoleController = PickupObjectDatabase.GetById(ItemBuilder.ItemIds["consolecontroller"]);
+                var consoleController = PickupObjectDatabase.GetById(ItemIds["consolecontroller"]);
                 GameUIRoot.Instance.notificationController.DoCustomNotification("CONTROLLER USER DETECTED", "giving compensation", consoleController.sprite.Collection, consoleController.sprite.spriteId,
                     UINotificationController.NotificationColor.SILVER, false, false);
                 GameUIRoot.Instance.notificationController.DoCustomNotification("(this item doesnt work on controller)", "", consoleController.sprite.Collection, consoleController.sprite.spriteId,

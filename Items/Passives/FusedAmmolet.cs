@@ -18,12 +18,12 @@ namespace SpecialStuffPack.Items
             string name = "Fused Ammolet";
             string shortdesc = "Explode Bullets";
             string longdesc = "Turns blanks into bombs, which explode and erase all bullets in the room. The bombs will not explode instantly.\n\nAre blanks a good idea? Yes. Are bombs a good idea? Yes. Are bomb blanks a good idea? Probably not.";
-            FusedAmmolet item = ItemBuilder.EasyInit<FusedAmmolet>("items/bombammolet", "sprites/fused_ammolet_idle_001", name, shortdesc, longdesc, ItemQuality.D, 344, null);
+            FusedAmmolet item = EasyInitItem<FusedAmmolet>("items/bombammolet", "sprites/fused_ammolet_idle_001", name, shortdesc, longdesc, ItemQuality.D, 344, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.AdditionalBlanksPerFloor, 1f, StatModifier.ModifyMethod.ADDITIVE);
             //setup bomb
             GameObject bombObject = AssetBundleManager.Load<GameObject>("assets/itemeffects/blombk.prefab");
-            tk2dSprite bombSprite = tk2dSprite.AddComponent(bombObject, SpriteBuilder.itemCollection, ItemBuilder.AddSpriteToCollection(AssetBundleManager.Load<Texture2D>("assets/sprites/blankbomb_idle_001.png"), SpriteBuilder.itemCollection));
-            int id2 = ItemBuilder.AddSpriteToCollection(AssetBundleManager.Load<Texture2D>("assets/sprites/blankbomb_idle_002.png"), SpriteBuilder.itemCollection);
+            tk2dSprite bombSprite = tk2dSprite.AddComponent(bombObject, SpriteBuilder.itemCollection, AddSpriteToCollection(AssetBundleManager.Load<Texture2D>("assets/sprites/blankbomb_idle_001.png"), SpriteBuilder.itemCollection));
+            int id2 = AddSpriteToCollection(AssetBundleManager.Load<Texture2D>("assets/sprites/blankbomb_idle_002.png"), SpriteBuilder.itemCollection);
             SpriteBuilder.itemCollection.spriteDefinitions[id2].ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.LowerCenter, null, false, true);
             bombSprite.GetCurrentSpriteDef().ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.LowerCenter, null, false, true);
             tk2dSpriteAnimator bombAnimator = bombObject.AddComponent<tk2dSpriteAnimator>();

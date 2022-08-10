@@ -15,12 +15,12 @@ namespace SpecialStuffPack.Items
             string name = "Glass Bell";
             string shortdesc = "Ring It Carefully";
             string longdesc = "Can be used to summon glass guon stones. Will break when the owner is wounded, but will mend itself when going to the next floor.";
-            GlassBell item = ItemBuilder.EasyInit<GlassBell>("items/glassbell", "sprites/glass_bell_idle_001", name, shortdesc, longdesc, ItemQuality.B, 134, null);
-            item.SetCooldownType(ItemBuilder.CooldownType.PerRoom, 1f);
+            GlassBell item = EasyInitItem<GlassBell>("items/glassbell", "sprites/glass_bell_idle_001", name, shortdesc, longdesc, ItemQuality.B, 134, null);
+            item.SetCooldownType(CooldownType.PerRoom, 1f);
             item.MaxGuons = 6;
             item.MaxGuonsSynergy = 7;
             item.NormalSpriteId = item.sprite.spriteId;
-            item.BrokenSpriteId = ItemBuilder.AddSpriteToCollection("sprites/glass_bell_idle_002", SpriteBuilder.itemCollection);
+            item.BrokenSpriteId = AddSpriteToCollection("sprites/glass_bell_idle_002", SpriteBuilder.itemCollection);
         }
 
         public override void DoEffect(PlayerController user)

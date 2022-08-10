@@ -63,7 +63,7 @@ namespace SpecialStuffPack.Items
             base.OnPlayerPickup(playerOwner);
             if (!BraveInput.GetInstanceForPlayer(playerOwner.PlayerIDX).IsKeyboardAndMouse(true) && !EverPickedUp)
             {
-                var consoleController = PickupObjectDatabase.GetById(ItemBuilder.ItemIds["consolecontroller"]);
+                var consoleController = PickupObjectDatabase.GetById(ItemIds["consolecontroller"]);
                 GameUIRoot.Instance.notificationController.DoCustomNotification("CONTROLLER USER DETECTED", "giving compensation", consoleController.sprite.Collection, consoleController.sprite.spriteId, 
                     UINotificationController.NotificationColor.SILVER, false, false);
                 GameUIRoot.Instance.notificationController.DoCustomNotification("(this item doesnt work on controller)", "", consoleController.sprite.Collection, consoleController.sprite.spriteId,

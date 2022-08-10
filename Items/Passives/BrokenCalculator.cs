@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Items
             string name = "Broken Calculator";
             string shortdesc = "1 x 1 = 5";
             string longdesc = "Messes up the owner's stats until recalculation.\n\nA calculator that has been completely broken, becoming absolutely unusable.";
-            BrokenCalculator item = ItemBuilder.EasyInit<BrokenCalculator>("items/brokencalculator", "sprites/broken_calculator_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            BrokenCalculator item = EasyInitItem<BrokenCalculator>("items/brokencalculator", "sprites/broken_calculator_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.ArmorToGainOnInitialPickup = 2;
             item.DamageMultiplier = 5f;
             item.ReloadMultiplier = 0f;

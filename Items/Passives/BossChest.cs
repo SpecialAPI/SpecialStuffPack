@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Boss Chest";
             string shortdesc = "Your enemies are chests!";
             string longdesc = "Bosses drop an item on defeat.\n\nIf only there was a boss key for this chest...";
-            ItemBuilder.EasyInit<BossChest>("items/bosschest", "sprites/boss_chest_idle_001.png", name, shortdesc, longdesc, ItemQuality.S, null, null).AddToFlyntShop();
+            EasyInitItem<BossChest>("items/bosschest", "sprites/boss_chest_idle_001.png", name, shortdesc, longdesc, ItemQuality.S, null, null).AddToFlyntShop();
         }
 
         public override void Pickup(PlayerController player)

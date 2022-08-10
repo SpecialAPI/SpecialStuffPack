@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "The Ruby";
             string shortdesc = "A Reward?";
             string longdesc = "Grants fire immunity.\n\nThe blood of the High Dragun, crystallized after his defeat.";
-            RubyItem item = ItemBuilder.EasyInit<RubyItem>("items/ruby", "sprites/ruby_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
+            RubyItem item = EasyInitItem<RubyItem>("items/ruby", "sprites/ruby_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             RubyId = item.PickupObjectId;
             EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).usesPurpleNotifications = true;
             EnemyDatabase.GetOrLoadByGuid("05b8afe0b6cc4fffa9dc6036fa24c8ec").AddComponent<GemDropper>().GemId = RubyId;

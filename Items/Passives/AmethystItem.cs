@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "The Amethyst";
             string shortdesc = "A Reward?";
             string longdesc = "Greatly improves damage of charmed foes.\n\nAbsorbed by the Blobulord to gain power.";
-            AmethystItem item = ItemBuilder.EasyInit<AmethystItem>("items/amethyst", "sprites/amethyst_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
+            AmethystItem item = EasyInitItem<AmethystItem>("items/amethyst", "sprites/amethyst_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             AmethystId = item.PickupObjectId;
             EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).usesPurpleNotifications = true;
             GemDropper dropper = EnemyDatabase.GetOrLoadByGuid("d1c9781fdac54d9e8498ed89210a0238").AddComponent<GemDropper>();

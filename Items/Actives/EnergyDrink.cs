@@ -12,8 +12,8 @@ namespace SpecialStuffPack.Items.Actives
             string name = "Energy Drink";
             string shortdesc = "Instant energy";
             string longdesc = "Temporarily boosts speed, rate of fire and refills the user's current gun's clip.";
-            var item = ItemBuilder.EasyInit<EnergyDrink>("items/energydrink", "sprites/energy_drink_001", name, shortdesc, longdesc, ItemQuality.B);
-            item.SetCooldownType(ItemBuilder.CooldownType.Damage, 250f);
+            var item = EasyInitItem<EnergyDrink>("items/energydrink", "sprites/energy_drink_001", name, shortdesc, longdesc, ItemQuality.B);
+            item.SetCooldownType(CooldownType.Damage, 250f);
             item.AddToTrorkShop();
             item.AddToGooptonShop();
         }

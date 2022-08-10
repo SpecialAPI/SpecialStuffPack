@@ -18,8 +18,8 @@ namespace SpecialStuffPack.Items
             string name = "Special API's Stuff";
             string shortdesc = "Fill the room with whatever";
             string longdesc = "A box filled with various stuff. It refills itself over time.\n\nMade by a floating circle with eyes that hates something called \"encounter guids\". Truly a weird individual.";
-            BoxOfStuff item = ItemBuilder.EasyInit<BoxOfStuff>("items/boxofstuff", "sprites/spapis_stuff_idle_001.png", name, shortdesc, longdesc, ItemQuality.B, 644, null);
-            item.SetCooldownType(ItemBuilder.CooldownType.Damage, 250f);
+            BoxOfStuff item = EasyInitItem<BoxOfStuff>("items/boxofstuff", "sprites/spapis_stuff_idle_001.png", name, shortdesc, longdesc, ItemQuality.B, 644, null);
+            item.SetCooldownType(CooldownType.Damage, 250f);
             item.Stuff = new List<GameObject>
             {
                 CodeShortcuts.GetItemById<FoldingTableItem>(644).TableToSpawn.gameObject,

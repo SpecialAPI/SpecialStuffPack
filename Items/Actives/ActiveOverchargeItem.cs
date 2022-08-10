@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Items
             string name = "Infinice";
             string shortdesc = "Infinitely Cool";
             string longdesc = "Active items can be infinitely overcharged.";
-            ActiveOverchargeItem item = ItemBuilder.EasyInit<ActiveOverchargeItem>("items/infinice", "sprites/infinice_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
+            ActiveOverchargeItem item = EasyInitItem<ActiveOverchargeItem>("items/infinice", "sprites/infinice_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
             item.MaxOverchargeAmount = int.MaxValue;
         }
 

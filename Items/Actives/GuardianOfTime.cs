@@ -16,8 +16,8 @@ namespace SpecialStuffPack.Items
             string name = "The Guardian of Time";
             string shortdesc = "Solution? Book!";
             string longdesc = "Can open doors and solve puzzles.\n\nThis book contains a solution to every problem: hit it with the book.";
-            GuardianOfTime item = ItemBuilder.EasyInit<GuardianOfTime>("items/guardianbook", "sprites/guardian_of_time_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
-            item.SetCooldownType(ItemBuilder.CooldownType.PerRoom, 1f);
+            GuardianOfTime item = EasyInitItem<GuardianOfTime>("items/guardianbook", "sprites/guardian_of_time_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            item.SetCooldownType(CooldownType.PerRoom, 1f);
             AdditionalBraveLight light = item.transform.Find("Light Source").AddComponent<AdditionalBraveLight>();
             light.transform.position = item.sprite.WorldCenter;
             light.LightColor = new Color(0.5f, 0f, 1f);

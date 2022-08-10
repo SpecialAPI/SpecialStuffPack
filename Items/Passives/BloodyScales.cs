@@ -14,7 +14,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Bloody Scales";
             string shortdesc = "A gamble...";
             string description = "All items are doubled, but taking damage has a low chance to be lethal. Having more items increases that chance";
-            var item = ItemBuilder.EasyInit<BloodyScales>("items/bloodyscales", "sprites/bloody_scales_idle_001", name, shortdesc, description, ItemQuality.A, null, null);
+            var item = EasyInitItem<BloodyScales>("items/bloodyscales", "sprites/bloody_scales_idle_001", name, shortdesc, description, ItemQuality.A, null, null);
             item.CanBeDropped = false;
             item.AddToCursulaShop();
             item.AddToFlyntShop();

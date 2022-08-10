@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Marine's Helmet";
             string shortdesc = "Protected Armor";
             string longdesc = "Grants armor on pickup. Grants a chance to negate damage while having armor.\n\nMarine's helmet, which serves him as armor.";
-            ProtectiveArmorItem item = ItemBuilder.EasyInit<ProtectiveArmorItem>("items/marinehelmet", "sprites/helmet_idle_001", name, shortdesc, longdesc, ItemQuality.B, 525, null);
+            ProtectiveArmorItem item = EasyInitItem<ProtectiveArmorItem>("items/marinehelmet", "sprites/helmet_idle_001", name, shortdesc, longdesc, ItemQuality.B, 525, null);
             item.DamageNegateChance = 0.25f;
             item.ArmorlessDamageNegateChance = 0.05f;
             item.ArmorToGive = 1;

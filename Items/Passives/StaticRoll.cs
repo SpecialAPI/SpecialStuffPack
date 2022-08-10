@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Publically Available";
             string longdesc = "Allows the owner to dodgeroll without moving. Those dodgerolls will not move the owner anywhere but will give some time of invulnerability.\n\nA proof of concept device created by a crazy scientist to prove that you can, in" +
                 " fact, dodgeroll without moving.\n\nThe words \"BindingFlags.Public | BindingFlags.Static\" can be seen from inside.";
-            StaticRoll item = ItemBuilder.EasyInit<StaticRoll>("items/staticroll", "sprites/static_roll_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            StaticRoll item = EasyInitItem<StaticRoll>("items/staticroll", "sprites/static_roll_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
 			item.voidSynergyProjectile = CodeShortcuts.GetItemById<Gun>(593).DefaultModule.projectiles[0];
         }
 

@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string name = "Green Candle";
             string shortdesc = "Light It On";
             string longdesc = "A strange candle. Even though it's not lit, it still seems to emit some warmth.";
-            GreenCandle item = ItemBuilder.EasyInit<GreenCandle>("items/greencandle", "sprites/green_candle_idle_002", name, shortdesc, longdesc, ItemQuality.A, 190, null);
+            GreenCandle item = EasyInitItem<GreenCandle>("items/greencandle", "sprites/green_candle_idle_002", name, shortdesc, longdesc, ItemQuality.A, 190, null);
             item.ChanceToBurnEnemy = 1f;
             item.GreenFireEffect = CodeShortcuts.GetItemById<Gun>(722).DefaultModule.projectiles[0].fireEffect;
             item.GreenFireGoop = CodeShortcuts.GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
@@ -32,8 +32,8 @@ namespace SpecialStuffPack.Items
             item.EnemyDamageMultiplierSynergy = 4f;
             item.DamageUpPerFlame = 0.05f;
             item.NormalSpriteId = item.sprite.spriteId;
-            item.LitSpriteId = ItemBuilder.AddSpriteToCollection(AssetBundleManager.Load<Texture2D>("sprites/green_candle_idle_001"), SpriteBuilder.itemCollection);
-            item.SetCooldownType(ItemBuilder.CooldownType.Timed, 0.5f);
+            item.LitSpriteId = AddSpriteToCollection(AssetBundleManager.Load<Texture2D>("sprites/green_candle_idle_001"), SpriteBuilder.itemCollection);
+            item.SetCooldownType(CooldownType.Timed, 0.5f);
             item.AddToCursulaShop();
         }
 
