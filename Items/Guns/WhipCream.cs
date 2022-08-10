@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Guns
             var name = "Whipped Cream";
             var shortdesc = "Dangerous food";
             var longdesc = "Some whipped cream, which can also act as a weapon.";
-            var gun = GunBuilder.EasyGunInit("whipcream", name, shortdesc, longdesc, "whipcream_idle_001", "whipcream_idle_001", "gunsprites/whipcream/", 1000, 0f, new(8, 4), Empty, "EyeballGun",
+            var gun = EasyGunInit("whipcream", name, shortdesc, longdesc, "whipcream_idle_001", "whipcream_idle_001", "gunsprites/whipcream/", 1000, 0f, new(8, 4), Empty, "EyeballGun",
                 PickupObject.ItemQuality.B, GunClass.FULLAUTO, out var finish);
             var time = 0.25f;
             gun.MakeContinuous();
@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Items.Guns
             gun.LocalInfiniteAmmo = true;
             var damage = 4.5f;
             var length = 5;
-            var proj = GunBuilder.EasyProjectileInit<WhipProjectile>("WhipCreamProjectile", "whipped_cream_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            var proj = EasyProjectileInit<WhipProjectile>("WhipCreamProjectile", "whipped_cream_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj.Length = length;
             proj.time = time;
             proj.startAngle = 30f;
@@ -32,7 +32,7 @@ namespace SpecialStuffPack.Items.Guns
             pierce.preventPenetrationOfActors = false;
             pierce.penetratesBreakables = true;
             proj.specRigidbody.CollideWithTileMap = false;
-            var proj2 = GunBuilder.EasyProjectileInit<WhipProjectile>("WhipCreamProjectile2", "whipped_cream_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            var proj2 = EasyProjectileInit<WhipProjectile>("WhipCreamProjectile2", "whipped_cream_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj2.Length = length;
             proj2.time = time;
             proj2.startAngle = -30f;

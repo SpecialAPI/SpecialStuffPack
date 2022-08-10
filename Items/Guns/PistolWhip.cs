@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Guns
             var name = "Pistol Whip";
             var shortdesc = "Whip made out of pistols";
             var longdesc = "A whip made out of pistols, quite literally. The pistols will fire when an enemy is hit with them.";
-            var gun = GunBuilder.EasyGunInit("pistolwhip", name, shortdesc, longdesc, "pistolwhip_idle_001", "pistolwhip_idle_001", "gunsprites/pistolwhip/", 100, 0f, new(12, 10), Empty, "Baseball", 
+            var gun = EasyGunInit("pistolwhip", name, shortdesc, longdesc, "pistolwhip_idle_001", "pistolwhip_idle_001", "gunsprites/pistolwhip/", 100, 0f, new(12, 10), Empty, "Baseball", 
                 PickupObject.ItemQuality.C, GunClass.PISTOL, out var finish);
             var time = 0.25f;
             gun.SetAnimationFPS(Mathf.CeilToInt(1 / time));
@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Items.Guns
             var damage = 6;
             var length = 7;
             var bullet = GetProjectile(378);
-            var proj = GunBuilder.EasyProjectileInit<WhipProjectile>("PistolWhipProjectile", "pistolwhip_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            var proj = EasyProjectileInit<WhipProjectile>("PistolWhipProjectile", "pistolwhip_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj.Length = length;
             proj.time = time;
             proj.startAngle = 30f;
@@ -36,7 +36,7 @@ namespace SpecialStuffPack.Items.Guns
             pierce.preventPenetrationOfActors = false;
             pierce.penetratesBreakables = true;
             proj.specRigidbody.CollideWithTileMap = false;
-            var proj2 = GunBuilder.EasyProjectileInit<WhipProjectile>("PistolWhipProjectile2", "pistolwhip_projectile_002", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            var proj2 = EasyProjectileInit<WhipProjectile>("PistolWhipProjectile2", "pistolwhip_projectile_002", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj2.Length = length;
             proj2.time = time;
             proj2.startAngle = 30f;

@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Guns
             string name = "AK-NaN";
             string shortdesc = "0f / 0f";
             string longdesc = "s Shotgun fires a si||???()NLOCK: Unlock this weapon by de</>**d Lord - Single target, semi-automots in a V patail of water. Clip this weapon by reaching Bullng a new room while under!&&!!";
-            var gun = GunBuilder.EasyGunInit("guns/nank", name, shortdesc, longdesc, "nank_idle_001", "gunsprites/ammonomicon/nank_idle_001", "gunsprites/aknan", 500, 0.5f, IntVector2.Zero,
+            var gun = EasyGunInit("guns/nank", name, shortdesc, longdesc, "nank_idle_001", "gunsprites/ammonomicon/nank_idle_001", "gunsprites/aknan", 500, 0.5f, IntVector2.Zero,
                 GetItemById<Gun>(537).CriticalMuzzleFlashEffects, "ak47", PickupObject.ItemQuality.A, GunClass.SILLY, out var finish);
             gun.SetAnimationFPS("nank_reload", 16);
             gun.MakeContinuous();

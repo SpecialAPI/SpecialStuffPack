@@ -14,7 +14,7 @@ namespace SpecialStuffPack.Items.Guns
             string shortdesc = "The worst of the worst";
             string longdesc = "Fires garbage. Very rapidly.\n\nThis version of the AK-47 was created by a complete idiot. It was initially intended to be a speaker but the creator was so dumb that it turned into a gun instead. " +
                 "Instead of firing bullets, this gun makes random noises. The pure trashiness of this gun attracts garbage so quickly that it seems like it shoots it.";
-            var gun = GunBuilder.EasyGunInit("soundengine", name, shortdesc, longdesc, "soundengine_idle_001", "soundengine_idle_001", "gunsprites/aksoundengine/", 500, 1f, new(27, 5), Empty,
+            var gun = EasyGunInit("soundengine", name, shortdesc, longdesc, "soundengine_idle_001", "soundengine_idle_001", "gunsprites/aksoundengine/", 500, 1f, new(27, 5), Empty,
                 "audioshitnetic", PickupObject.ItemQuality.C, GunClass.POISON, out var finish);
             gun.SetAnimationFPS(gun.reloadAnimation, 16);
             gun.AddComponent<AkSoundEngineGun>().switches = PickupObjectDatabase.Instance.Objects.OfType<Gun>().Select(x => x.gunSwitchGroup).ToList();

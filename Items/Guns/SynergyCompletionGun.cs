@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Items.Guns
             string name = "Lich's Old Gun";
             string shortdesc = "Empty";
             string longdesc = "The Lich's old gun. Weathered with time, this gun might not shoot, but its strong magic energy might prove useful somehow...";
-            var gun = GunBuilder.EasyGunInit("lichgun", name, shortdesc, longdesc, "lichgun_idle_001", "lichgun_idle_001", "gunsprites/lichgun/", 1, 1f, new(24, 12), GetGunById(537).CriticalMuzzleFlashEffects, "BlackRevolver", 
+            var gun = EasyGunInit("lichgun", name, shortdesc, longdesc, "lichgun_idle_001", "lichgun_idle_001", "gunsprites/lichgun/", 1, 1f, new(24, 12), GetGunById(537).CriticalMuzzleFlashEffects, "BlackRevolver", 
 				PickupObject.ItemQuality.A, GunClass.NONE, out var finish);
             gun.RawSourceVolley.projectiles.Add(new()
             {

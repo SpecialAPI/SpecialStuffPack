@@ -11,9 +11,9 @@ namespace SpecialStuffPack.Items.Guns
 
         public static void Init()
         {
-            var gun = GunBuilder.EasyGunInit("helloworld", "Hello World Gun", "A coder's first gun", "what", "helloworld_idle_001", "helloworld_idle_001", "gunsprites/helloworldgun/", 25, 1f, new(24, 10), Empty, 
+            var gun = EasyGunInit("helloworld", "Hello World Gun", "A coder's first gun", "what", "helloworld_idle_001", "helloworld_idle_001", "gunsprites/helloworldgun/", 25, 1f, new(24, 10), Empty, 
                 "", PickupObject.ItemQuality.EXCLUDED, GunClass.NONE, out var finish);
-            //var proj = GunBuilder.EasyProjectileInit<WhipProjectile>("WhipProjectile", "melon_projectile_001", 10, 0f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            //var proj = EasyProjectileInit<WhipProjectile>("WhipProjectile", "melon_projectile_001", 10, 0f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             //proj.Length = 5;
             //proj.time = 0.5f;
             //proj.startAngle = 30f;

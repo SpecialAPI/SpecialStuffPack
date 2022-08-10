@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Items.Guns
             string shortdesc = "Ranged Melee";
             string longdesc = "Shoots cactus spikes on death.\n\nClubs like these are mostly wielded by potato people.";
             float swingOffset = 2f;
-            var gun = GunBuilder.EasyGunInit("guns/club", name, shortdesc, longdesc, "club_idle_001", "gunsprites/ammonomicon/club_idle_001", "gunsprites/cacticlub", 100, 0f, new(21, 5), Empty, 
+            var gun = EasyGunInit("guns/club", name, shortdesc, longdesc, "club_idle_001", "gunsprites/ammonomicon/club_idle_001", "gunsprites/cacticlub", 100, 0f, new(21, 5), Empty, 
                 "BoxingGlove", PickupObject.ItemQuality.B, GunClass.SILLY, out var finish);
             gun.spriteAnimator.GetClipByName("club_fire").ApplyOffsetsToAnimation(new List<Vector2>()
             {
@@ -21,7 +21,7 @@ namespace SpecialStuffPack.Items.Guns
                 new(swingOffset, 0f),
                 new(swingOffset / 2f, 0f)
             });
-            var proj = GunBuilder.EasyProjectileInit<Projectile>("projectiles/clubprojectile", "", 15, swingOffset * 30, swingOffset, 10f, false, false, false, null, tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, 6, 6, 0, 0);
+            var proj = EasyProjectileInit<Projectile>("projectiles/clubprojectile", "", 15, swingOffset * 30, swingOffset, 10f, false, false, false, null, tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, 6, 6, 0, 0);
             proj.AddComponent<CactiClubProjectile>().projectileToShoot = CodeShortcuts.GetItemById<Gun>(124).DefaultModule.projectiles[0];
             gun.RawSourceVolley.projectiles.Add(new()
             {

@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Guns
             string name = "Soul Gun";
             string shortdesc = "";
             string longdesc = "";
-            var gun = GunBuilder.EasyGunInit("guns/soulgun/soulgun_soul_base", name, shortdesc, longdesc, "soulgun_soul_base_idle_001", "gunsprites/ammonomicon/soulgun_soul_base_idle_001", "gunsprites/soulgun", 
+            var gun = EasyGunInit("guns/soulgun/soulgun_soul_base", name, shortdesc, longdesc, "soulgun_soul_base_idle_001", "gunsprites/ammonomicon/soulgun_soul_base_idle_001", "gunsprites/soulgun", 
                 100, 0f, new(13, 6), GetItemById<Gun>(223).muzzleFlashEffects, "Skullgun", PickupObject.ItemQuality.S, GunClass.NONE, out var finish, null, null, null);
             ProjectileModule module = new()
             {
@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Items.Guns
                 ammoType = GameUIAmmoType.AmmoType.BLUE_SHOTGUN,
                 projectiles = new List<Projectile>
                 {
-                    GunBuilder.EasyProjectileInit<Projectile>("projectiles/soulgun/projectile_soul_base", "", 10f, 11, 9, 10, true, false, false, 
+                    EasyProjectileInit<Projectile>("projectiles/soulgun/projectile_soul_base", "", 10f, 11, 9, 10, true, false, false, 
                         ETGMod.Databases.Items.ProjectileCollection.GetSpriteIdByName("floating_eye_projectile_003"), tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, null, null, null, null)
                 },
                 orderedGroupCounts = new List<int>(),
@@ -66,7 +66,7 @@ namespace SpecialStuffPack.Items.Guns
             string name = form.ToString();
             string shortdesc = "";
             string longdesc = "";
-            var gun = GunBuilder.EasyGunInit("guns/soulgun/soulgun_" + form.ToString().ToLower(), name, shortdesc, longdesc, $"soulgun_{form.ToString().ToLower()}_idle_001", 
+            var gun = EasyGunInit("guns/soulgun/soulgun_" + form.ToString().ToLower(), name, shortdesc, longdesc, $"soulgun_{form.ToString().ToLower()}_idle_001", 
                 "gunsprites/ammonomicon/soulgun_soul_base_idle_001", "gunsprites/soulgun", 100, isReloadSniper ? 2f : 0f, new(0, 0), GetItemById<Gun>(223).muzzleFlashEffects, "Skullgun", 
                 PickupObject.ItemQuality.EXCLUDED, GunClass.NONE, out var finish, null, null, null);
             var spriteId = "floating_eye_projectile_003";
@@ -79,7 +79,7 @@ namespace SpecialStuffPack.Items.Guns
                 spriteId = "blue_skull_projectile_001003";
             }
             var damage = 10f * damagemult;
-            var projectile = GunBuilder.EasyProjectileInit<Projectile>("projectiles/soulgun/projectile_" + form.ToString().ToLower(), "", damage, 11 * projspeedmult, 9 * rangemult, 10, true, false, false,
+            var projectile = EasyProjectileInit<Projectile>("projectiles/soulgun/projectile_" + form.ToString().ToLower(), "", damage, 11 * projspeedmult, 9 * rangemult, 10, true, false, false,
                         ETGMod.Databases.Items.ProjectileCollection.GetSpriteIdByName(spriteId), tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, null, null, null, null);
             if (isRocket)
             {

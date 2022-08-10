@@ -9,7 +9,7 @@ namespace SpecialStuffPack.Items.Guns
     {
         public static void Init()
         {
-            HookProjectile proj = GunBuilder.EasyProjectileInit<HookProjectile>("projectiles/hookprojectile", string.Empty, 10f, 1f, 999999f, 0f, true, false, false, ETGMod.Databases.Items.ProjectileCollection.GetSpriteIdByName("rock_projectile_001"),
+            HookProjectile proj = EasyProjectileInit<HookProjectile>("projectiles/hookprojectile", string.Empty, 10f, 1f, 999999f, 0f, true, false, false, ETGMod.Databases.Items.ProjectileCollection.GetSpriteIdByName("rock_projectile_001"),
                 tk2dBaseSprite.Anchor.LowerLeft, 0, 0, null, null, null, null);
             proj.initialSpeed = 23f;
             proj.GetOrAddComponent<BounceProjModifier>().numberOfBounces += 9999;

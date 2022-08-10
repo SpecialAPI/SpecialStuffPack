@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Guns
             string name = "Ender Gun";
             string shortdesc = "End the lives of your enemies!";
             string longdesc = "Imitates the owner's starter gun, but bigger.";
-            var gun = GunBuilder.EasyGunInit("guns/ender", name, shortdesc, longdesc, "ender_idle_001", "ender_idle_001", "gunsprites/endergun/", 100, 1f, new(16, 16), Empty, "", PickupObject.ItemQuality.S, GunClass.NONE, 
+            var gun = EasyGunInit("guns/ender", name, shortdesc, longdesc, "ender_idle_001", "ender_idle_001", "gunsprites/endergun/", 100, 1f, new(16, 16), Empty, "", PickupObject.ItemQuality.S, GunClass.NONE, 
                 out var finish);
             gun.LocalInfiniteAmmo = true;
             var g = gun.AddComponent<EnderGun>();

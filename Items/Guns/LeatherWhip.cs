@@ -12,14 +12,14 @@ namespace SpecialStuffPack.Items.Guns
             var name = "Leather Whip";
             var shortdesc = "4 summon tag damage";
             var longdesc = "Just a leather whip.\n\nIn another world, this whip might have made your companions better at attacking, unfortunately that's not the case in the Gungeon.";
-            var gun = GunBuilder.EasyGunInit("whip", name, shortdesc, longdesc, "whip_idle_001", "whip_idle_001", "gunsprites/whip/", 100, 0f, new(8, 8), Empty, "Baseball", PickupObject.ItemQuality.D, GunClass.BEAM,
+            var gun = EasyGunInit("whip", name, shortdesc, longdesc, "whip_idle_001", "whip_idle_001", "gunsprites/whip/", 100, 0f, new(8, 8), Empty, "Baseball", PickupObject.ItemQuality.D, GunClass.BEAM,
                 out var finish);
             var time = 0.25f;
             gun.SetAnimationFPS(Mathf.CeilToInt(1 / time));
             gun.LocalInfiniteAmmo = true;
             var damage = 9;
             var length = 6;
-            var proj = GunBuilder.EasyProjectileInit<WhipProjectile>("WhipProjectile", "whip_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            var proj = EasyProjectileInit<WhipProjectile>("WhipProjectile", "whip_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj.Length = length;
             proj.time = time;
             proj.startAngle = 30f;
@@ -32,7 +32,7 @@ namespace SpecialStuffPack.Items.Guns
             pierce.preventPenetrationOfActors = false;
             pierce.penetratesBreakables = true;
             proj.specRigidbody.CollideWithTileMap = false;
-            var proj2 = GunBuilder.EasyProjectileInit<WhipProjectile>("WhipEndProjectile", "whip_projectile_002", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
+            var proj2 = EasyProjectileInit<WhipProjectile>("WhipEndProjectile", "whip_projectile_002", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj2.Length = length;
             proj2.time = time;
             proj2.startAngle = 30f;

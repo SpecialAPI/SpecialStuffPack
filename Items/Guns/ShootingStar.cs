@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Shooting Star";
             string shortdesc = "Rapidfire Starlight";
             string longdesc = "Shoots starlight, rapidly.\n\nThe original idea behind the gun was a gun that could shoot meteors, but the gunsmith that was making the gun must've really misunderstood the idea...";
-            Gun gun = GunBuilder.EasyGunInit("guns/shooting_star", name, shortdesc, longdesc, "shooting_star_idle_001", "gunsprites/ammonomicon/shooting_star_idle_001", "gunsprites/shootingstar", 600, 0f, new(30, 7), 
+            Gun gun = EasyGunInit("guns/shooting_star", name, shortdesc, longdesc, "shooting_star_idle_001", "gunsprites/ammonomicon/shooting_star_idle_001", "gunsprites/shootingstar", 600, 0f, new(30, 7), 
                 GetItemById<Gun>(15).muzzleFlashEffects, "ak47", PickupObject.ItemQuality.S, GunClass.FULLAUTO, out var finish, 15, null, null);
             ProjectileModule module = new()
             {
