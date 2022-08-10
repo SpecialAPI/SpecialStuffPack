@@ -54,7 +54,7 @@ namespace SpecialStuffPack.Items
             {
                 return orig(self, positionInRoom, targetRoom, targetQuality, overrideMimicChance);
             }
-            else if (SynergyBuilder.AnyoneHasActiveSynergy("Just Your Normal Luck"))
+            else if (AnyoneHasActiveSynergy("Just Your Normal Luck"))
             {
                 Chest toReturn = null;
                 ItemQuality quality = (ItemQuality)UnityEngine.Random.Range(1, 6);
@@ -76,7 +76,7 @@ namespace SpecialStuffPack.Items
                         toReturn = orig(self, positionInRoom, targetRoom, targetQuality, overrideMimicChance);
                         return toReturn;
                 }
-                if(SynergyBuilder.AnyoneHasActiveSynergy("Somehow... Luckier?"))
+                if(AnyoneHasActiveSynergy("Somehow... Luckier?"))
                 {
                     numToSpawn += 1;
                 }
@@ -171,7 +171,7 @@ namespace SpecialStuffPack.Items
                 spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(-2, 1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
                 spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(2, -1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
                 spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(-2, -1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
-                if(SynergyBuilder.AnyoneHasActiveSynergy("Somehow... Luckier?"))
+                if(AnyoneHasActiveSynergy("Somehow... Luckier?"))
                 {
                     spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom, isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
                 }

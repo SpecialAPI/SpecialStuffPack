@@ -84,8 +84,6 @@
     <Compile Include="APIs\SynergyAPI\AdvancedGunFormeSynergyProcessor.cs" />
     <Compile Include="APIs\SynergyAPI\AdvancedHoveringGunSynergyProcessor.cs" />
     <Compile Include="APIs\SynergyAPI\AdvancedInfiniteAmmoSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedStringDB.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedStringDBTable.cs" />
     <Compile Include="APIs\SynergyAPI\AdvancedTransformGunSynergyProcessor.cs" />
     <Compile Include="APIs\SynergyAPI\AdvancedVolleyReplacementSynergyProcessor.cs" />
     <Compile Include="APIs\SynergyAPI\SynergyBuilder.cs" />

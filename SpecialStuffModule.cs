@@ -90,8 +90,8 @@ namespace SpecialStuffPack
             try
             {
                 //init apis
-                ItemBuilder.Init();
-                SynergyBuilder.Init();
+                InitItemBuilder();
+                InitSynergyBuilder();
                 GungeonAPIMain.Init();
                 GoopDatabase.Init();
 

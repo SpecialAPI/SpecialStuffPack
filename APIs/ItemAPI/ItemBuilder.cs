@@ -19,7 +19,7 @@ namespace SpecialStuffPack.ItemAPI
         /// Sets the base assembly of the ResourceExtractor, so 
         /// resources can be accessed
         /// </summary>
-        public static void Init()
+        public static void InitItemBuilder()
         {
             try
             {

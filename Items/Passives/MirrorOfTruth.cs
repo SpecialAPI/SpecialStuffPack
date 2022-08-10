@@ -42,7 +42,7 @@ namespace SpecialStuffPack.Items
             {
                 GameObject g = LoadHelper.LoadAssetFromAnywhere<GameObject>("Shrine_Mirror").GetComponent<DungeonPlaceableBehaviour>().InstantiateObject(targetRoom, positionInRoom + new IntVector2(0, 2), true);
                 targetRoom.RegisterInteractable(g.GetInterfaceInChildren<IPlayerInteractable>());
-                g.GetComponentInChildren<MirrorController>().CURSE_EXPOSED /= SynergyBuilder.AnyoneHasActiveSynergy("Blessed Mirror") ? 7 : 3.5f;
+                g.GetComponentInChildren<MirrorController>().CURSE_EXPOSED /= AnyoneHasActiveSynergy("Blessed Mirror") ? 7 : 3.5f;
                 return null;
             }
             else

@@ -17,11 +17,9 @@ namespace SpecialStuffPack.SynergyAPI
         /// <summary>
         /// Inits SynergyAPI.
         /// </summary>
-        public static void Init()
+        public static void InitSynergyBuilder()
         {
-            m_synergyTable = typeof(StringTableManager).GetField("m_synergyTable", BindingFlags.NonPublic | BindingFlags.Static);
             synergies = new List<AdvancedSynergyEntry>();
-            Strings = new AdvancedStringDB();
         }
 
         /// <summary>
@@ -30,8 +28,6 @@ namespace SpecialStuffPack.SynergyAPI
         public static void Unload()
         {
             m_synergyTable = null;
-            Strings?.Unload();
-            Strings = null;
             synergies?.Clear();
             synergies = null;
         }
@@ -425,14 +421,14 @@ namespace SpecialStuffPack.SynergyAPI
         public static AdvancedSynergyEntry CreateSynergy(string name, List<int> mandatoryIds, List<int> optionalIds = default, bool activeWhenGunsUnequipped = true, List<StatModifier> statModifiers = default, bool ignoreLichsEyeBullets = false,
             int numberObjectsRequired = 2, bool suppressVfx = false, bool requiresAtLeastOneGunAndOneItem = false, List<CustomSynergyType> bonusSynergies = default)
         {
-            if (Strings == null || synergies == null)
+            if (synergies == null)
             {
-                Init();
+                InitSynergyBuilder();
             }
             AdvancedSynergyEntry entry = new AdvancedSynergyEntry();
             string key = "#" + name.ToUpper().Replace(" ", "_").Replace("'", "").Replace(",", "").Replace(".", "");
             entry.NameKey = key;
-            Strings.Synergies.Set(key, name);
+            ETGMod.Databases.Strings.Synergy.Set(key, name);
             if (mandatoryIds != null)
             {
                 foreach (int id in mandatoryIds)
@@ -490,44 +486,6 @@ namespace SpecialStuffPack.SynergyAPI
             synergies.Add(entry);
             GameManager.Instance.SynergyManager.synergies = GameManager.Instance.SynergyManager.synergies.Concat(new AdvancedSynergyEntry[] { entry }).ToArray();
             return entry;
-        }
-
-        /// <summary>
-        /// Creates a new synergy.
-        /// </summary>
-        /// <param name="name">The name of the synergy.</param>
-        /// <param name="mandatoryIds">Console ids of items that are always required for the completion of the synergy.</param>
-        /// <param name="optionalIds">Console ids of "filler items" that will be needed to fill empty spaces in list of synergy-completing items.</param>
-        /// <param name="activeWhenGunsUnequipped">If true, the synergy will still be active when the player is not holding the guns required for it's completion.</param>
-        /// <param name="statModifiers">Stat modifiers that will be applied to the player when the synergy is active.</param>
-        /// <param name="ignoreLichsEyeBullets">If true, Lich's Eye Bullets will not be able to activate the synergy.</param>
-        /// <param name="numberObjectsRequired">Number of items required for the synergy's completion.</param>
-        /// <param name="suppressVfx">If true, the synergy arrow VFX will not appear when the synergy is completed.</param>
-        /// <param name="requiresAtLeastOneGunAndOneItem">If true, the player will have to have at least one item AND gun from either/both <paramref name="mandatoryIds"/> and <paramref name="optionalIds"/>.</param>
-        /// <param name="bonusSynergies">List of "bonus synergies" for the synergy. Bonus synergies are used by base game items to detect if a synergy is active, but for modded synergies you don't need them.</param>
-        /// <returns>The built synergy</returns>
-        public static AdvancedSynergyEntry CreateSynergy(string name, List<string> mandatoryIds, List<string> optionalIds = default, bool activeWhenGunsUnequipped = true, List<StatModifier> statModifiers = default, bool ignoreLichsEyeBullets = false,
-            int numberObjectsRequired = 2, bool suppressVfx = false, bool requiresAtLeastOneGunAndOneItem = false, List<CustomSynergyType> bonusSynergies = default)
-        {
-            List<int> manditemids = new List<int>();
-            List<int> optitemids = new List<int>();
-            foreach (string str in mandatoryIds)
-            {
-                PickupObject po = Game.Items[str];
-                if (po is Gun || po is PassiveItem || po is PlayerItem)
-                {
-                    manditemids.Add(po.PickupObjectId);
-                }
-            }
-            foreach (string str in optionalIds)
-            {
-                PickupObject po = Game.Items[str];
-                if (po is Gun || po is PassiveItem || po is PlayerItem)
-                {
-                    optitemids.Add(po.PickupObjectId);
-                }
-            }
-            return CreateSynergy(name, manditemids, optitemids, activeWhenGunsUnequipped, statModifiers, ignoreLichsEyeBullets, numberObjectsRequired, suppressVfx, requiresAtLeastOneGunAndOneItem, bonusSynergies);
         }
 
         /// <summary>
@@ -686,10 +644,6 @@ namespace SpecialStuffPack.SynergyAPI
         /// Synergies that were added by SynergyAPI;
         /// </summary>
         public static List<AdvancedSynergyEntry> synergies;
-        /// <summary>
-        /// <see cref="AdvancedStringDB"/> used by SynergyAPI;
-        /// </summary>
-        public static AdvancedStringDB Strings;
         /// <summary>
         /// <see cref="FieldInfo"/> for the synergy table.
         /// </summary>
