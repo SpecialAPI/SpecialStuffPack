@@ -17,7 +17,7 @@ namespace SpecialStuffPack.Items
             string name = "Wishing Orb";
             string shortdesc = "Grants Wishes... For a Cost";
             string longdesc = "Consumes a part of user's soul to grant a wish. Will get more and more unstable with each use. Are you sure you want to use it?\n\nA mysterious glowing orb. Powerful magic emanates from inside.";
-            WishingOrb item = ItemBuilder.EasyInit<WishingOrb>("items/wishorb", "sprites/wishing_orb_idle_001", name, shortdesc, longdesc, ItemQuality.B, SpecialStuffModule.globalPrefix, 814, null);
+            WishingOrb item = ItemBuilder.EasyInit<WishingOrb>("items/wishorb", "sprites/wishing_orb_idle_001", name, shortdesc, longdesc, ItemQuality.B, 814, null);
             item.SetCooldownType(ItemBuilder.CooldownType.Timed, 0.5f);
             item.AddPassiveStatModifier(PlayerStats.StatType.Curse, 1f, StatModifier.ModifyMethod.ADDITIVE);
             item.FlashColor = new Color(0f, 1f, 1f);

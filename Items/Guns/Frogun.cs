@@ -5,15 +5,15 @@ using System.Text;
 
 namespace SpecialStuffPack.Items.Guns
 {
-    public class Frogun : AdvancedGunBehaviour
+    public class Frogun : GunBehaviour
     {
         public static void Init()
         {
             string name = "Frogun";
             string shortdesc = "What the...";
             string longdesc = "Shoots bubbles. Reloading an empty clip pops the bubbles, releasing bullets directed at nearby enemies.";
-            var gun = GunBuilder.EasyGunInit("frogun", name, shortdesc, longdesc, "frogun_idle_001", "frogun_idle_001", "gunsprites/frogun/", 130, 1f, new Vector3(1.375f, 0.5625f), Empty, "BubbleGun", PickupObject.ItemQuality.A,
-                GunClass.SHOTGUN, SpecialStuffModule.globalPrefix, out var finish);
+            var gun = GunBuilder.EasyGunInit("frogun", name, shortdesc, longdesc, "frogun_idle_001", "frogun_idle_001", "gunsprites/frogun/", 130, 1f, new(22, 9), Empty, "BubbleGun", PickupObject.ItemQuality.A,
+                GunClass.SHOTGUN, out var finish);
             gun.SetAnimationFPS(gun.reloadAnimation, 3);
             for(int i = 0; i < 2; i++)
             {

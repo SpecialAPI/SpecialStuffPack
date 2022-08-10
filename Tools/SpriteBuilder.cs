@@ -97,7 +97,7 @@ namespace SpecialStuffPack
         /// Adds a sprite (from a resource) to a collection
         /// </summary>
         /// <returns>The spriteID of the defintion in the collection</returns>
-        public static int AddSpriteToCollection(string resourcePath, tk2dSpriteCollectionData collection, string shaderName)
+        public static int AddSpriteToCollection(string resourcePath, tk2dSpriteCollectionData collection, string shaderName, bool noDuplicates = false)
         {
             if(collection == null)
             {
@@ -110,7 +110,7 @@ namespace SpecialStuffPack
                 Debug.LogWarning("Texture is null! Resource path: " + resourcePath);
                 return -1;
             }
-            else
+            else if(noDuplicates)
             {
                 var id = collection.GetSpriteIdByName(texture.name, -1);
                 if(id >= 0)
@@ -118,14 +118,14 @@ namespace SpecialStuffPack
                     return id;
                 }
             }
-            return AddSpriteToCollection(texture, collection, shaderName);
+            return AddSpriteToCollection(texture, collection, shaderName, noDuplicates);
         }
 
         /// <summary>
         /// Adds a sprite (from a resource) to a collection
         /// </summary>
         /// <returns>The spriteID of the defintion in the collection</returns>
-        public static int AddSpriteToCollection(Texture2D texture, tk2dSpriteCollectionData collection, string shaderName)
+        public static int AddSpriteToCollection(Texture2D texture, tk2dSpriteCollectionData collection, string shaderName, bool noDuplicates = false)
         {
             if (collection == null)
             {
@@ -137,7 +137,7 @@ namespace SpecialStuffPack
                 Debug.LogWarning("Texture is null!");
                 return -1;
             }
-            else
+            else if (noDuplicates)
             {
                 var id = collection.GetSpriteIdByName(texture.name, -1);
                 if (id >= 0)

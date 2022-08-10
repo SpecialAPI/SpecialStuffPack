@@ -13,8 +13,27 @@ using SpecialStuffPack.Controls;
 
 namespace SpecialStuffPack
 {
-    public static class CodeShortcuts
+    public static partial class CodeShortcuts
     {
+        public static Gun AsGun(this PickupObject po) => po as Gun;
+        public static PlayerItem AsActive(this PickupObject po) => po as PlayerItem;
+        public static PassiveItem AsPassive(this PickupObject po) => po as PassiveItem;
+        public static T As<T>(this object o)
+        {
+            if (o is T t)
+            {
+                return t;
+            }
+            return default;
+        }
+
+        public static StatModifier CreateStatMod(PlayerStats.StatType targetStat, StatModifier.ModifyMethod method, float amt, bool destroyOnHit = false)
+        {
+            var mod = StatModifier.Create(targetStat, method, amt);
+            mod.isMeatBunBuff = destroyOnHit;
+            return mod;
+        }
+
         public static T RandomElement<T>(this IEnumerable<T> collection)
         {
             return BraveUtility.RandomElement(collection.ToArray());
@@ -39,9 +58,90 @@ namespace SpecialStuffPack
             user.OnItemStolen += BreakStealthOnStolen;
         }
 
+        public static void MakeContinuous(this Gun gun)
+        {
+            gun.usesContinuousFireAnimation = true;
+            var clippy = gun.spriteAnimator?.GetClipByName(gun.shootAnimation);
+            if(clippy != null)
+            {
+                clippy.wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop;
+            }
+        }
+
+        public static void UnmakeContinuous(this Gun gun)
+        {
+            gun.usesContinuousFireAnimation = false;
+            var clippy = gun.spriteAnimator?.GetClipByName(gun.shootAnimation);
+            if (clippy != null)
+            {
+                clippy.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+            }
+        }
+
+        public static PlayerController PlayerOwner(this Projectile proj)
+        {
+            return proj?.Owner as PlayerController;
+        }
+
+        public static void IncrementFlag<T>(this PlayerController p)
+        {
+            p.IncrementFlag(typeof(T));
+        }
+
+        public static void IncrementFlag(this PlayerController p, Type passiveFlag)
+        {
+            PassiveItem.IncrementFlag(p, passiveFlag);
+        }
+
+        public static void DecrementFlag<T>(this PlayerController p)
+        {
+            p.DecrementFlag(typeof(T));
+        }
+
+        public static void DecrementFlag(this PlayerController p, Type passiveFlag)
+        {
+            PassiveItem.DecrementFlag(p, passiveFlag);
+        }
+
+        public static int GetFlagCount<T>(this PlayerController p)
+        {
+            return p.GetFlagCount(typeof(T));
+        }
+
+        public static int GetFlagCount(this PlayerController p, Type passiveFlag)
+        {
+            if(!PassiveItem.IsFlagSetForCharacter(p, passiveFlag))
+            {
+                return 0;
+            }
+            return PassiveItem.ActiveFlagItems[p][passiveFlag];
+        }
+
+        public static int ToInt(this bool b, int onFalse = 0, int onTrue = 1)
+        {
+            return b ? onTrue : onFalse;
+        }
+
+        public static bool IsDefaultOrClone(this ProjectileModule mod, Gun g)
+        {
+            return mod == g.DefaultModule || mod.CloneSourceIndex == 0;
+        }
+
+        public static bool OwnerHasSynergy(this Projectile proj, string name)
+        {
+            return (proj?.PlayerOwner()?.PlayerHasActiveSynergy(name)).GetValueOrDefault();
+        }
+
         public static Projectile GetProjectile(int id)
         {
-            return GetItemById<Gun>(id)?.DefaultModule?.projectiles.FirstOrDefault() ?? GetItemById<Gun>(id)?.DefaultModule?.chargeProjectiles?.FirstOrDefault()?.Projectile;
+            return GetGunById(id).DefaultModule.shootStyle == ProjectileModule.ShootStyle.Charged ?
+                GetGunById(id)?.DefaultModule?.chargeProjectiles?.Find(x => x.Projectile != null)?.Projectile ?? GetGunById(id)?.DefaultModule?.projectiles.FirstOrDefault() :
+                GetGunById(id)?.DefaultModule?.projectiles.FirstOrDefault() ?? GetGunById(id)?.DefaultModule?.chargeProjectiles?.Find(x => x.Projectile != null)?.Projectile;
+        }
+
+        public static VFXPool GetMuzzleFlash(int id)
+        {
+            return GetGunById(id)?.muzzleFlashEffects;
         }
 
         public static void BreakStealth(PlayerController obj, string reason, Action<PlayerController> unstealthyActionDelegate, Action<PlayerController, ShopItemController> stolenDelegate)
@@ -54,6 +154,21 @@ namespace SpecialStuffPack
             obj.SetIsStealthed(false, reason);
             obj.SetCapableOfStealing(false, reason, null);
             AkSoundEngine.PostEvent("Play_ENM_wizardred_appear_01", obj.gameObject);
+        }
+
+        public static bool PlayerHasSynergyCompletionGun(this AdvancedSynergyEntry self, PlayerController p)
+        {
+            if (p && p.inventory != null)
+            {
+                for (int i = 0; i < p.inventory.AllGuns.Count; i++)
+                {
+                    if (p.inventory.AllGuns[i].GetComponent<SynergyCompletionGun>() != null)
+                    {
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
 
         public static void DecayingStatModifier(this PlayerController player, PlayerStats.StatType stat, float targetValue, float time, bool isMultiplicative = false)
@@ -169,6 +284,36 @@ namespace SpecialStuffPack
         public static T GetItemById<T>(int id) where T : PickupObject
         {
             return PickupObjectDatabase.GetById(id) as T;
+        }
+
+        public static PickupObject GetItemById(int id)
+        {
+            return PickupObjectDatabase.GetById(id);
+        }
+
+        public static Gun GetGunById(int id)
+        {
+            return GetItemById<Gun>(id);
+        }
+
+        public static T GetPassiveById<T>(int id) where T : PassiveItem
+        {
+            return GetItemById<T>(id);
+        }
+
+        public static PassiveItem GetPassiveById(int id)
+        {
+            return GetItemById<PassiveItem>(id);
+        }
+
+        public static T GetActiveById<T>(int id) where T : PlayerItem
+        {
+            return GetItemById<T>(id);
+        }
+
+        public static PlayerItem GetActiveById(int id)
+        {
+            return GetItemById<PlayerItem>(id);
         }
 
         public static Delegate GetEventDelegate(this object self, string eventName)
@@ -289,7 +434,7 @@ namespace SpecialStuffPack
 
         public static string ToMTGId(this string s)
         {
-            return s.ToLower().Replace(" ", "_").Replace("\"", "").Replace("'", "").Replace("-", "");
+            return s.ToID().Replace("'", "");
         }
 
         public static List<AIActor> GetActiveEnemiesUnreferenced(this RoomHandler room, RoomHandler.ActiveEnemyType type)

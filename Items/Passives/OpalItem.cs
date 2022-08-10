@@ -15,9 +15,12 @@ namespace SpecialStuffPack.Items
             string name = "The Opal";
             string shortdesc = "A Reward?";
             string longdesc = "Pits no longer damage the owner.\n\nOnce used by the Old King as a second eye.";
-            OpalItem item = ItemBuilder.EasyInit<OpalItem>("items/opal", "sprites/opal_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, SpecialStuffModule.globalPrefix, null, null);
+            OpalItem item = ItemBuilder.EasyInit<OpalItem>("items/opal", "sprites/opal_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             OpalId = item.PickupObjectId;
             EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).usesPurpleNotifications = true;
+            GemDropper dropper = EnemyDatabase.GetOrLoadByGuid("5729c8b5ffa7415bb3d01205663a33ef").AddComponent<GemDropper>();
+            SpecialAssets.assets.Add(dropper.gameObject);
+            dropper.GemId = OpalId;
         }
 
         public override void Pickup(PlayerController player)

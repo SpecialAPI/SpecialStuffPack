@@ -33,7 +33,11 @@ namespace SpecialStuffPack.ItemAPI
                 BlacksmithShop = ForgeDungeonPrefab.PatternSettings.flows[0].AllNodes[10].overrideExactRoom;
                 BlackSmith_Items_01 = (BlacksmithShop.placedObjects[8].nonenemyBehaviour as BaseShopController).shopItemsGroup2;
                 ForgeDungeonPrefab = null;
-                ItemIds = new Dictionary<string, int>();
+                ItemIds = new();
+                Passive = new();
+                Active = new();
+                Guns = new();
+                Item = new();
             }
             catch (Exception e)
             {
@@ -75,13 +79,13 @@ namespace SpecialStuffPack.ItemAPI
             return SpriteBuilder.AddSpriteToCollection(tex, collection, "tk2d/CutoutVertexColorTintableTilted");
         }
 
-        public static T EasyInit<T>(string objectPath, string spritePath, string name, string shortDesc, string longDesc, PickupObject.ItemQuality quality, string consolePrefix, int? ammonomiconPlacement = null, string overrideConsoleID = null) 
+        public static T EasyInit<T>(string objectPath, string spritePath, string name, string shortDesc, string longDesc, PickupObject.ItemQuality quality, int? ammonomiconPlacement = null, string overrideConsoleID = null) 
             where T : PickupObject
         {
             GameObject go = AssetBundleManager.Load<GameObject>(objectPath);
             tk2dSprite.AddComponent(go, SpriteBuilder.itemCollection, AddSpriteToCollection(AssetBundleManager.Load<Texture2D>(spritePath), SpriteBuilder.itemCollection));
             T item = go.AddComponent<T>();
-            SetupItem(item, name, shortDesc, longDesc, consolePrefix, overrideConsoleID);
+            SetupItem(item, name, shortDesc, longDesc, SpecialStuffModule.globalPrefix, overrideConsoleID);
             item.quality = quality;
             if(ammonomiconPlacement != null)
             {
@@ -158,6 +162,8 @@ namespace SpecialStuffPack.ItemAPI
             try
             {
                 item.encounterTrackable = null;
+                var notSpapiName = item.name;
+                item.gameObject.name = $"spapi_{item.gameObject.name}";
                 ETGMod.Databases.Items.SetupItem(item, item.name);
                 SpriteBuilder.AddToAmmonomicon(item.sprite.GetCurrentSpriteDef());
                 item.encounterTrackable.journalData.AmmonomiconSprite = item.sprite.GetCurrentSpriteDef().name;
@@ -174,21 +180,23 @@ namespace SpecialStuffPack.ItemAPI
                 {
                     Game.Items.Add(idPool + ":" + name.ToMTGId(), item);
                 }
-                ETGMod.Databases.Items.Add(item);
-                item.RemovePeskyQuestionmark();
-                ItemIds.Add(item.name.ToLower(), item.PickupObjectId);
+                ETGMod.Databases.Items.AddSpecific(item);
+                ItemIds.Add(notSpapiName.ToLower(), item.PickupObjectId);
+                if(item is PassiveItem passive)
+                {
+                    Passive.Add(notSpapiName.ToLower(), passive);
+                }
+                else if(item is PlayerItem active)
+                {
+                    Active.Add(notSpapiName.ToLower(), active);
+                }
+                Item.Add(notSpapiName.ToLower(), item);
             }
             catch (Exception e)
             {
                 ETGModConsole.Log(e.Message);
                 ETGModConsole.Log(e.StackTrace);
             }
-        }
-
-        public static PickupObject RemovePeskyQuestionmark(this PickupObject item)
-        {
-            EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).journalData.SuppressKnownState = false;
-            return item;
         }
 
         /// <summary>
@@ -388,6 +396,10 @@ namespace SpecialStuffPack.ItemAPI
         public static GenericLootTable Shop_Goop_Items_01;
         public static GenericLootTable Shop_Blank_Items_01;
         public static GenericLootTable BlackSmith_Items_01;
+        public static Dictionary<string, Gun> Guns;
+        public static Dictionary<string, PassiveItem> Passive;
+        public static Dictionary<string, PlayerItem> Active;
+        public static Dictionary<string, PickupObject> Item;
         public static Dictionary<string, int> ItemIds;
     }
 }

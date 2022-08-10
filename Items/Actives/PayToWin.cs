@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string name = "PAY 2 WIN";
             string shortdesc = "Upgrade Chests for $$$";
             string longdesc = "Consumes casings to upgrade chests. Upgrading better chests costs more.";
-            PayToWin item = ItemBuilder.EasyInit<PayToWin>("items/paytowin", "sprites/ptw_idle_001", name, shortdesc, longdesc, ItemQuality.B, SpecialStuffModule.globalPrefix, 494, null);
+            PayToWin item = ItemBuilder.EasyInit<PayToWin>("items/paytowin", "sprites/ptw_idle_001", name, shortdesc, longdesc, ItemQuality.B, 494, null);
             item.SetCooldownType(ItemBuilder.CooldownType.Timed, 0.5f);
             item.dUpgradePrice = 25;
             item.cUpgradePrice = 35;

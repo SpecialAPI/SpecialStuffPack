@@ -21,6 +21,11 @@ namespace SpecialStuffPack.Components
 
         public void DropGem(Vector2 v)
         {
+            if (UseDeathPosition)
+            {
+                LootEngine.SpawnItem(PickupObjectDatabase.GetById(GemId).gameObject, healthHaver.specRigidbody.UnitCenter, Vector2.down, 0f, false, false, false);
+                return;
+            }
             Vector3 spawnPosition = GameManager.Instance.PrimaryPlayer.CurrentRoom.GetRandomAvailableCell(new IntVector2(1, 1), Dungeonator.CellTypes.FLOOR, false, null).GetValueOrDefault().ToVector3();
             if (IsRNGBossRoom)
             {
@@ -62,6 +67,7 @@ namespace SpecialStuffPack.Components
         }
 
         public int GemId;
+        public bool UseDeathPosition;
         public bool IsRNGBossRoom;
         [NonSerialized]
         public List<int> AdditionalItems;

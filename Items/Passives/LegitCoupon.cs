@@ -14,7 +14,7 @@ namespace SpecialStuffPack.Items
             string name = "Totally Legit Coupon";
             string shortdesc = "Free Stuff :)";
             string longdesc = "Makes all items from shops free.\n\nA crumpled and partially torn piece of paper that says \"-100%\". Seems fake.";
-            LegitCoupon item = ItemBuilder.EasyInit<LegitCoupon>("items/legitcoupon", "sprites/legit_coupon_idle_001", name, shortdesc, longdesc, ItemQuality.D, SpecialStuffModule.globalPrefix, 353, null);
+            LegitCoupon item = ItemBuilder.EasyInit<LegitCoupon>("items/legitcoupon", "sprites/legit_coupon_idle_001", name, shortdesc, longdesc, ItemQuality.D, 353, null);
             item.priceIncreasePerPurchase = 0.2f;
             item.freeTakeChance = 0.5f;
             item.AddPassiveStatModifier(PlayerStats.StatType.GlobalPriceMultiplier, -1f, StatModifier.ModifyMethod.ADDITIVE);

@@ -70,7 +70,14 @@ namespace SpecialStuffPack.Placeables
 			{
 				RoomHandler room2 = BraveUtility.RandomElement(room.connectedRooms);
                 IntVector2 v = room2.GetRandomAvailableCell(new IntVector2(1, 1), CellTypes.FLOOR, false, null).GetValueOrDefault();
-				ETGModConsole.Log("v: " + v);
+				if(GameManager.Instance?.Dungeon?.data != null && GameManager.Instance.Dungeon.data.CheckInBoundsAndValid(v) && GameManager.Instance.Dungeon.data[v].type == CellType.WALL)
+                {
+					v.y += 1;
+                }
+				if (GameManager.Instance?.Dungeon?.data != null && GameManager.Instance.Dungeon.data.CheckInBoundsAndValid(v + IntVector2.Down) && GameManager.Instance.Dungeon.data[v + IntVector2.Down].type == CellType.WALL)
+				{
+					v.y += 1;
+				}
                 GameObject bookPage = bookPagePrefab.GetComponent<DungeonPlaceableBehaviour>().InstantiateObject(room2, v - room2.area.basePosition, false);
 				foreach(IPlayerInteractable interact in bookPage.GetComponentsInChildren<IPlayerInteractable>())
                 {

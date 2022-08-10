@@ -19,7 +19,7 @@ namespace SpecialStuffPack.Items
             string name = "Mirror of Truth";
             string shortdesc = "Look at you.";
             string longdesc = "Replaces all chests with mirrors.\n\nA piece of a mirror from an another world. Seems like it came from a cursed place...";
-            MirrorOfTruth item = ItemBuilder.EasyInit<MirrorOfTruth>("items/truthmirror", "sprites/mirror_of_truth_idle_001", name, shortdesc, longdesc, ItemQuality.C, SpecialStuffModule.globalPrefix, 289, null);
+            MirrorOfTruth item = ItemBuilder.EasyInit<MirrorOfTruth>("items/truthmirror", "sprites/mirror_of_truth_idle_001", name, shortdesc, longdesc, ItemQuality.C, 289, null);
             item.ShadowSynergyClonePrefab = CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(820).objectToSpawn;
             item.AddToCursulaShop();
             new Hook(typeof(RewardManager).GetMethod("GenerationSpawnRewardChestAt", BindingFlags.Public | BindingFlags.Instance), typeof(MirrorOfTruth).GetMethod("ReplaceChestWithMirror", BindingFlags.Public | BindingFlags.Static));

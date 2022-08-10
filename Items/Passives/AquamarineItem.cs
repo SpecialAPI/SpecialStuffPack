@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "The Aquamarine";
             string shortdesc = "A Reward?";
             string longdesc = "Grants electric immunity.\n\nUsed by Agunim in one of his attempts to bring back his master.";
-            AquamarineItem item = ItemBuilder.EasyInit<AquamarineItem>("items/aquamarine", "sprites/aquamarine_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, SpecialStuffModule.globalPrefix, null, null);
+            AquamarineItem item = ItemBuilder.EasyInit<AquamarineItem>("items/aquamarine", "sprites/aquamarine_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             AquamarineId = item.PickupObjectId;
             EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).usesPurpleNotifications = true;
             GemDropper dropper = EnemyDatabase.GetOrLoadByGuid("41ee1c8538e8474a82a74c4aff99c712").AddComponent<GemDropper>();

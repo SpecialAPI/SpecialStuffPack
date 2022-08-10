@@ -21,7 +21,7 @@ namespace SpecialStuffPack.Items
             string name = "Resourceful Whistle";
             string shortdesc = "An unlikely truce?";
             string longdesc = "Summons the resourceful rat to steal guns and place bombs near enemies. Prevents the rat from stealing items from the owner.";
-            RatWhistle item = ItemBuilder.EasyInit<RatWhistle>("items/ratwhistle", "sprites/resrat_whistle_idle_001", name, shortdesc, longdesc, ItemQuality.A, SpecialStuffModule.globalPrefix, 433, null);
+            RatWhistle item = ItemBuilder.EasyInit<RatWhistle>("items/ratwhistle", "sprites/resrat_whistle_idle_001", name, shortdesc, longdesc, ItemQuality.A, 433, null);
             item.SetCooldownType(ItemBuilder.CooldownType.Damage, 275f);
             item.IgnoredByRat = true;
             item.BombPrefab = CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(108).objectToSpawn;

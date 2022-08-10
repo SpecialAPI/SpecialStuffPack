@@ -62,15 +62,6 @@ namespace SpecialStuffPack
             new Hook(typeof(OneAxisInputControl).GetProperty("WasReleased", BindingFlags.Public | BindingFlags.Instance).GetGetMethod(), typeof(TCultistHandler).GetMethod("WasReleasedOverride"));
         }
 
-        public static void LogAllInputSource(Action<PlayerController, PlayerInputState> orig, PlayerController self, PlayerInputState state)
-        {
-            orig(self, state);
-            if(state == PlayerInputState.AllInput)
-            {
-                ETGModConsole.Log("AllInput state source: " + Environment.StackTrace);
-            }
-        }
-
         public static bool CheckOverridePressedValue(OneAxisInputControl self, out bool value)
         {
             bool succes = false;

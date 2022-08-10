@@ -11,10 +11,10 @@ namespace SpecialStuffPack.Items.Guns
         {
             string name = "Cacti Club";
             string shortdesc = "Ranged Melee";
-            string longdesc = "Shoots cactus spikes on death.\n\nClubs like these are mostly weilded by potato people.";
+            string longdesc = "Shoots cactus spikes on death.\n\nClubs like these are mostly wielded by potato people.";
             float swingOffset = 2f;
-            var gun = GunBuilder.EasyGunInit("guns/club", name, shortdesc, longdesc, "club_idle_001", "gunsprites/ammonomicon/club_idle_001", "gunsprites/cacticlub", 100, 0f, new(1.3125f, 0.3125f), new() { effects = 
-                new VFXComplex[0], type = VFXPoolType.None }, "BoxingGlove", PickupObject.ItemQuality.B, GunClass.SILLY, SpecialStuffModule.globalPrefix, out var finish);
+            var gun = GunBuilder.EasyGunInit("guns/club", name, shortdesc, longdesc, "club_idle_001", "gunsprites/ammonomicon/club_idle_001", "gunsprites/cacticlub", 100, 0f, new(21, 5), Empty, 
+                "BoxingGlove", PickupObject.ItemQuality.B, GunClass.SILLY, out var finish);
             gun.spriteAnimator.GetClipByName("club_fire").ApplyOffsetsToAnimation(new List<Vector2>()
             {
                 new(swingOffset / 2f, 0f),

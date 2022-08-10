@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Ammo Flower";
             string shortdesc = "Grown in an Ammo Box";
             string longdesc = "Guns are reloaded when their clip is empty, semiautomatic guns become automatic and charged guns autofire. Also slightly increases reload speed.";
-            ItemBuilder.EasyInit<AmmoFlower>("items/flower", "sprites/flower_idle_001.png", name, shortdesc, longdesc, ItemQuality.C, SpecialStuffModule.globalPrefix, null, null)
+            ItemBuilder.EasyInit<AmmoFlower>("items/flower", "sprites/flower_idle_001.png", name, shortdesc, longdesc, ItemQuality.C, null, null)
                 .AddPassiveStatModifier(PlayerStats.StatType.ReloadSpeed, -0.05f, StatModifier.ModifyMethod.ADDITIVE).AddToGooptonShop();
         }
 

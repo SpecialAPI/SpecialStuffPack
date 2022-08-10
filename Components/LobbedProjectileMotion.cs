@@ -45,7 +45,7 @@ namespace SpecialStuffPack.Components
                     projectile.sprite.transform.rotation = rotation;
                     transform.rotation = Quaternion.identity;
                 }
-                if (projectile.shouldRotate)
+                if (projectile.shouldRotate && projectile.angularVelocity == 0)
                 {
                     projectile.sprite.transform.rotation = Quaternion.Euler(0f, 0f, (projectile.sprite.transform.position - lastSpritePosition).XY().ToAngle());
                 }

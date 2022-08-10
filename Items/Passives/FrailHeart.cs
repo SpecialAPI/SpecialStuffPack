@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Frail Heart";
             string shortdesc = "Health up..?";
             string longdesc = "Seems to increase health by quite a bit. Doesn't seem to be in the best state.";
-            FrailHeart item = ItemBuilder.EasyInit<FrailHeart>("items/frailheart", "sprites/frail_heart_idle_001", name, shortdesc, longdesc, ItemQuality.C, SpecialStuffModule.globalPrefix, null, null);
+            FrailHeart item = ItemBuilder.EasyInit<FrailHeart>("items/frailheart", "sprites/frail_heart_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.Health, 3, StatModifier.ModifyMethod.ADDITIVE);
             item.BloodGoop = LoadHelper.LoadAssetFromAnywhere<GoopDefinition>("blobulongoop");
             item.BloodExplosionVFX = CodeShortcuts.GetItemById<TeleporterPrototypeItem>(449).TelefragVFXPrefab;

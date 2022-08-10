@@ -17,7 +17,7 @@ namespace SpecialStuffPack.Items
             string name = "Wooden Token";
             string shortdesc = "You get FREE guns!";
             string longdesc = "Can be traded with Resourceful Rat for guns. Perhaps it's worth keeping it around for longer to get more value?\n\nA wooden token with Resourceful Rat's head engraved into it.";
-            WoodenToken item = ItemBuilder.EasyInit<WoodenToken>("items/woodentoken", "sprites/wooden_token_idle_001", name, shortdesc, longdesc, ItemQuality.D, SpecialStuffModule.globalPrefix, 435, null);
+            WoodenToken item = ItemBuilder.EasyInit<WoodenToken>("items/woodentoken", "sprites/wooden_token_idle_001", name, shortdesc, longdesc, ItemQuality.D, 435, null);
             item.SetCooldownType(ItemBuilder.CooldownType.Timed, 0.1f);
             item.IgnoredByRat = true;
             item.consumable = true;

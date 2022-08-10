@@ -13,7 +13,6 @@ namespace SpecialStuffPack.SynergyAPI
     {
         public AdvancedInfiniteAmmoSynergyProcessor()
         {
-            PreventsReload = true;
             m_cachedReloadTime = -1f;
         }
 
@@ -27,6 +26,7 @@ namespace SpecialStuffPack.SynergyAPI
             bool flag = m_gun && m_gun.OwnerHasSynergy(RequiredSynergy);
             if (flag && !m_processed)
             {
+                m_gun.maxAmmo *= 10;
                 m_gun.GainAmmo(m_gun.AdjustedMaxAmmo);
                 m_gun.InfiniteAmmo = true;
                 m_processed = true;
@@ -38,6 +38,7 @@ namespace SpecialStuffPack.SynergyAPI
             }
             else if (!flag && m_processed)
             {
+                m_gun.maxAmmo /= 10;
                 m_gun.InfiniteAmmo = false;
                 m_processed = false;
                 if (PreventsReload)

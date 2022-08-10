@@ -6,12 +6,14 @@ using System.Reflection;
 using System.IO;
 using System.Runtime.InteropServices;
 using BepInEx;
+using UnityEngine.Audio;
 
 namespace SpecialStuffPack.SoundAPI
 {
     /// <summary>
     /// Core class of SoundAPI. Manages custom switch groups and other sound manipulation stuff.
     /// </summary>
+    [HarmonyPatch]
     public static class SoundManager
     {
         /// <summary>
@@ -43,7 +45,98 @@ namespace SpecialStuffPack.SoundAPI
                 typeof(SoundManager).GetMethod("PostEventCallbackCookie", BindingFlags.NonPublic | BindingFlags.Static));
             PostEventFlagsHook = new Hook(typeof(AkSoundEngine).GetMethod("PostEvent", new Type[] { typeof(string), typeof(GameObject), typeof(uint) }), typeof(SoundManager).GetMethod("PostEventFlags", BindingFlags.NonPublic | BindingFlags.Static));
             PostEventHook = new Hook(typeof(AkSoundEngine).GetMethod("PostEvent", new Type[] { typeof(string), typeof(GameObject) }), typeof(SoundManager).GetMethod("PostEvent", BindingFlags.NonPublic | BindingFlags.Static));
+            foreach(var asset in AssetBundleManager.specialeverything.GetAllAssetNames())
+            {
+                if (asset.ToLowerInvariant().StartsWith("assets/sounds/sfx/"))
+                {
+                    SFX.Add(new(AssetBundleManager.Load<AudioClip>(asset)));
+                }
+                if (asset.ToLowerInvariant().StartsWith("assets/sounds/music/"))
+                {
+                    Music.Add(new(AssetBundleManager.Load<AudioClip>(asset)));
+                }
+                if (asset.ToLowerInvariant().StartsWith("assets/sounds/ui/"))
+                {
+                    UI.Add(new(AssetBundleManager.Load<AudioClip>(asset)));
+                }
+                if (asset.ToLowerInvariant().StartsWith("assets/sounds/other/"))
+                {
+                    Other.Add(new(AssetBundleManager.Load<AudioClip>(asset)));
+                }
+            }
+            SFX.RemoveAll(x => x == null);
+            Music.RemoveAll(x => x == null);
+            UI.RemoveAll(x => x == null);
             m_initialized = true;
+        }
+
+        public static AudioClip Clip(string name)
+        {
+            return Configuration(name)?.clip;
+        }
+
+        public static AudioClip Clip(string name, out SoundType type)
+        {
+            return Configuration(name, out type)?.clip;
+        }
+
+        public static AudioConfiguration Configuration(string name)
+        {
+            return Configuration(name, out _);
+        }
+
+        public static AudioConfiguration Configuration(string name, out SoundType type)
+        {
+            type = SoundType.NONE;
+            var ret = Other.Find(x => x.Name == name);
+            if(ret == null)
+            {
+                if((ret = SFX.Find(x => x.Name == name)) != null)
+                {
+                    type = SoundType.SFX;
+                }
+                else
+                {
+                    if ((ret = Music.Find(x => x.Name == name)) != null)
+                    {
+                        type = SoundType.MUS;
+                    }
+                    else
+                    {
+                        if ((ret = UI.Find(x => x.Name == name)) != null)
+                        {
+                            type = SoundType.UI;
+                        }
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public static void PlayUnitySound(string name, GameObject go)
+        {
+            var conf = Configuration(name, out var type);
+            if(conf?.clip != null)
+            {
+                AddAudioSource(go, conf);
+            }
+        }
+
+        public static void AddAudioSource(GameObject go, AudioConfiguration config)
+        {
+            var source = go.AddComponent<AudioSource>();
+            source.clip = config.clip;
+            source.spatialBlend = config.spartialBlend;
+            source.time = 0f;
+            source.Play();
+            Object.Destroy(source, config.clip.length * 3f);
+        }
+
+        [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.Start))]
+        [HarmonyPostfix]
+        public static void AddUnityListener(PlayerController __instance)
+        {
+            __instance.GetComponentInChildren<AkAudioListener>().AddComponent<AudioListener>();
         }
 
         /// <summary>
@@ -473,5 +566,50 @@ namespace SpecialStuffPack.SoundAPI
         private static Hook PostEventHook;
         private static bool m_initialized;
         private static bool origSetSwitch;
+        public static List<AudioConfiguration> SFX = new();
+        public static List<AudioConfiguration> Music = new();
+        public static List<AudioConfiguration> UI = new();
+        public static List<AudioConfiguration> Other = new();
+        public static AudioMixer mixer;
+        public static AudioMixerGroup SFXMixer;
+        public static AudioMixerGroup MusicMixer;
+        public static AudioMixerGroup UIMixer;
+        public static AudioSource SFXSource;
+        public enum SoundType
+        {
+            NONE,
+            SFX,
+            MUS,
+            UI
+        }
+
+        public class AudioConfiguration
+        {
+            public AudioConfiguration()
+            {
+            }
+
+            public AudioConfiguration(AudioClip c)
+            {
+                clip = c;
+            }
+
+            public AudioConfiguration Make3D()
+            {
+                spartialBlend = 1f;
+                return this;
+            }
+
+            public AudioConfiguration Make2D()
+            {
+                spartialBlend = 0f;
+                return this;
+            }
+
+            public string Name => clip.name;
+
+            public AudioClip clip;
+            public float spartialBlend;
+        }
     }
 }

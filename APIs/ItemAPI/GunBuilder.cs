@@ -296,8 +296,8 @@ namespace SpecialStuffPack.ItemAPI
             return proj;
         }
 
-        public static Gun EasyGunInit(string assetPath, string gunName, string gunShortDesc, string gunLongDesc, string defaultSprite, string ammonomiconSprite, string gunSpriteContainer, int maxAmmo, float realoadTime, Vector3 barrelOffset, 
-            VFXPool muzzleflash, string gunSwitchGroup, PickupObject.ItemQuality quality, GunClass gunClass, string consolePrefix, out Action finish, int? ammonomiconPlacement = null, string overrideConsoleId = null, GameObject baseObject = null)
+        public static Gun EasyGunInit(string assetPath, string gunName, string gunShortDesc, string gunLongDesc, string defaultSprite, string ammonomiconSprite, string gunSpriteContainer, int maxAmmo, float realoadTime, IntVector2 barrelOffset, 
+            VFXPool muzzleflash, string gunSwitchGroup, PickupObject.ItemQuality quality, GunClass gunClass, out Action finish, int? ammonomiconPlacement = null, string overrideConsoleId = null, GameObject baseObject = null)
         {
             if (!gunSpriteContainer.StartsWith("assets/"))
             {
@@ -311,7 +311,7 @@ namespace SpecialStuffPack.ItemAPI
             Gun gun = SetupBasicGunComponents(gameObject);
             ETGMod.Databases.Items.SetupItem(gun, gunName);
             gun.gunName = gunName;
-            Game.Items.Add(overrideConsoleId ?? (consolePrefix + ":" + gunName.ToMTGId()), gun);
+            Game.Items.Add(overrideConsoleId ?? (SpecialStuffModule.globalPrefix + ":" + gunName.ToMTGId()), gun);
             gun.SetName(gunName);
             gun.SetShortDescription(gunShortDesc);
             gun.SetLongDescription(gunLongDesc);
@@ -361,7 +361,9 @@ namespace SpecialStuffPack.ItemAPI
             gun.gunClass = gunClass;
             gun.reloadTime = realoadTime;
             gun.gunSwitchGroup = gunSwitchGroup;
-            gun.barrelOffset.position = barrelOffset;
+            gun.barrelOffset.position = barrelOffset.ToVector3() / 16f;
+            var notSpapiName = gun.name;
+            gun.gameObject.name = $"spapi_{gun.gameObject.name}";
             if (muzzleflash != null)
             {
                 gun.muzzleFlashEffects = muzzleflash;
@@ -372,8 +374,10 @@ namespace SpecialStuffPack.ItemAPI
             }
             finish = delegate ()
             {
-                ETGMod.Databases.Items.Add(gun, false, "ANY");
-                ItemBuilder.ItemIds.Add(gun.name.ToLower(), gun.PickupObjectId);
+                ETGMod.Databases.Items.AddSpecific(gun, false, "ANY");
+                ItemBuilder.ItemIds.Add(notSpapiName.ToLower(), gun.PickupObjectId);
+                ItemBuilder.Guns.Add(notSpapiName.ToLower(), gun);
+                ItemBuilder.Item.Add(notSpapiName.ToLower(), gun);
             };
             return gun;
         }

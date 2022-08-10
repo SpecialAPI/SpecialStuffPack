@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string name = "The Emerald";
             string shortdesc = "A Reward?";
             string longdesc = "Grants poison immunity.\n\nStolen by the Resourceful Rat from an indestructable chest.";
-            EmeraldItem item = ItemBuilder.EasyInit<EmeraldItem>("items/emerald", "sprites/emerald_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, SpecialStuffModule.globalPrefix, null, null);
+            EmeraldItem item = ItemBuilder.EasyInit<EmeraldItem>("items/emerald", "sprites/emerald_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             EmeraldId = item.PickupObjectId;
             EncounterDatabase.GetEntry(item.encounterTrackable.EncounterGuid).usesPurpleNotifications = true;
             new Hook(typeof(PunchoutAIActor).GetMethod("Hit", BindingFlags.Instance | BindingFlags.Public), typeof(EmeraldItem).GetMethod("HandleEmeraldDrop", BindingFlags.Public | BindingFlags.Static));

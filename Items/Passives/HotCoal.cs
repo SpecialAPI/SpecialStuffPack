@@ -14,7 +14,7 @@ namespace SpecialStuffPack.Items
             string name = "Hot Coal";
             string shortdesc = "Be Careful With It!";
             string longdesc = "Sometimes ignites the owner's shots, but also ignites the owner when getting hit.\n\nA piece of coal mined in the Black Powder Mines. Very hot to the touch!";
-            HotCoal item = ItemBuilder.EasyInit<HotCoal>("items/hotcoal", "sprites/hot_coal_idle_001", name, shortdesc, longdesc, ItemQuality.D, SpecialStuffModule.globalPrefix, null, null);
+            HotCoal item = ItemBuilder.EasyInit<HotCoal>("items/hotcoal", "sprites/hot_coal_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.AppliesFire = true;
             item.FireModifierEffect = CodeShortcuts.GetItemById<BulletStatusEffectItem>(295).FireModifierEffect;
             item.chanceOfActivating = 0.75f;

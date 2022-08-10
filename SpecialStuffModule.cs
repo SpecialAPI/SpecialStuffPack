@@ -23,7 +23,17 @@ global using Object = UnityEngine.Object;
 global using SpecialStuffPack.Items.Passives;
 global using SpecialStuffPack.Items.Guns;
 global using SpecialStuffPack.Items.Actives;
-using BepInEx;
+global using BepInEx;
+global using HarmonyLib;
+global using SpecialStuffPack.EnumExtensions;
+global using HutongGames.PlayMaker;
+global using HutongGames.PlayMaker.Actions;
+global using InControl;
+global using static SpecialStuffPack.ItemAPI.ItemBuilder;
+global using static SpecialStuffPack.ItemAPI.GunBuilder;
+global using static SpecialStuffPack.SynergyAPI.SynergyBuilder;
+using System.IO;
+using System.Globalization;
 
 namespace SpecialStuffPack
 {
@@ -45,9 +55,26 @@ namespace SpecialStuffPack
 
         public void Awake()
         {
+            var asm = Assembly.GetExecutingAssembly();
+            foreach(var type in asm.GetTypes())
+            {
+                var custom = type.GetCustomAttributes(false);
+                if (custom != null)
+                {
+                    var extension = custom.OfType<EnumExtensionAttribute>().FirstOrDefault();
+                    if(extension != null && extension.type != null && extension.type.IsEnum)
+                    {
+                        foreach(var f in type.GetFields(BindingFlags.Public | BindingFlags.Static))
+                        {
+                            f.SetValue(null, ETGModCompatibility.ExtendEnum(GUID, f.Name, extension.type));
+                        }
+                    }
+                }
+            }
+            new Harmony(GUID).PatchAll();
             //asset bundle setup
             AssetBundleManager.LoadBundle();
-            SoundManager.LoadBanksFromModProject();
+            //SoundManager.Init();
 
             //saveapi setup
             SaveAPIManager.Setup("spapistuff");
@@ -68,6 +95,14 @@ namespace SpecialStuffPack
                 GungeonAPIMain.Init();
                 GoopDatabase.Init();
 
+                GetItemById<HealPlayerItem>(412).healingAmount = 1f;
+                GetItemById(326).AddComponent<SPCultistBandana>();
+                ETGMod.Databases.Strings.Core.Set("#PLAYER_NAME_" + PlayableCharactersE.SPCultist.ToString().ToUpper(), "Cultist");
+                ETGMod.Databases.Strings.Core.Set("#PLAYER_NICK_" + PlayableCharactersE.SPCultist.ToString().ToUpper(), "child");
+                ETGMod.Databases.Strings.Core.Set("#SPAPI_RAT_NOTE_SP_CULTIST", 
+                    "Don't know how to fight, do you? You also don't have a main character for me to beat up, so have these keys as a consolation prize instead.\n\n" +
+                    "Later, %INSULT! - R.R.");
+
                 //init items
                 WoodenToken.Init();
                 PayToWin.Init();
@@ -80,7 +115,7 @@ namespace SpecialStuffPack
                 ExtraChestItem.Init();
                 MirrorOfTruth.Init();
                 BadLuckClover.Init();
-                Calendar.Init();
+                Items.Calendar.Init();
                 GreenCandle.Init();
                 GlassBell.Init();
                 ShootingStar.Init();
@@ -125,8 +160,14 @@ namespace SpecialStuffPack
                 Revolvever.Init();
                 AkPI.Init();
                 RoundBullets.Init();
+                OrbOfKnowledge.Init();
+                AkSoundEngineGun.Init();
+                EnderGun.Init();
+                LeatherWhip.Init();
+                PistolWhip.Init();
+                WhipCream.Init();
+                SynergyCompletionGun.Init();
                 //SoulGun.Init();
-
                 //PastsRewardItem.Init();
                 //ForceOfTwilight.Init();
 
@@ -154,10 +195,15 @@ namespace SpecialStuffPack
                      typeof(SpecialStuffModule).GetMethod("FixBadDodgerollCode")
                  );
                 //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
-
                 ETGModConsole.Commands.AddUnit("play_sound", (string[] args) => ETGModConsole.Log(AkSoundEngine.PostEvent(args[0], GameManager.Instance.PrimaryPlayer.gameObject).ToString()));
                 ETGModConsole.Commands.AddUnit("set_state", (string[] args) => ETGModConsole.Log(AkSoundEngine.SetState(args[0], args[1]).ToString()));
+                var pitch = new float[0];
+                ETGModConsole.Commands.AddUnit("set_pitch", x => pitch = x.Select(x2 => float.Parse(x2)).ToArray());
+                ETGModConsole.Commands.AddUnit("switch", x => ETGModConsole.Log(Game.Items[x[0]].GetComponent<Gun>().gunSwitchGroup), ETGModConsole.GiveAutocompletionSettings);
+                ETGModConsole.Commands.AddUnit("play", x => StartCoroutine(Play(pitch)));
                 ETGModConsole.Commands.AddUnit("use", UseItem, ETGModConsole.GiveAutocompletionSettings);
+                ETGModConsole.Commands.AddUnit("soundtest", x => Instantiate(AssetBundleManager.Load<GameObject>("testsound")));
+                ETGModConsole.Commands.AddUnit("showhitboxes", x => ETGModConsole.SwitchValue(x.FirstOrDefault(), ref showHitboxes, "Show Hitboxes"));
                 ETGModConsole.Commands.AddUnit("reset_ss_completion", delegate (string[] s)
                 {
                     SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST, false);
@@ -166,14 +212,50 @@ namespace SpecialStuffPack
                     SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, false);
                     SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, false);
                 });
+                ETGModConsole.Commands.AddUnit("decryptSave", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
+                ETGModConsole.Commands.AddUnit("setflag1", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_1, bool.Parse(x[0])); GameStatsManager.Save(); });
+                ETGModConsole.Commands.AddUnit("setflag2", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_2, bool.Parse(x[0])); GameStatsManager.Save(); });
+                ETGModConsole.Commands.AddUnit("setflag3", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_3, bool.Parse(x[0])); GameStatsManager.Save(); });
+                ETGModConsole.Commands.AddUnit("setflag4", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_4, bool.Parse(x[0])); GameStatsManager.Save(); });
+                ETGModConsole.Commands.AddUnit("getflag1", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_1)); });
+                ETGModConsole.Commands.AddUnit("getflag2", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_2)); });
+                ETGModConsole.Commands.AddUnit("getflag3", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_3)); });
+                ETGModConsole.Commands.AddUnit("getflag4", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_4)); });
+                ETGModConsole.Commands.AddUnit("gettracked", x => { GameStatsManager.Instance.GetPlayerMaximum(TrackedMaximums.MOST_KEYS_HELD); });
                 TCultistHandler.Init();
                 SpecialOptions.Setup();
                 SpecialInput.Setup();
+                ETGModConsole.Log($"{NAME} loaded successfully.");
             }
             catch (Exception ex)
             {
-                ETGModConsole.Log("Something bad happened while loading SpecialAPI's Stuff Reloaded: " + ex);
+                ETGModConsole.Log($"Something bad happened while loading {NAME}: " + ex);
             }
+        }
+
+        public void Update()
+        {
+            if (showHitboxes && PhysicsEngine.Instance != null && PhysicsEngine.Instance.AllRigidbodies != null)
+            {
+                foreach (var obj in PhysicsEngine.Instance.AllRigidbodies)
+                {
+                    if (obj && obj.sprite && Vector2.Distance(obj.sprite.WorldCenter, GameManager.Instance.PrimaryPlayer.sprite.WorldCenter) < 8)
+                    {
+                        HitboxMonitor.DisplayHitbox(obj);
+                    }
+                }
+            }
+        }
+
+        public static IEnumerator Play(float[] pitch)
+        {
+            foreach(var f in pitch)
+            {
+                AkSoundEngine.SetRTPCValue("Pitch_Metronome", f);
+                AkSoundEngine.PostEvent("Play_OBJ_metronome_jingle_01", GameManager.Instance.PrimaryPlayer.gameObject);
+                yield return new WaitForSecondsRealtime(0.75f);
+            }
+            yield break;
         }
 
         public static void FixBadDodgerollCode(Action<RoomHandler> orig, RoomHandler room)
@@ -269,6 +351,7 @@ namespace SpecialStuffPack
             }
         }
 
-        public static string globalPrefix = "chmb";
+        public static string globalPrefix = "spapi";
+        public static bool showHitboxes;
     }
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace SpecialStuffPack
 {
@@ -26,6 +27,10 @@ namespace SpecialStuffPack
 
         public static T Load<T>(string path, tk2dSpriteCollectionData spriteCollection = null, string shader = null) where T : Object
         {
+            if(loaded.TryGetValue(path, out var val))
+            {
+                return (T)val;
+            }
             if (path.Contains("/"))
             {
                 if (!path.StartsWith("assets/"))
@@ -50,6 +55,10 @@ namespace SpecialStuffPack
                 }
             }
             var result = specialeverything.LoadAsset<T>(path);
+            if (!loaded.ContainsKey(path))
+            {
+                loaded.Add(path, result);
+            }
             GameObject go = null;
             if(result is GameObject gameobj)
             {
@@ -115,6 +124,7 @@ namespace SpecialStuffPack
 
         public static AssetBundle specialeverything;
         public static ObjectInfo specialobjectinfo;
+        public static Dictionary<string, Object> loaded = new();
 
         public class ObjectInfo
         {

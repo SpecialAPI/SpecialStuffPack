@@ -20,8 +20,8 @@ namespace SpecialStuffPack.Components
             };
         }
 
-        public int NumProjectilesToShoot => 3;
-        public float DamageMultiplier => 2f;
+        public int NumProjectilesToShoot => projectile.OwnerHasSynergy("Cacti Club II") ? 4 : 3;
+        public float DamageMultiplier => projectile.OwnerHasSynergy("Shoulders") ? 3f : 2f;
 
         public Projectile projectileToShoot;
     }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpecialStuffPack.Items.Guns
 {
-    public class SoulGun : AdvancedGunBehaviour
+    public class SoulGun : GunBehaviour
     {
         public static void Init()
         {
@@ -13,8 +13,8 @@ namespace SpecialStuffPack.Items.Guns
             string shortdesc = "";
             string longdesc = "";
             var gun = GunBuilder.EasyGunInit("guns/soulgun/soulgun_soul_base", name, shortdesc, longdesc, "soulgun_soul_base_idle_001", "gunsprites/ammonomicon/soulgun_soul_base_idle_001", "gunsprites/soulgun", 
-                100, 0f, new Vector3(0.8125f, 0.375f), CodeShortcuts.GetItemById<Gun>(223).muzzleFlashEffects, "Skullgun", PickupObject.ItemQuality.S, GunClass.NONE, SpecialStuffModule.globalPrefix, out var finish, null, null, null);
-            ProjectileModule module = new ProjectileModule
+                100, 0f, new(13, 6), GetItemById<Gun>(223).muzzleFlashEffects, "Skullgun", PickupObject.ItemQuality.S, GunClass.NONE, out var finish, null, null, null);
+            ProjectileModule module = new()
             {
                 shootStyle = ProjectileModule.ShootStyle.Automatic,
                 ammoType = GameUIAmmoType.AmmoType.BLUE_SHOTGUN,
@@ -67,8 +67,8 @@ namespace SpecialStuffPack.Items.Guns
             string shortdesc = "";
             string longdesc = "";
             var gun = GunBuilder.EasyGunInit("guns/soulgun/soulgun_" + form.ToString().ToLower(), name, shortdesc, longdesc, $"soulgun_{form.ToString().ToLower()}_idle_001", 
-                "gunsprites/ammonomicon/soulgun_soul_base_idle_001", "gunsprites/soulgun", 100, isReloadSniper ? 2f : 0f, new Vector3(0.8125f, 0.375f), CodeShortcuts.GetItemById<Gun>(223).muzzleFlashEffects, "Skullgun", 
-                PickupObject.ItemQuality.EXCLUDED, GunClass.NONE, SpecialStuffModule.globalPrefix, out var finish, null, null, null);
+                "gunsprites/ammonomicon/soulgun_soul_base_idle_001", "gunsprites/soulgun", 100, isReloadSniper ? 2f : 0f, new(0, 0), GetItemById<Gun>(223).muzzleFlashEffects, "Skullgun", 
+                PickupObject.ItemQuality.EXCLUDED, GunClass.NONE, out var finish, null, null, null);
             var spriteId = "floating_eye_projectile_003";
             if (isRocket)
             {
