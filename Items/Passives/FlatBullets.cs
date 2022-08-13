@@ -14,6 +14,7 @@ namespace SpecialStuffPack.Items.Passives
             string longdesc = "Increases damage.";
             var item = EasyInitItem<FlatBullets>("items/flatbullets", "sprites/flat_bullets_idle_001", name, shortdesc, longdesc, ItemQuality.B);
             item.FlatDamage = 2f;
+            item.FlatDamageSynergy = 3f;
             item.AddToTrorkShop();
         }
 
@@ -26,12 +27,12 @@ namespace SpecialStuffPack.Items.Passives
 
         public void PostProcessBeam(BeamController obj)
         {
-            obj.projectile.baseData.damage += FlatDamage;
+            obj.projectile.baseData.damage += (Owner.PlayerHasActiveSynergy("Flatter Flat Bullets") ? FlatDamageSynergy : FlatDamage) / 3f;
         }
 
         public void PostProcessProjectile(Projectile obj, float effectChanceScalar)
         {
-            obj.baseData.damage += FlatDamage;
+            obj.baseData.damage += Owner.PlayerHasActiveSynergy("Flatter Flat Bullets") ? FlatDamageSynergy : FlatDamage;
         }
 
         public override void DisableEffect(PlayerController disablingPlayer)
@@ -42,5 +43,6 @@ namespace SpecialStuffPack.Items.Passives
         }
 
         public float FlatDamage;
+        public float FlatDamageSynergy;
     }
 }

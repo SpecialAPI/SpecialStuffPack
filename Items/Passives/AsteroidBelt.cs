@@ -19,7 +19,7 @@ namespace SpecialStuffPack.Items
             Projectile proj = EasyProjectileInit<Projectile>("projectiles/asteroidprojectile", "projectilesprites/asteroid_projectile_001", 1.25f, 23, 10000, 40, true, false, false, null,
                 tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, null, null, null, null);
             AsteroidProjectile asteroid = proj.AddComponent<AsteroidProjectile>();
-            asteroid.Fire = CodeShortcuts.GetItemById<BulletStatusEffectItem>(295).FireModifierEffect;
+            asteroid.Fire = GetItemById<BulletStatusEffectItem>(295).FireModifierEffect;
             asteroid.IgniteRadius = 3f;
             ExplosiveModifier modifier = proj.AddComponent<ExplosiveModifier>();
             modifier.explosionData = new ExplosionData
@@ -71,10 +71,9 @@ namespace SpecialStuffPack.Items
             return ReplacementProjectile;
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.OnPreFireProjectileModifier -= ReplaceProjectile;
-            return base.Drop(player);
         }
 
         public Projectile ReplacementProjectile;

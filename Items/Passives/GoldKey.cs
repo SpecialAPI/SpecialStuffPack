@@ -1071,11 +1071,15 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.OnNewFloorLoaded -= RecreateGhostOnNewFloor;
             player.OnEnteredCombat -= CombatEntered;
             DecrementFlag(player, typeof(GoldKey));
+        }
+
+        public override DebrisObject Drop(PlayerController player)
+        {
             DebrisObject result = base.Drop(player);
             result.GetComponent<GoldKey>().m_pickedUp = true;
             result.OnGrounded += result.GetComponent<GoldKey>().Shatter;

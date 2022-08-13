@@ -48,19 +48,9 @@ namespace SpecialStuffPack.Items.Passives
             }
         }
 
-        public override void OnDestroy()
-        {
-            if(Owner != null)
-            {
-                Owner.stats.AdditionalVolleyModifiers -= ModifyVolley;
-            }
-            base.OnDestroy();
-        }
-
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.stats.AdditionalVolleyModifiers -= ModifyVolley;
-            return base.Drop(player);
         }
     }
 }

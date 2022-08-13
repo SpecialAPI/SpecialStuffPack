@@ -17,7 +17,7 @@ namespace SpecialStuffPack.Items
             string longdesc = "Allows the owner to dodgeroll without moving. Those dodgerolls will not move the owner anywhere but will give some time of invulnerability.\n\nA proof of concept device created by a crazy scientist to prove that you can, in" +
                 " fact, dodgeroll without moving.\n\nThe words \"BindingFlags.Public | BindingFlags.Static\" can be seen from inside.";
             StaticRoll item = EasyInitItem<StaticRoll>("items/staticroll", "sprites/static_roll_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
-			item.voidSynergyProjectile = CodeShortcuts.GetItemById<Gun>(593).DefaultModule.projectiles[0];
+			item.voidSynergyProjectile = GetItemById<Gun>(593).DefaultModule.projectiles[0];
         }
 
         public override void Update()
@@ -191,14 +191,14 @@ namespace SpecialStuffPack.Items
 			}
 			if(self.PlayerHasActiveSynergy("static void"))
             {
-				CodeShortcuts.OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 0f, self);
-				CodeShortcuts.OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 90f, self);
-				CodeShortcuts.OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 180f, self);
-				CodeShortcuts.OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 270f, self);
+				OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 0f, self);
+				OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 90f, self);
+				OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 180f, self);
+				OwnedShootProjectile(voidSynergyProjectile, self.CenterPosition, 270f, self);
 			}
 			if (self.PlayerHasActiveSynergy("private static") && !self.IsStealthed)
             {
-				CodeShortcuts.HandleStealth(self, "being private");
+				HandleStealth(self, "being private");
             }
 			return true;
 		}

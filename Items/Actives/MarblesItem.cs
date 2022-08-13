@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Items
             item.consumable = true;
             item.SetCooldownType(CooldownType.Timed, 0.5f);
             item.Projectiles = new List<Projectile>();
-            foreach(ProjectileModule module in CodeShortcuts.GetItemById<Gun>(480).RawSourceVolley.projectiles) 
+            foreach(ProjectileModule module in GetItemById<Gun>(480).RawSourceVolley.projectiles) 
             { 
                 if(module != null && module.chargeProjectiles != null && module.chargeProjectiles.Count > 0)
                 {

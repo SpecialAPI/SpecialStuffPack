@@ -66,6 +66,10 @@ namespace SpecialStuffPack.Enemies
                     }
                 }
             }
+            else if(CanCollide)
+            {
+                Fade();
+            }
         }
 
         public IEnumerator Dash()

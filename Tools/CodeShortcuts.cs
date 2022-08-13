@@ -132,11 +132,16 @@ namespace SpecialStuffPack
             return (proj?.PlayerOwner()?.PlayerHasActiveSynergy(name)).GetValueOrDefault();
         }
 
+        public static Projectile GetProjectile(this Gun g)
+        {
+            return g.DefaultModule.shootStyle == ProjectileModule.ShootStyle.Charged ?
+                g?.DefaultModule?.chargeProjectiles?.Find(x => x.Projectile != null)?.Projectile ?? g?.DefaultModule?.projectiles.FirstOrDefault() :
+                g?.DefaultModule?.projectiles.FirstOrDefault() ?? g?.DefaultModule?.chargeProjectiles?.Find(x => x.Projectile != null)?.Projectile;
+        }
+
         public static Projectile GetProjectile(int id)
         {
-            return GetGunById(id).DefaultModule.shootStyle == ProjectileModule.ShootStyle.Charged ?
-                GetGunById(id)?.DefaultModule?.chargeProjectiles?.Find(x => x.Projectile != null)?.Projectile ?? GetGunById(id)?.DefaultModule?.projectiles.FirstOrDefault() :
-                GetGunById(id)?.DefaultModule?.projectiles.FirstOrDefault() ?? GetGunById(id)?.DefaultModule?.chargeProjectiles?.Find(x => x.Projectile != null)?.Projectile;
+            return GetGun(id).GetProjectile();
         }
 
         public static VFXPool GetMuzzleFlash(int id)
@@ -286,9 +291,19 @@ namespace SpecialStuffPack
             return PickupObjectDatabase.GetById(id) as T;
         }
 
+        public static T GetItem<T>(int id) where T : PickupObject
+        {
+            return GetItemById<T>(id);
+        }
+
         public static PickupObject GetItemById(int id)
         {
             return PickupObjectDatabase.GetById(id);
+        }
+
+        public static PickupObject GetItem(int id)
+        {
+            return GetItemById(id);
         }
 
         public static Gun GetGunById(int id)
@@ -296,9 +311,19 @@ namespace SpecialStuffPack
             return GetItemById<Gun>(id);
         }
 
+        public static Gun GetGun(int id)
+        {
+            return GetGunById(id);
+        }
+
         public static T GetPassiveById<T>(int id) where T : PassiveItem
         {
             return GetItemById<T>(id);
+        }
+
+        public static T GetPassive<T>(int id) where T : PassiveItem
+        {
+            return GetPassiveById<T>(id);
         }
 
         public static PassiveItem GetPassiveById(int id)
@@ -306,14 +331,29 @@ namespace SpecialStuffPack
             return GetItemById<PassiveItem>(id);
         }
 
+        public static PassiveItem GetPassive(int id)
+        {
+            return GetPassiveById(id);
+        }
+
         public static T GetActiveById<T>(int id) where T : PlayerItem
         {
             return GetItemById<T>(id);
         }
 
+        public static T GetActive<T>(int id) where T : PlayerItem
+        {
+            return GetActiveById<T>(id);
+        }
+
         public static PlayerItem GetActiveById(int id)
         {
             return GetItemById<PlayerItem>(id);
+        }
+
+        public static PlayerItem GetActive(int id)
+        {
+            return GetActiveById(id);
         }
 
         public static Delegate GetEventDelegate(this object self, string eventName)

@@ -10,7 +10,7 @@ namespace SpecialStuffPack.Items.Guns
         public static void Init()
         {
             var name = "Whipped Cream";
-            var shortdesc = "Dangerous food";
+            var shortdesc = "Cream whip";
             var longdesc = "Some whipped cream, which can also act as a weapon.";
             var gun = EasyGunInit("whipcream", name, shortdesc, longdesc, "whipcream_idle_001", "whipcream_idle_001", "gunsprites/whipcream/", 1000, 0f, new(8, 4), Empty, "EyeballGun",
                 PickupObject.ItemQuality.B, GunClass.FULLAUTO, out var finish);
@@ -18,7 +18,7 @@ namespace SpecialStuffPack.Items.Guns
             gun.MakeContinuous();
             gun.SetAnimationFPS(Mathf.CeilToInt(1 / time));
             gun.LocalInfiniteAmmo = true;
-            var damage = 4.5f;
+            var damage = 4f;
             var length = 5;
             var proj = EasyProjectileInit<WhipProjectile>("WhipCreamProjectile", "whipped_cream_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj.Length = length;

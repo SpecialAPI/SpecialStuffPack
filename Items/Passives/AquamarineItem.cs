@@ -32,22 +32,16 @@ namespace SpecialStuffPack.Items
             IncrementFlag(player, typeof(AquamarineItem));
         }
 
-        public override void OnDestroy()
+        public override void DisableEffect(PlayerController player)
         {
-            if (m_owner != null)
-            {
-                m_owner.healthHaver.damageTypeModifiers.Remove(m_electricImmunity);
-                m_electricImmunity = null;
-                DecrementFlag(m_owner, typeof(AquamarineItem));
-            }
-            base.OnDestroy();
+            base.DisableEffect(player);
+            player.healthHaver.damageTypeModifiers.Remove(m_electricImmunity);
+            m_electricImmunity = null;
+            DecrementFlag(player, typeof(AquamarineItem));
         }
 
         public override DebrisObject Drop(PlayerController player)
         {
-            player.healthHaver.damageTypeModifiers.Remove(m_electricImmunity);
-            m_electricImmunity = null;
-            DecrementFlag(player, typeof(AquamarineItem));
             DebrisObject result = base.Drop(player);
             result.GetComponent<AquamarineItem>().m_pickedUp = true;
             result.OnGrounded += result.GetComponent<AquamarineItem>().Shatter;

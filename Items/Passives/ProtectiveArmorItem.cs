@@ -52,10 +52,9 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.healthHaver.ModifyDamage -= ModifyIncomingDamage;
-            return base.Drop(player);
         }
 
         public float DamageNegateChance;

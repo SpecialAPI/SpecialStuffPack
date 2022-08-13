@@ -15,9 +15,9 @@ namespace SpecialStuffPack.Items
             string shortdesc = "It Is I";
             string longdesc = "Can be thrown.\n\nHas a soul of someone named \"SpecialAPI\" inside of it.";
             ConsoleController item = EasyInitItem<ConsoleController>("items/consolecontroller", "sprites/console_controller_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
-            item.fire = CodeShortcuts.GetItemById<BulletStatusEffectItem>(295).FireModifierEffect;
-            item.poison = CodeShortcuts.GetItemById<BulletStatusEffectItem>(204).HealthModifierEffect;
-            item.freeze = CodeShortcuts.GetItemById<BulletStatusEffectItem>(278).FreezeModifierEffect;
+            item.fire = GetItemById<BulletStatusEffectItem>(295).FireModifierEffect;
+            item.poison = GetItemById<BulletStatusEffectItem>(204).HealthModifierEffect;
+            item.freeze = GetItemById<BulletStatusEffectItem>(278).FreezeModifierEffect;
         }
 
         public override void DoEffect(PlayerController user)

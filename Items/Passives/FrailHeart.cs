@@ -18,7 +18,7 @@ namespace SpecialStuffPack.Items
             FrailHeart item = EasyInitItem<FrailHeart>("items/frailheart", "sprites/frail_heart_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.Health, 3, StatModifier.ModifyMethod.ADDITIVE);
             item.BloodGoop = LoadHelper.LoadAssetFromAnywhere<GoopDefinition>("blobulongoop");
-            item.BloodExplosionVFX = CodeShortcuts.GetItemById<TeleporterPrototypeItem>(449).TelefragVFXPrefab;
+            item.BloodExplosionVFX = GetItemById<TeleporterPrototypeItem>(449).TelefragVFXPrefab;
         }
 
         public override void Pickup(PlayerController player)
@@ -53,19 +53,9 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override void OnDestroy()
-        {
-            if(Owner != null)
-            {
-                Owner.healthHaver.OnDamaged -= MaybeReduceHealth;
-            }
-            base.OnDestroy();
-        }
-
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.healthHaver.OnDamaged -= MaybeReduceHealth;
-            return base.Drop(player);
         }
 
         public GoopDefinition BloodGoop;

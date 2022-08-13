@@ -47,7 +47,8 @@ namespace SpecialStuffPack.Items.Guns
             };
 			gun.AddComponent<SynergyCompletionGun>();
             finish();
-        }
+			gun.SetupUnlockOnFlag(GungeonFlags.GUNSLINGER_PAST_KILLED, true);
+		}
 
         [HarmonyPatch(typeof(AdvancedSynergyEntry), nameof(AdvancedSynergyEntry.SynergyIsAvailable))]
         [HarmonyPrefix]

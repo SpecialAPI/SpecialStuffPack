@@ -22,9 +22,9 @@ namespace SpecialStuffPack.Items
             base.Pickup(player);
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController disablingPlayer)
         {
-            return base.Drop(player);
+            base.DisableEffect(disablingPlayer);
         }
 
         public int MaxOverchargeAmount;

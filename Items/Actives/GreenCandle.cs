@@ -18,8 +18,8 @@ namespace SpecialStuffPack.Items
             string longdesc = "A strange candle. Even though it's not lit, it still seems to emit some warmth.";
             GreenCandle item = EasyInitItem<GreenCandle>("items/greencandle", "sprites/green_candle_idle_002", name, shortdesc, longdesc, ItemQuality.A, 190, null);
             item.ChanceToBurnEnemy = 1f;
-            item.GreenFireEffect = CodeShortcuts.GetItemById<Gun>(722).DefaultModule.projectiles[0].fireEffect;
-            item.GreenFireGoop = CodeShortcuts.GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
+            item.GreenFireEffect = GetItemById<Gun>(722).DefaultModule.projectiles[0].fireEffect;
+            item.GreenFireGoop = GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
             item.FlamesRequired = 5;
             item.GoopRadius = 10f;
             item.GoopRadiusSynergy = 15f;

@@ -29,22 +29,15 @@ namespace SpecialStuffPack.Items
             IncrementFlag(player, typeof(RubyItem));
         }
 
-        public override void OnDestroy()
-        {
-            if (m_owner != null)
-            {
-                m_owner.healthHaver.damageTypeModifiers.Remove(m_fireImmunity);
-                m_fireImmunity = null;
-                DecrementFlag(m_owner, typeof(RubyItem));
-            }
-            base.OnDestroy();
-        }
-
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.healthHaver.damageTypeModifiers.Remove(m_fireImmunity);
             m_fireImmunity = null;
             DecrementFlag(player, typeof(RubyItem));
+        }
+
+        public override DebrisObject Drop(PlayerController player)
+        {
             DebrisObject result = base.Drop(player);
             result.GetComponent<RubyItem>().m_pickedUp = true;
             result.OnGrounded += result.GetComponent<RubyItem>().Shatter;

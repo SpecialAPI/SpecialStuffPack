@@ -104,7 +104,7 @@ namespace SpecialStuffPack.Items
 
         private List<AIActor> GetEnemiesWithRigidbodies()
         {
-            List<AIActor> result = new List<AIActor>();
+            List<AIActor> result = new();
             if(Owner != null && Owner.CurrentRoom != null && Owner.CurrentRoom.GetActiveEnemiesUnreferenced(Dungeonator.RoomHandler.ActiveEnemyType.All).Count > 0)
             {
                 foreach(AIActor enemy in Owner.CurrentRoom.GetActiveEnemiesUnreferenced(Dungeonator.RoomHandler.ActiveEnemyType.All))
@@ -115,6 +115,7 @@ namespace SpecialStuffPack.Items
                     }
                 }
             }
+            result.RemoveAll(x => x.GetComponentInChildren<DraGunController>() != null); //bye bye dragun
             return result;
         }
 

@@ -60,6 +60,20 @@ namespace SpecialStuffPack
             }
         }
 
+        [HarmonyPatch(typeof(HealPlayerItem), nameof(HealPlayerItem.GetHealingAmount))]
+        [HarmonyPostfix]
+        public static void NegateCoopHealing(HealPlayerItem __instance, ref float __result, PlayerController user)
+        {
+            if (__instance.DoesRevive && GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER)
+            {
+                PlayerController otherPlayer = GameManager.Instance.GetOtherPlayer(user);
+                if (otherPlayer.healthHaver.IsDead)
+                {
+                    __result = 0f;
+                }
+            }
+        }
+
         [HarmonyPatch(typeof(GameStatsManager), nameof(GameStatsManager.GetCharacterSpecificFlag), typeof(PlayableCharacters), typeof(CharacterSpecificGungeonFlags))]
         [HarmonyPostfix]
         public static void MakeCultistPastCleared(ref bool __result, PlayableCharacters character, CharacterSpecificGungeonFlags flag)

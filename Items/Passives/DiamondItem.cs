@@ -32,18 +32,13 @@ namespace SpecialStuffPack.Items
             IncrementFlag(player, typeof(DiamondItem));
         }
 
-        public override void OnDestroy()
+        public override void DisableEffect(PlayerController controller)
         {
-            if (m_owner != null)
-            {
-                DecrementFlag(m_owner, typeof(DiamondItem));
-            }
-            base.OnDestroy();
+            DecrementFlag(controller, typeof(DiamondItem));
         }
 
         public override DebrisObject Drop(PlayerController player)
         {
-            DecrementFlag(player, typeof(DiamondItem));
             DebrisObject result = base.Drop(player);
             result.GetComponent<DiamondItem>().m_pickedUp = true;
             result.OnGrounded += result.GetComponent<DiamondItem>().Shatter;

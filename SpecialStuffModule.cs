@@ -32,8 +32,6 @@ global using InControl;
 global using static SpecialStuffPack.ItemAPI.ItemBuilder;
 global using static SpecialStuffPack.ItemAPI.GunBuilder;
 global using static SpecialStuffPack.SynergyAPI.SynergyBuilder;
-using System.IO;
-using System.Globalization;
 
 namespace SpecialStuffPack
 {
@@ -115,7 +113,7 @@ namespace SpecialStuffPack
                 ExtraChestItem.Init();
                 MirrorOfTruth.Init();
                 BadLuckClover.Init();
-                Items.Calendar.Init();
+                Calendar.Init();
                 GreenCandle.Init();
                 GlassBell.Init();
                 ShootingStar.Init();
@@ -183,7 +181,7 @@ namespace SpecialStuffPack
                 SpecialPlaceables.InitLockUnlockPedestal();
                 SpecialPlaceables.InitDiamondShrine();
                 SpecialPlaceables.InitSomethingSpecialPlaceable();
-                SpecialPlaceables.InitDoor();
+                //SpecialPlaceables.InitDoor(); //bye bye stupid door
 
                 //add other stuff
                 EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();

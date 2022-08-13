@@ -57,8 +57,8 @@ namespace SpecialStuffPack
             }
         }
 
-        public static GameObject ScarfPoof = CodeShortcuts.GetItemById<BlinkPassiveItem>(436).BlinkpoofVfx;
-        public static GameObject smokePoofVFX = CodeShortcuts.GetItemById<ConsumableStealthItem>(462).poofVfx;
-        public static GameObject ScarfPrefab = CodeShortcuts.GetItemById<BlinkPassiveItem>(436).ScarfPrefab.gameObject;
+        public static GameObject ScarfPoof = GetItemById<BlinkPassiveItem>(436).BlinkpoofVfx;
+        public static GameObject smokePoofVFX = GetItemById<ConsumableStealthItem>(462).poofVfx;
+        public static GameObject ScarfPrefab = GetItemById<BlinkPassiveItem>(436).ScarfPrefab.gameObject;
     }
 }

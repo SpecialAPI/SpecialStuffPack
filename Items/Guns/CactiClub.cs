@@ -22,7 +22,7 @@ namespace SpecialStuffPack.Items.Guns
                 new(swingOffset / 2f, 0f)
             });
             var proj = EasyProjectileInit<Projectile>("projectiles/clubprojectile", "", 15, swingOffset * 30, swingOffset, 10f, false, false, false, null, tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, 6, 6, 0, 0);
-            proj.AddComponent<CactiClubProjectile>().projectileToShoot = CodeShortcuts.GetItemById<Gun>(124).DefaultModule.projectiles[0];
+            proj.AddComponent<CactiClubProjectile>().projectileToShoot = GetItemById<Gun>(124).DefaultModule.projectiles[0];
             gun.RawSourceVolley.projectiles.Add(new()
             {
                 numberOfShotsInClip = 100,

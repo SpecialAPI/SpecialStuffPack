@@ -63,7 +63,7 @@ namespace SpecialStuffPack
             DefaultCheeseGoop = (PickupObjectDatabase.GetById(626) as Gun).DefaultModule.projectiles[0].cheeseEffect.CheeseGoop;
             DefaultBlobulonGoop = EnemyDatabase.GetOrLoadByGuid("0239c0680f9f467dbe5c4aab7dd1eca6").GetComponent<GoopDoer>().goopDefinition;
             DefaultPoopulonGoop = EnemyDatabase.GetOrLoadByGuid("116d09c26e624bca8cca09fc69c714b3").GetComponent<GoopDoer>().goopDefinition;
-            DefaultGreenFireGoop = CodeShortcuts.GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
+            DefaultGreenFireGoop = GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
             DefaultWebGoop = EnemyDatabase.GetOrLoadByGuid("98ca70157c364750a60f5e0084f9d3e2").GetComponent<GoopDoer>().goopDefinition;
         }
 

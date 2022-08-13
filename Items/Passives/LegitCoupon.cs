@@ -37,19 +37,9 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.OnItemPurchased -= HandlePriceIncrease;
-            return base.Drop(player);
-        }
-
-        public override void OnDestroy()
-        {
-            if(m_owner != null)
-            {
-                m_owner.OnItemPurchased -= HandlePriceIncrease;
-            }
-            base.OnDestroy();
         }
 
         public float priceIncreasePerPurchase;

@@ -271,7 +271,7 @@ namespace SpecialStuffPack.Items.Guns
                 {
                     CurrentForm = SoulGunForm.Soul_Base;
                 }
-                gun.TransformToTargetGun(CodeShortcuts.GetItemById<Gun>(gun.PickupObjectId + (int)CurrentForm));
+                gun.TransformToTargetGun(GetItemById<Gun>(gun.PickupObjectId + (int)CurrentForm));
             }
         }
 

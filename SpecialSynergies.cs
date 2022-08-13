@@ -14,6 +14,12 @@ namespace SpecialStuffPack
     {
         public static void Init()
         {
+            List<int> upgradeGang = new()
+            {
+                Plus1BulletsId,
+                AmuletOfThePitLordId,
+            };
+
             //build synergies
             CreateSynergy("Fufufufufu", new() { ItemIds["woodentoken"] }, new() { ElimentalerId, RatBootsId, PartiallyEatenCheeseId, ResourcefulSackId, RingOfTheResourcefulRatId, ItemIds["ratwhistle"] });
             CreateSynergy("Double the Wish!", new() { ItemIds["wishorb"], LifeOrbId });
@@ -64,11 +70,41 @@ namespace SpecialStuffPack
             CreateSynergy("Fully Unlocked", new() { ItemIds["bosschest"], ShelletonKeyId });
             CreateSynergy("while(true) { }", new() { ItemIds["nank"] }, new() { IceBombId, FrostGiantId, FrostBulletsId, FrostAmmoletId, Cold45Id, PolarisId, HeartOfIceId, IceCubeId, IceBreakerId, FreezeRayId });
             CreateSynergy("NullReferenceException", new() { ItemIds["nank"] }, new() { DragunfireId, FlameHandId, PitchforkId, DemonHeadId, PhoenixId, HotLeadId, RingOfFireResistanceId });
-            CreateSynergy("Mono.dll has caused an Access Violation", new() { ItemIds["nank"] }, new() { 250, 332, 108, 234 });
+            CreateSynergy("Mono.dll has caused an Access Violation", new() { ItemIds["nank"] }, new() { GrapplingHookId, LilBomberId, BombId, IbombCompanionAppId });
             CreateSynergy("Frogs are Friends", new() { ItemIds["frogun"], ReallySpecialLuteId });
             CreateSynergy("Revenge", new() { ItemIds["frogun"], FaceMelterId });
             CreateSynergy("Gun and Bullets", new() { ItemIds["lichgun"], LichsEyeBulletsId }, ignoreLichsEyeBullets: true);
-            CreateSynergy("Flatter Flat Bullets", new() { ItemIds["flatbullets"], 815 }, ignoreLichsEyeBullets: true);
+            CreateSynergy("Flatter Flat Bullets", new() { ItemIds["flatbullets"] }, new(upgradeGang));
+            CreateSynergy("SpecialUtils", new() { ItemIds["boxofstuff"] }, new()
+            {
+                PeaShooterId,
+                ThirtyEightSpecialId,
+                DerringerId,
+                MakarovId,
+                DuelingPistolId,
+                TurboGunId,
+                ScreecherId,
+                NailGunId,
+                WoodBeamId,
+                TheKilnId,
+                BuzzkillId,
+                TearJerkerId,
+                QuadLaserId,
+                CactusId,
+                KlobbeId,
+                TrashcannonId
+            });
+            CreateSynergy("QoL", new() { ItemIds["boxofstuff"] }, new()
+            {
+                ArmorSynthesizerId,
+                AmmoSynthesizerId,
+                ExplosiveRoundsId,
+                SprunId,
+                ItemIds["mirrorbullet"],
+                HighDragunfireId
+            });
+            CreateSynergy("Hotter Kiln", new() { ItemIds["hotcoal"], TheKilnId }, activeWhenGunsUnequipped: false);
+
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);
@@ -88,7 +124,7 @@ namespace SpecialStuffPack
             {
                 sm.Add(StatModifier.Create(PlayerStats.StatType.MovementSpeed, StatModifier.ModifyMethod.ADDITIVE, 1f));
             }
-            CreateSynergy("I Hate Mondays", new() { ItemIds["calendar"] }, new() { 143, 399 }, statModifiers: sm);
+            CreateSynergy("I Hate Mondays", new() { ItemIds["calendar"] }, new() { ShotgunFullOfHateId, TableTechRageId }, statModifiers: sm);
 
             //add new items to existing synergies
             AddItemToSynergy(CustomSynergyType.PITCHPERFECT, ItemIds["greencandle"]);

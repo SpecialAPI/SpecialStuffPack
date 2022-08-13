@@ -24,8 +24,8 @@ namespace SpecialStuffPack.Items
             RatWhistle item = EasyInitItem<RatWhistle>("items/ratwhistle", "sprites/resrat_whistle_idle_001", name, shortdesc, longdesc, ItemQuality.A, 433, null);
             item.SetCooldownType(CooldownType.Damage, 275f);
             item.IgnoredByRat = true;
-            item.BombPrefab = CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(108).objectToSpawn;
-            item.IceBombPrefab = CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(109).objectToSpawn;
+            item.BombPrefab = GetItemById<SpawnObjectPlayerItem>(108).objectToSpawn;
+            item.IceBombPrefab = GetItemById<SpawnObjectPlayerItem>(109).objectToSpawn;
             item.AddToBlacksmithShop();
         }
 

@@ -27,19 +27,9 @@ namespace SpecialStuffPack.Items.Passives
             player.PostProcessProjectile += ShootKeyBullet;
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.PostProcessProjectile -= ShootKeyBullet;
-            return base.Drop(player);
-        }
-
-        public override void OnDestroy()
-        {
-            base.OnDestroy();
-            if(Owner != null)
-            {
-                Owner.PostProcessProjectile -= ShootKeyBullet;
-            }
         }
 
         public void ShootKeyBullet(Projectile proj, float f)

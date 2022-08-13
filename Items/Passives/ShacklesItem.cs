@@ -16,6 +16,8 @@ namespace SpecialStuffPack.Items
             string longdesc = "Grants armor, but slows the owner down. Losing armor speeds the owner up.\n\nHeavy iron shackles brought by the convict to the gungeon.";
             ShacklesItem item = EasyInitItem<ShacklesItem>("items/shackles", "sprites/shackles_idle_001.png", name, shortdesc, longdesc, ItemQuality.C, 525, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.MovementSpeed, -2f, StatModifier.ModifyMethod.ADDITIVE);
+            item.SpeedBoostOnDamage = 1f;
+            item.ArmorToGainOnPickup = 2;
             item.CanBeDropped = false;
             item.AddToOldRedShop();
             item.AddToBlacksmithShop();

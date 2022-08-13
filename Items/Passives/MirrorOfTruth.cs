@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Look at you.";
             string longdesc = "Replaces all chests with mirrors.\n\nA piece of a mirror from an another world. Seems like it came from a cursed place...";
             MirrorOfTruth item = EasyInitItem<MirrorOfTruth>("items/truthmirror", "sprites/mirror_of_truth_idle_001", name, shortdesc, longdesc, ItemQuality.C, 289, null);
-            item.ShadowSynergyClonePrefab = CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(820).objectToSpawn;
+            item.ShadowSynergyClonePrefab = GetItemById<SpawnObjectPlayerItem>(820).objectToSpawn;
             item.AddToCursulaShop();
             new Hook(typeof(RewardManager).GetMethod("GenerationSpawnRewardChestAt", BindingFlags.Public | BindingFlags.Instance), typeof(MirrorOfTruth).GetMethod("ReplaceChestWithMirror", BindingFlags.Public | BindingFlags.Static));
         }
@@ -71,11 +71,10 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.OnEnteredCombat -= HandleShadowSynergy;
             DecrementFlag(player, typeof(MirrorOfTruth));
-            return base.Drop(player);
         }
 
         public GameObject ShadowSynergyClonePrefab;

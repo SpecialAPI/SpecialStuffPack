@@ -32,6 +32,10 @@ namespace SpecialStuffPack.Items.Passives
 
         public void BossRoomCleared(PlayerController player)
         {
+            if(player.CurrentRoom.area.PrototypeRoomCategory != PrototypeDungeonRoom.RoomCategory.BOSS)
+            {
+                return;
+            }
             if (Owner.PlayerHasActiveSynergy("Fully Unlocked"))
             {
                 Chest.Spawn(GameManager.Instance.RewardManager.Rainbow_Chest, lastBossKilledPos, player.CurrentRoom, true);
@@ -43,21 +47,10 @@ namespace SpecialStuffPack.Items.Passives
             }
         }
 
-        public override void OnDestroy()
-        {
-            if(Owner != null)
-            {
-                Owner.OnAnyEnemyReceivedDamage -= StoreLastDamagePosition;
-                Owner.OnRoomClearEvent -= BossRoomCleared;
-            }
-            base.OnDestroy();
-        }
-
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.OnAnyEnemyReceivedDamage -= StoreLastDamagePosition;
             player.OnRoomClearEvent -= BossRoomCleared;
-            return base.Drop(player);
         }
 
         public Vector2 lastBossKilledPos;

@@ -26,19 +26,9 @@ namespace SpecialStuffPack.Items
             player.OnUsedPlayerItem += Throw;
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
 			player.OnUsedPlayerItem -= Throw;
-            return base.Drop(player);
-        }
-
-        public override void OnDestroy()
-        {
-			if(m_owner != null)
-            {
-				m_owner.OnUsedPlayerItem -= Throw;
-            }
-            base.OnDestroy();
         }
 
         public void Throw(PlayerController player, PlayerItem item)

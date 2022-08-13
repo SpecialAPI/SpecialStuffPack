@@ -191,7 +191,7 @@ namespace SpecialStuffPack.Placeables
             somethingSpecialComponent.DiamondReplacement = "#SOMETHING_SPECIAL_DIAMOND";
             somethingSpecialComponent.BaseSpriteId = baseId;
             somethingSpecialComponent.TalkPoint = somethingSpecial.transform.Find("TalkPoint");
-            somethingSpecialComponent.DustPoofVFX = CodeShortcuts.GetItemById<PaydayDrillItem>(625).VFXDustPoof;
+            somethingSpecialComponent.DustPoofVFX = GetItemById<PaydayDrillItem>(625).VFXDustPoof;
             ETGMod.Databases.Strings.Core.Set("#SOMETHING_SPECIAL_DESCRIPTION", "A remarkably special shrine. It has six holes in it.");
             ETGMod.Databases.Strings.Core.Set("#SOMETHING_SPECIAL_ACCEPT", "<Insert the %GEM>");
             ETGMod.Databases.Strings.Core.Set("#SOMETHING_SPECIAL_DECLINE", "<Walk away>");

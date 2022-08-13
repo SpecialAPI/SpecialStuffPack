@@ -43,24 +43,13 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override void OnDestroy()
-        {
-            if(Owner != null && Owner.healthHaver != null && Owner.healthHaver.damageTypeModifiers != null && m_electricImmunity != null)
-            {
-                Owner.healthHaver.damageTypeModifiers.Add(m_electricImmunity);
-            }
-            m_electricImmunity = null;
-            base.OnDestroy();
-        }
-
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             if (player != null && player.healthHaver != null && player.healthHaver.damageTypeModifiers != null && m_electricImmunity != null)
             {
                 player.healthHaver.damageTypeModifiers.Add(m_electricImmunity);
             }
             m_electricImmunity = null;
-            return base.Drop(player);
         }
 
         public float DamageMultiplier;

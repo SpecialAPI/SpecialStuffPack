@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Components
             {
                 for(int i = 0; i < NumProjectilesToShoot; i++)
                 {
-                    var proj = CodeShortcuts.OwnedShootProjectile(projectileToShoot, x.specRigidbody.UnitCenter, Random.insideUnitCircle.ToAngle(), x.Owner);
+                    var proj = OwnedShootProjectile(projectileToShoot, x.specRigidbody.UnitCenter, Random.insideUnitCircle.ToAngle(), x.Owner);
                     proj.GetOrAddComponent<PierceProjModifier>().penetration += 1;
                     proj.baseData.damage *= DamageMultiplier;
                 }

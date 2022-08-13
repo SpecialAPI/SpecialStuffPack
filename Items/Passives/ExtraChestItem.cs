@@ -30,10 +30,9 @@ namespace SpecialStuffPack.Items
             IncrementFlag(player, typeof(ExtraChestItem));
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             DecrementFlag(player, typeof(ExtraChestItem));
-            return base.Drop(player);
         }
     }
 }

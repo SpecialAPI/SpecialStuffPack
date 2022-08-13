@@ -30,20 +30,14 @@ namespace SpecialStuffPack.Items
             player.ImmuneToPits.AddOverride("opal");
         }
 
-        public override void OnDestroy()
+        public override void DisableEffect(PlayerController player)
         {
-            if (m_owner != null)
-            {
-                DecrementFlag(m_owner, typeof(OpalItem));
-                m_owner.ImmuneToPits.RemoveOverride("opal");
-            }
-            base.OnDestroy();
+            DecrementFlag(player, typeof(OpalItem));
+            m_owner.ImmuneToPits.RemoveOverride("opal");
         }
 
         public override DebrisObject Drop(PlayerController player)
         {
-            DecrementFlag(player, typeof(OpalItem));
-            m_owner.ImmuneToPits.RemoveOverride("opal");
             DebrisObject result = base.Drop(player);
             result.GetComponent<OpalItem>().m_pickedUp = true;
             result.OnGrounded += result.GetComponent<OpalItem>().Shatter;

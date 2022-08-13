@@ -124,12 +124,11 @@ namespace SpecialStuffPack.Items
             return subscribers;
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             player.PostProcessProjectile -= SubscriberPower;
             GameUIRoot.Instance.p_playerCoinLabel.Parent.RemoveControl(m_label);
             Destroy(m_label.gameObject);
-            return base.Drop(player);
         }
 
         public float DamageIncreasePerSubscriber;

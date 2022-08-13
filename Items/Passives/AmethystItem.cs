@@ -31,20 +31,15 @@ namespace SpecialStuffPack.Items
             ProjectileData.FixedFallbackDamageToEnemies *= 2;
         }
 
-        public override void OnDestroy()
+        public override void DisableEffect(PlayerController player)
         {
-            if (m_owner != null)
-            {
-                DecrementFlag(m_owner, typeof(AmethystItem));
-                ProjectileData.FixedFallbackDamageToEnemies /= 2;
-            }
-            base.OnDestroy();
+            base.DisableEffect(player);
+            DecrementFlag(player, typeof(AmethystItem));
+            ProjectileData.FixedFallbackDamageToEnemies /= 2;
         }
 
         public override DebrisObject Drop(PlayerController player)
         {
-            DecrementFlag(player, typeof(AmethystItem));
-            ProjectileData.FixedFallbackDamageToEnemies /= 2;
             DebrisObject result = base.Drop(player);
             result.GetComponent<AmethystItem>().m_pickedUp = true;
             result.OnGrounded += result.GetComponent<AmethystItem>().Shatter;

@@ -21,19 +21,9 @@ namespace SpecialStuffPack.Items.Passives
             IncrementFlag(player, GetType());
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             DecrementFlag(player, GetType());
-            return base.Drop(player);
-        }
-
-        public override void OnDestroy()
-        {
-            if (Owner != null)
-            {
-                DecrementFlag(Owner, GetType());
-            }
-            base.OnDestroy();
         }
     }
 }

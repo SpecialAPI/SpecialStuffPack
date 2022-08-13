@@ -22,15 +22,15 @@ namespace SpecialStuffPack.Items
             item.SetCooldownType(CooldownType.Damage, 250f);
             item.Stuff = new List<GameObject>
             {
-                CodeShortcuts.GetItemById<FoldingTableItem>(644).TableToSpawn.gameObject,
-                CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(71).objectToSpawn,
-                CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(438).objectToSpawn,
-                CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(108).objectToSpawn,
-                CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(109).objectToSpawn,
-                CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(66).objectToSpawn,
-                CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(308).objectToSpawn,
-                EnemyDatabase.GetOrLoadByGuid(CodeShortcuts.GetItemById<SpawnObjectPlayerItem>(201).enemyGuidToSpawn).gameObject,
-                CodeShortcuts.GetItemById<MagazineRackItem>(814).MagazineRackPrefab,
+                GetItemById<FoldingTableItem>(644).TableToSpawn.gameObject,
+                GetItemById<SpawnObjectPlayerItem>(71).objectToSpawn,
+                GetItemById<SpawnObjectPlayerItem>(438).objectToSpawn,
+                GetItemById<SpawnObjectPlayerItem>(108).objectToSpawn,
+                GetItemById<SpawnObjectPlayerItem>(109).objectToSpawn,
+                GetItemById<SpawnObjectPlayerItem>(66).objectToSpawn,
+                GetItemById<SpawnObjectPlayerItem>(308).objectToSpawn,
+                EnemyDatabase.GetOrLoadByGuid(GetItemById<SpawnObjectPlayerItem>(201).enemyGuidToSpawn).gameObject,
+                GetItemById<MagazineRackItem>(814).MagazineRackPrefab,
                 LoadHelper.LoadAssetFromAnywhere<GameObject>("Red Barrel"),
                 LoadHelper.LoadAssetFromAnywhere<GameObject>("Red Drum"),
                 LoadHelper.LoadAssetFromAnywhere<GameObject>("Blue Drum"),
@@ -41,6 +41,10 @@ namespace SpecialStuffPack.Items
             item.MaxStuff = 35;
             item.MinStuffSynergy = 40;
             item.MaxStuffSynergy = 55;
+            item.TrashSynergyAmount = 3;
+            item.TrashSynergyProjectile = TrashcannonObject.GetProjectile();
+            item.ArmorChance = 0.01f;
+            item.AmmoChance = 0.04f;
         }
 
         public override void DoEffect(PlayerController user)
@@ -50,18 +54,39 @@ namespace SpecialStuffPack.Items
 
         private IEnumerator SpawnStuffCR(PlayerController user)
         {
-            int stuffToSpawn = UnityEngine.Random.Range(MinStuff, MaxStuff);
+            int stuffToSpawn = Random.Range(MinStuff, MaxStuff);
             if(user.PlayerHasActiveSynergy("v3.0 The Massive Update"))
             {
-                stuffToSpawn = UnityEngine.Random.Range(MinStuffSynergy, MaxStuffSynergy);
+                stuffToSpawn = Random.Range(MinStuffSynergy, MaxStuffSynergy);
             }
             for (int i = 0; i < stuffToSpawn; i++)
             {
-                GameObject toSpawn = BraveUtility.RandomElement(Stuff);
-                IntVector2? randomAvailableCell = user.CurrentRoom.GetRandomAvailableCell(new IntVector2(1, 1), CellTypes.FLOOR, false, null);
-                if (randomAvailableCell != null)
+                IntVector2? spawnPos = user.CurrentRoom.GetRandomAvailableCell(new IntVector2(1, 1), CellTypes.FLOOR, false, null);
+                if (!spawnPos.HasValue)
                 {
-                    GameObject go = Instantiate(toSpawn, randomAvailableCell.Value.ToVector2(), Quaternion.identity);
+                    continue;
+                }
+                int overrideItemId = -1;
+                if (user.PlayerHasActiveSynergy("QoL"))
+                {
+                    var chance = Random.value;
+                    if(chance < ArmorChance)
+                    {
+                        overrideItemId = ArmorId;
+                    }
+                    else if(chance < ArmorChance + AmmoChance)
+                    {
+                        overrideItemId = BraveUtility.RandomBool() ? AmmoId : SpreadAmmoId;
+                    }
+                }
+                if(overrideItemId >= 0)
+                {
+                    LootEngine.SpawnItem(GetItemById(overrideItemId).gameObject, spawnPos.Value.ToVector3(), Vector2.down, 0f, false, true, false);
+                }
+                else
+                {
+                    GameObject toSpawn = BraveUtility.RandomElement(Stuff);
+                    GameObject go = Instantiate(toSpawn, spawnPos.Value.ToVector2(), Quaternion.identity);
                     PortableTurretController turret = go.GetComponent<PortableTurretController>();
                     if (turret)
                     {
@@ -98,6 +123,19 @@ namespace SpecialStuffPack.Items
                     yield return new WaitForSeconds(0.1f);
                 }
             }
+            if (user.PlayerHasActiveSynergy("SpecialUtils"))
+            {
+                for(int i = 0; i < TrashSynergyAmount; i++)
+                {
+                    IntVector2? randomAvailableCell = user.CurrentRoom.GetRandomAvailableCell(new IntVector2(1, 1), CellTypes.FLOOR, false, null);
+                    if (randomAvailableCell.HasValue)
+                    {
+                        OwnedShootProjectile(TrashSynergyProjectile, randomAvailableCell.Value.ToCenterVector2(), 0f, user).baseData.speed = 0f;
+                        DeadlyDeadlyGoopManager.GetGoopManagerForGoopType(GoopDatabase.DefaultPoisonGoop).TimedAddGoopCircle(randomAvailableCell.Value.ToCenterVector2(), 1.5f, 0.5f, false);
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                }
+            }
             yield break;
         }
 
@@ -111,5 +149,9 @@ namespace SpecialStuffPack.Items
         public int MaxStuff;
         public int MinStuffSynergy;
         public int MaxStuffSynergy;
+        public int TrashSynergyAmount;
+        public Projectile TrashSynergyProjectile;
+        public float ArmorChance;
+        public float AmmoChance;
     }
 }

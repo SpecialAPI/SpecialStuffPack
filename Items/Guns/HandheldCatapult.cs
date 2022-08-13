@@ -55,7 +55,7 @@ namespace SpecialStuffPack.Items
             gun.AddComponent<LobberGun>();
             gun.AddComponent<HandheldCatapult>();
             finish();
-            AddDualWieldSynergyProcessor(gun, CodeShortcuts.GetItemById<Gun>(382), "Stone x2");
+            AddDualWieldSynergyProcessor(gun, GetItemById<Gun>(382), "Stone x2");
         }
 
         public override void OnPlayerPickup(PlayerController playerOwner)

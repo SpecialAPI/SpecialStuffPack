@@ -132,7 +132,7 @@ namespace SpecialStuffPack.Items
                     }
                     for(int i = 1; i < numToSpawn; i++)
                     {
-                        spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + spawnOffsets[i], isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
+                        spawnedChests.Add(GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + spawnOffsets[i], isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
                     }
                     foreach (Chest c in spawnedChests)
                     {
@@ -168,12 +168,12 @@ namespace SpecialStuffPack.Items
                 {
                     table = GameManager.Instance.RewardManager.GunsLootTable;
                 }
-                spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(-2, 1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
-                spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(2, -1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
-                spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(-2, -1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
+                spawnedChests.Add(GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(-2, 1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
+                spawnedChests.Add(GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(2, -1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
+                spawnedChests.Add(GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom + new IntVector2(-2, -1), isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
                 if(AnyoneHasActiveSynergy("Somehow... Luckier?"))
                 {
-                    spawnedChests.Add(CodeShortcuts.GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom, isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
+                    spawnedChests.Add(GenerationSpawnChestSetLootTable(toSpawn, targetRoom, positionInRoom, isSynergy ? new Vector2(-0.1875f, 0f) : Vector2.zero, 0f, table));
                 }
                 foreach (Chest c in spawnedChests)
                 {
@@ -189,10 +189,9 @@ namespace SpecialStuffPack.Items
             }
         }
 
-        public override DebrisObject Drop(PlayerController player)
+        public override void DisableEffect(PlayerController player)
         {
             DecrementFlag(player, typeof(BadLuckClover));
-            return base.Drop(player);
         }
     }
 }
