@@ -1,7 +1,6 @@
 # SpecialAPI's Stuff
 Adds a lot of new content to the game, including 50+ items, new unlocks, synergies and secrets.
 
-
 # Content
 <details>
 <summary>Items:
