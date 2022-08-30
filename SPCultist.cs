@@ -32,6 +32,7 @@ namespace SpecialStuffPack
                     var newFlag = go.GetComponent<FoyerCharacterSelectFlag>();
                     newFlag.IsCoopCharacter = false;
                     newFlag.ToggleSelf(true);
+                    newFlag.IsGunslinger = newFlag.IsEevee = false;
                     go.AddComponent<DisableWhenSecondDeviceConnected>().flag = newFlag;
                     go.transform.position.GetAbsoluteRoom().RegisterInteractable(go.GetComponentInChildren<IPlayerInteractable>());
                     __instance.OnPlayerCharacterChanged += newFlag.OnSelectedCharacterCallback;
@@ -47,6 +48,17 @@ namespace SpecialStuffPack
             {
                 __instance.m_overridePlayerSwitchState = "CoopCultist";
                 __instance.characterIdentity = PlayableCharactersE.SPCultist;
+                if(__instance.BosscardSprites == null || __instance.BosscardSprites.Count <= 0)
+                {
+                    __instance.BosscardSprites = new()
+                    {
+                        SpecialStuffModule.spCultistBosscard
+                    };
+                }
+                if(__instance.BosscardSpriteFPS < 1)
+                {
+                    __instance.BosscardSpriteFPS = 1;
+                }
             }
         }
 

@@ -57,13 +57,13 @@ namespace SpecialStuffPack.Items
                 {
                     (user.CurrentRoom.GetNearestInteractable(user.CenterPosition, 1f, user) as InteractableLock).ForceUnlock();
                 }
-                else
+                else if(user.CurrentRoom.area.PrototypeRoomCategory != PrototypeDungeonRoom.RoomCategory.BOSS)
                 {
                     roomToReset = user.CurrentRoom;
                     if (user.CurrentRoom.IsSealed)
                     {
                         user.CurrentRoom.UnsealRoom();
-                        GameObject roomResetter = new GameObject("room resetter");
+                        GameObject roomResetter = new("room resetter");
                         roomResetter.transform.position = user.CurrentRoom.GetCenterCell().ToVector2();
                         roomResetter.AddComponent<LeaveRoomResetter>().parentRoom = user.CurrentRoom;
                     }
@@ -85,7 +85,7 @@ namespace SpecialStuffPack.Items
                 return false;
             }
             bool anythingToUnlock = false;
-            if (user.CurrentRoom.IsSealed)
+            if (user.CurrentRoom.IsSealed && user.CurrentRoom.area.PrototypeRoomCategory != PrototypeDungeonRoom.RoomCategory.BOSS)
             {
                 anythingToUnlock |= true;
             }

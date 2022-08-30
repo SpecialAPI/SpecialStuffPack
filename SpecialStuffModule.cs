@@ -41,6 +41,7 @@ namespace SpecialStuffPack
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
         public const string VERSION = "1.0.0";
+        public static Texture2D spCultistBosscard;
 
         public static int? GetActiveItemUICount(PlayerItem input)
         {
@@ -73,7 +74,15 @@ namespace SpecialStuffPack
             //asset bundle setup
             AssetBundleManager.LoadBundle();
             //SoundManager.Init();
-
+            using(var stream = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpecialStuffPack.player_coop_cultist_card_pink_001.png"))
+            {
+                spCultistBosscard = new(1, 1, TextureFormat.ARGB32, false);
+                byte[] ba = new byte[stream.Length];
+                stream.Read(ba, 0, ba.Length);
+                spCultistBosscard.LoadImage(ba);
+                spCultistBosscard.filterMode = FilterMode.Point;
+                spCultistBosscard.name = "sp_cultist_bosscard";
+            }
             //saveapi setup
             SaveAPIManager.Setup("spapistuff");
         }
