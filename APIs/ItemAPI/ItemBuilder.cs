@@ -204,9 +204,9 @@ namespace SpecialStuffPack.ItemAPI
         /// </summary>
         public static PlayerItem SetCooldownType(this PlayerItem item, CooldownType cooldownType, float value)
         {
-            item.damageCooldown = -1;
-            item.roomCooldown = -1;
-            item.timeCooldown = -1;
+            item.damageCooldown = 0;
+            item.roomCooldown = 0;
+            item.timeCooldown = 0;
 
             switch (cooldownType)
             {

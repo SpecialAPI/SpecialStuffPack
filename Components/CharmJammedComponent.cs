@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace SpecialStuffPack.SaveAPI
+namespace SpecialStuffPack.Components
 {
-    public enum CustomTrackedStats
+    public class CharmJammedComponent
     {
-        GOLDEN_BULLETS_BONUS
     }
 }

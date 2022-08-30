@@ -46,7 +46,7 @@ namespace SpecialStuffPack
             CreateSynergy("Ring It Twice", new() { ItemIds["glassbell"], AgedBellId });
             CreateSynergy("Celestial Rhythm", new() { ItemIds["shooting_star"], CrescentCrossbowId });
             CreateSynergy("Wishing Star", new() { ItemIds["shooting_star"], ItemIds["wishorb"] });
-            CreateSynergy("The Initial Idea", new() { ItemIds["shooting_star"], ItemIds["asteroidbelt"] }, null, false, new List<StatModifier> { StatModifier.Create(PlayerStats.StatType.Damage, 
+            CreateSynergy("The Initial Idea", new() { ItemIds["shooting_star"], ItemIds["asteroidbelt"] }, null, false, new List<StatModifier> { StatModifier.Create(PlayerStats.StatType.Damage,
                 StatModifier.ModifyMethod.MULTIPLICATIVE, 2f) });
             CreateSynergy("Bouncy Throws", new() { ItemIds["butter"], BouncyBulletsId });
             CreateSynergy("Piercing Throws", new() { ItemIds["butter"], GhostBulletsId });
@@ -104,7 +104,134 @@ namespace SpecialStuffPack
                 HighDragunfireId
             });
             CreateSynergy("Hotter Kiln", new() { ItemIds["hotcoal"], TheKilnId }, activeWhenGunsUnequipped: false);
-
+            CreateSynergy("When the shotgun is sus!", new() { ItemIds["sus_shotgun"] }, new() { BackpackId, MoonscraperId, DungeonEagleId, JetpackId, BlastHelmetId, KnifeShieldId });
+            CreateSynergy("Rainbuddy", new() { ItemIds["sus_shotgun"] }, new() { BabyGoodShelletonId, BabyGoodMimicId, ChickenFluteId, OwlId, R2g2Id }, false, new()
+            {
+                CreateStatMod(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.25f),
+                CreateStatMod(PlayerStats.StatType.PlayerBulletScale, StatModifier.ModifyMethod.ADDITIVE, 0.25f)
+            });
+            CreateSynergy("Bow-Bow", new() { ItemIds["sus_shotgun"] }, new() { BowId, CharmedBowId, ShotbowId, CrescentCrossbowId, StickyCrossbowId, TripleCrossbowId, GunbowId }, false, new()
+            {
+                CreateStatMod(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.125f, false),
+                CreateStatMod(PlayerStats.StatType.PlayerBulletScale, StatModifier.ModifyMethod.ADDITIVE, 0.125f, false),
+                CreateStatMod(PlayerStats.StatType.ChargeAmountMultiplier, StatModifier.ModifyMethod.ADDITIVE, 0.25f, false),
+            });
+            CreateSynergy("RAINBOW!!!", new() { ItemIds["sus_shotgun"] }, new() { UnicornHornId, StuffedStarId, ItemIds["totem"], ChaosBulletsId, ItemIds["chaos"], ChaosAmmoletId }, false, new()
+            {
+                CreateStatMod(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.25f),
+                CreateStatMod(PlayerStats.StatType.PlayerBulletScale, StatModifier.ModifyMethod.ADDITIVE, 0.25f),
+            });
+            CreateSynergy("Bane Gun", new() { ItemIds["red_gun"] }, new()
+            {
+                TheMembraneId,
+                PlaguePistolId,
+                PlungerId,
+                PoxcannonId,
+                GammaRayId,
+                RattlerId,
+                ShotgunFullOfHateId,
+                ShotgrubId,
+                PoisonVialId,
+                IrradiatedLeadId,
+                UraniumAmmoletId,
+                MonsterBloodId,
+                BugBootsId,
+                GasMaskId,
+                HazmatSuitId
+            });
+            CreateSynergy("Vampiric Gun", new() { ItemIds["red_gun"] }, new()
+            {
+                BloodBroochId,
+                PinkGuonStoneId,
+                ItemIds["heartpiece"],
+                AntibodyId,
+                LifeOrbId,
+                MutationId,
+                SuperMeatGunId,
+                BloodiedScarfId
+            });
+            CreateSynergy("Necromantic Gun", new() { ItemIds["red_gun"] }, new()
+            {
+                Vertebraek47Id,
+                SkullSpitterId,
+                GunslingersAshesId,
+                MeltedRockId,
+                GhostBulletsId,
+                ZombieBulletsId,
+                ProtonBackpackId,
+                ShelletonKeyId,
+                BabyGoodShelletonId,
+                ShellegunId
+            });
+            CreateSynergy("Zealous Gun", new() { ItemIds["red_gun"] }, new()
+            {
+                EyeOfTheBeholsterId,
+                RollingEyeId,
+                BloodyEyeId,
+                TableTechSightId,
+                GungeonBlueprintId,
+                SunglassesId,
+                MimicToothNecklaceId,
+                CharmingRoundsId,
+                LamentConfigurumId
+            });
+            CreateSynergy("Merciless Gun", new() { ItemIds["red_gun"] }, new()
+            {
+                VorpalGunId,
+                VorpalBulletsId,
+                Bloody9MmId,
+                TableTechRageId,
+                AngryBulletsId,
+                CogOfBattleId,
+                ShadowBulletsId,
+                GoldAmmoletId,
+                WoodBeamId,
+                HyperLightBlasterId
+            });
+            CreateSynergy("Godly Gun", new() { ItemIds["red_gun"] }, new()
+            {
+                RubensteinsMonsterId,
+                HighDragunfireId,
+                FinishedGunId,
+                CloneId
+            }, ignoreLichsEyeBullets: true);
+            CreateSynergy("Might of the Devout", new() { ItemIds["red_gun"] }, new()
+            {
+                Plus1BulletsId,
+                BroccoliId,
+                RiddleOfLeadId,
+                RailgunId,
+                LichyTriggerFingerId,
+                AmuletOfThePitLordId,
+                MagicSweetId
+            }, false, new()
+            {
+                CreateStatMod(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.MULTIPLICATIVE, 1.25f)
+            });
+            CreateSynergy("Hearts of the Faithful", new() { ItemIds["red_gun"] }, new()
+            {
+                HeartHolsterId,
+                HeartLunchboxId,
+                HeartLocketId,
+                HeartBottleId,
+                HeartPurseId,
+                HeartOfIceId
+            }, true, new()
+            {
+                CreateStatMod(PlayerStats.StatType.Health, StatModifier.ModifyMethod.ADDITIVE, 0.5f)
+            });
+            CreateSynergy("Cheap Rituals", new() { ItemIds["red_gun"] }, new()
+            {
+                ItemIds["legitcoupon"],
+                TurkeyId,
+                GildedBulletsId,
+                MicrotransactionGunId,
+                ItemIds["paytowin"],
+                IronCoinId,
+                SmileysRevolverId,
+                RingOfMiserlyProtectionId,
+                EscapeRopeId
+            });
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);

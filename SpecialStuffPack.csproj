@@ -142,11 +142,18 @@
     <Compile Include="Components\BinaryGunProjectile.cs" />
     <Compile Include="Components\BounceResetsDistance.cs" />
     <Compile Include="Components\CactiClubProjectile.cs" />
+    <Compile Include="Components\ChanceBasedDropItemOnKill.cs" />
+    <Compile Include="Components\ChanceBasedSpawnTimedProjectileOnKill.cs" />
+    <Compile Include="Components\CharmJammedComponent.cs" />
     <Compile Include="Components\ChestChoiceComponent.cs" />
+    <Compile Include="Components\DoubleChargeActive.cs" />
     <Compile Include="Components\FishingReward.cs" />
     <Compile Include="Components\GamerComponent.cs" />
     <Compile Include="Components\GemDropper.cs" />
     <Compile Include="Components\HookProjectile.cs" />
+    <Compile Include="Components\IndoctrinateFollowerInteractable.cs" />
+    <Compile Include="Components\IndoctrinateJammedEnemies.cs" />
+    <Compile Include="Components\InheritOwnersRoomBehaviour.cs" />
     <Compile Include="Components\LeaveRoomResetter.cs" />
     <Compile Include="Components\LobbedProjectileMotion.cs" />
     <Compile Include="Components\LobberGun.cs" />
@@ -180,20 +187,27 @@
     <Compile Include="EnumExtensions\PlayableCharactersE.cs" />
     <Compile Include="Items\Actives\ActiveOverchargeItem.cs" />
     <Compile Include="Items\Actives\EnergyDrink.cs" />
+    <Compile Include="Items\Actives\HotSauce.cs" />
+    <Compile Include="Items\Actives\MagicBag.cs" />
     <Compile Include="Items\Actives\RiftKey.cs" />
     <Compile Include="Items\Guns\AkNAN.cs" />
     <Compile Include="Items\Guns\AkPI.cs" />
     <Compile Include="Items\Guns\AkSoundEngine.cs" />
     <Compile Include="Items\Guns\CactiClub.cs" />
+    <Compile Include="Items\Guns\CultCharmEffect.cs" />
     <Compile Include="Items\Guns\EnderGun.cs" />
+    <Compile Include="Items\Guns\FireVolleyOnReload.cs" />
     <Compile Include="Items\Guns\FishingRodGun.cs" />
     <Compile Include="Items\Guns\Frogun.cs" />
+    <Compile Include="Items\Guns\GunBehaviourFormeSynergyProcessor.cs" />
     <Compile Include="Items\Guns\HelloWorld.cs" />
     <Compile Include="Items\Guns\LeatherWhip.cs" />
     <Compile Include="Items\Guns\NoShootyShootyGun.cs" />
     <Compile Include="Items\Guns\PistolWhip.cs" />
+    <Compile Include="Items\Guns\RedGun.cs" />
     <Compile Include="Items\Guns\Revolvever.cs" />
     <Compile Include="Items\Guns\SoulGun.cs" />
+    <Compile Include="Items\Guns\SusShotgun.cs" />
     <Compile Include="Items\Guns\SynergyCompletionGun.cs" />
     <Compile Include="Items\Guns\WhipCream.cs" />
     <Compile Include="Items\Passives\AmethystItem.cs" />
@@ -224,14 +238,17 @@
     <Compile Include="Items\Passives\FusedAmmolet.cs" />
     <Compile Include="Items\Actives\GlassBell.cs" />
     <Compile Include="Items\Passives\GemmedRound.cs" />
+    <Compile Include="Items\Passives\GoldenBullets.cs" />
     <Compile Include="Items\Passives\GoldKey.cs" />
     <Compile Include="Items\Actives\GravediggerShovel.cs" />
     <Compile Include="Items\Actives\GreenCandle.cs" />
     <Compile Include="Items\Actives\GuardianOfTime.cs" />
     <Compile Include="Items\Guns\HandheldCatapult.cs" />
+    <Compile Include="Items\Passives\HeartPiece.cs" />
     <Compile Include="Items\Passives\HotCoal.cs" />
     <Compile Include="Items\Passives\InfinityCrystal.cs" />
     <Compile Include="Items\Passives\Launcher.cs" />
+    <Compile Include="Items\Passives\LeadFists.cs" />
     <Compile Include="Items\Passives\LegitCoupon.cs" />
     <Compile Include="Items\Passives\MirroredBullet.cs" />
     <Compile Include="Items\Passives\MirrorOfTruth.cs" />
@@ -285,6 +302,7 @@
     <Compile Include="Items\Actives\WoodenToken.cs" />
     <Compile Include="Items\Actives\WishingOrb.cs" />
     <Compile Include="Tools\UnityEventHandler.cs" />
+    <Compile Include="WindowsWindowNamer.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="specialeverything" />
@@ -319,7 +337,7 @@
       <HintPath>packages\BepInEx.BaseLib.5.4.21\lib\net35\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="ModTheGungeonAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\EtG.ModTheGungeonAPI.1.5.4\lib\net35\ModTheGungeonAPI.dll</HintPath>
+      <HintPath>packages\EtG.ModTheGungeonAPI.1.5.5\lib\net35\ModTheGungeonAPI.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>

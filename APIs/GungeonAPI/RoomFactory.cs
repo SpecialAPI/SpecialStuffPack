@@ -34,6 +34,18 @@ namespace SpecialStuffPack.GungeonAPI
             return roomData;
         }
 
+        public static RoomData BuildFromBytes(byte[] b, string name = "")
+        {
+            var texture = ResourceExtractor.GetTextureFromBytes(b, name);
+            RoomData roomData = ExtractRoomDataFromBytes(b);
+            roomData.room = Build(texture, roomData);
+            return roomData;
+        }
+
+        public static RoomData BuildFromTextAsset(TextAsset ta)
+        {
+            return BuildFromBytes(ta.bytes, ta.name);
+        }
 
         public static void AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
             string injectorName)
@@ -205,6 +217,18 @@ namespace SpecialStuffPack.GungeonAPI
             room.FullCellData = cellData;
             room.name = texture.name;
             return room;
+        }
+
+        public static void AddRoomToSewerGratePool(RoomData data)
+        {
+            StaticReferences.sewerGrateTable.InjectionData[0].roomTable.includedRooms.elements.Add(new()
+            {
+                additionalPrerequisites = new DungeonPrerequisite[0],
+                limitedCopies = false,
+                maxCopies = -1,
+                room = data.room,
+                weight = data.weight
+            });
         }
 
         public static PrototypeDungeonRoomCellData CellDataFromColor(Color32 color)

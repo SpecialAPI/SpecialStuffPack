@@ -132,6 +132,12 @@ namespace SpecialStuffPack
             return (proj?.PlayerOwner()?.PlayerHasActiveSynergy(name)).GetValueOrDefault();
         }
 
+        public static string SetString(string key, string value)
+        {
+            ETGMod.Databases.Strings.Core.Set(key, value);
+            return key;
+        }
+
         public static Projectile GetProjectile(this Gun g)
         {
             return g.DefaultModule.shootStyle == ProjectileModule.ShootStyle.Charged ?

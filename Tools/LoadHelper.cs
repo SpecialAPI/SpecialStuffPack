@@ -9,48 +9,53 @@ namespace SpecialStuffPack
 	{
 		public static UnityEngine.Object LoadAssetFromAnywhere(string path)
 		{
-			UnityEngine.Object obj = null;
 			foreach (string name in BundlePrereqs)
 			{
 				try
 				{
-					obj = ResourceManager.LoadAssetBundle(name).LoadAsset(path);
+					var asset = ResourceManager.LoadAssetBundle(name).LoadAsset(path);
+					if(asset == null)
+                    {
+						continue;
+                    }
+					return asset;
 				}
 				catch
 				{
 				}
-				if (obj != null)
-				{
-					break;
-				}
 			}
-			if (obj == null)
-			{
-				obj = AssetBundleManager.specialeverything.LoadAsset<UnityEngine.Object>(path);
+			var backupObject = AssetBundleManager.specialeverything.LoadAsset<UnityEngine.Object>(path);
+			if (backupObject == null)
+            {
+				objectsBackup.TryGetValue(path, out backupObject);
 			}
-			return obj;
+			return backupObject;
 		}
 
 		public static T LoadAssetFromAnywhere<T>(string path) where T : UnityEngine.Object
 		{
-			T obj = null;
 			foreach (string name in BundlePrereqs)
 			{
 				try
 				{
-					obj = ResourceManager.LoadAssetBundle(name).LoadAsset<T>(path);
+					var asset = ResourceManager.LoadAssetBundle(name).LoadAsset<T>(path);
+					if(asset == null)
+                    {
+						continue;
+                    }
+					return asset;
 				}
 				catch
 				{
 				}
-				if (obj != null)
-				{
-					break;
-				}
 			}
+			T obj = AssetBundleManager.specialeverything.LoadAsset<T>(path);
 			if (obj == null)
 			{
-				obj = AssetBundleManager.specialeverything.LoadAsset<T>(path);
+				if(objectsBackup.TryGetValue(path, out var backupObject) && backupObject is T d)
+                {
+					return d;
+                }
 			}
 			return obj;
 		}
@@ -143,5 +148,6 @@ namespace SpecialStuffPack
 		}
 
 		private static string[] BundlePrereqs;
+		public static Dictionary<string, Object> objectsBackup = new();
 	}
 }

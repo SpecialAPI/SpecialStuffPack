@@ -41,6 +41,7 @@ namespace SpecialStuffPack
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
         public const string VERSION = "1.0.0";
+        public static readonly Color LogColor = new Color32(100, 100, 50, 255);
 
         public static int? GetActiveItemUICount(PlayerItem input)
         {
@@ -100,6 +101,16 @@ namespace SpecialStuffPack
                 ETGMod.Databases.Strings.Core.Set("#SPAPI_RAT_NOTE_SP_CULTIST", 
                     "Don't know how to fight, do you? You also don't have a main character for me to beat up, so have these keys as a consolation prize instead.\n\n" +
                     "Later, %INSULT! - R.R.");
+
+                RedGun.globalIndoctrinateInteractable = AssetBundleManager.Load<GameObject>("IndoctrinateFollowerInteractable");
+                var interactable = RedGun.globalIndoctrinateInteractable.AddComponent<IndoctrinateFollowerInteractable>();
+                interactable.AddComponent<tk2dSprite>().SetSprite(BulletKinEnemy.sprite.Collection, BulletKinEnemy.sprite.spriteId);
+                interactable.AddComponent<tk2dSpriteAnimator>().Library = BulletKinEnemy.spriteAnimator.Library;
+                interactable.noRedgunKey = SetString("#INDOCTRINATE_NOREDGUN", "I can only be converted by the Red Gun.");
+                interactable.notEnoughAmmoKey = SetString("#INDOCTRINATE_NOTENOUGH", "You don't have enough resources to convert me!");
+                interactable.validKey = SetString("#INDOCTRINATE_VALID", "Convert me to your cult, I will follow your teachings faithfully.");
+                interactable.yesKey = SetString("#INDOCTRINATE_YES", "<Indoctrinate follower <Lose %AMMO ammo>>");
+                interactable.noKey = SetString("#INDOCTRINATE_NO", "<Walk away>");
 
                 //init items
                 WoodenToken.Init();
@@ -165,6 +176,12 @@ namespace SpecialStuffPack
                 PistolWhip.Init();
                 WhipCream.Init();
                 SynergyCompletionGun.Init();
+                SusShotgun.Init();
+                RedGun.Init();
+                LeadFists.Init();
+                HeartPiece.Init();
+                HotSauce.Init();
+                MagicBag.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();
                 //ForceOfTwilight.Init();
@@ -192,15 +209,21 @@ namespace SpecialStuffPack
                      typeof(RoomHandler).GetMethod("PostGenerationCleanup", BindingFlags.Instance | BindingFlags.Public),
                      typeof(SpecialStuffModule).GetMethod("FixBadDodgerollCode")
                  );
+
+                //add sewer grate rooms
+                foreach (var asset in AssetBundleManager.specialeverything.GetAllAssetNames())
+                {
+                    if (asset.ToLowerInvariant().StartsWith("assets/rooms/sewerentrance"))
+                    {
+                        RoomFactory.AddRoomToSewerGratePool(RoomFactory.BuildFromTextAsset(AssetBundleManager.Load<TextAsset>(asset)));
+                    }
+                }
+
                 //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
                 ETGModConsole.Commands.AddUnit("play_sound", (string[] args) => ETGModConsole.Log(AkSoundEngine.PostEvent(args[0], GameManager.Instance.PrimaryPlayer.gameObject).ToString()));
                 ETGModConsole.Commands.AddUnit("set_state", (string[] args) => ETGModConsole.Log(AkSoundEngine.SetState(args[0], args[1]).ToString()));
-                var pitch = new float[0];
-                ETGModConsole.Commands.AddUnit("set_pitch", x => pitch = x.Select(x2 => float.Parse(x2)).ToArray());
                 ETGModConsole.Commands.AddUnit("switch", x => ETGModConsole.Log(Game.Items[x[0]].GetComponent<Gun>().gunSwitchGroup), ETGModConsole.GiveAutocompletionSettings);
-                ETGModConsole.Commands.AddUnit("play", x => StartCoroutine(Play(pitch)));
                 ETGModConsole.Commands.AddUnit("use", UseItem, ETGModConsole.GiveAutocompletionSettings);
-                ETGModConsole.Commands.AddUnit("soundtest", x => Instantiate(AssetBundleManager.Load<GameObject>("testsound")));
                 ETGModConsole.Commands.AddUnit("showhitboxes", x => ETGModConsole.SwitchValue(x.FirstOrDefault(), ref showHitboxes, "Show Hitboxes"));
                 ETGModConsole.Commands.AddUnit("reset_ss_completion", delegate (string[] s)
                 {
@@ -210,26 +233,35 @@ namespace SpecialStuffPack
                     SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, false);
                     SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, false);
                 });
-                ETGModConsole.Commands.AddUnit("decryptSave", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
-                ETGModConsole.Commands.AddUnit("setflag1", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_1, bool.Parse(x[0])); GameStatsManager.Save(); });
-                ETGModConsole.Commands.AddUnit("setflag2", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_2, bool.Parse(x[0])); GameStatsManager.Save(); });
-                ETGModConsole.Commands.AddUnit("setflag3", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_3, bool.Parse(x[0])); GameStatsManager.Save(); });
-                ETGModConsole.Commands.AddUnit("setflag4", x => { GameStatsManager.Instance.SetFlag(GungeonFlagsE.TEST_FLAG_4, bool.Parse(x[0])); GameStatsManager.Save(); });
-                ETGModConsole.Commands.AddUnit("getflag1", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_1)); });
-                ETGModConsole.Commands.AddUnit("getflag2", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_2)); });
-                ETGModConsole.Commands.AddUnit("getflag3", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_3)); });
-                ETGModConsole.Commands.AddUnit("getflag4", x => { ETGModConsole.Log(GameStatsManager.Instance.GetFlag(GungeonFlagsE.TEST_FLAG_4)); });
-                ETGModConsole.Commands.AddUnit("gettracked", x => { GameStatsManager.Instance.GetPlayerMaximum(TrackedMaximums.MOST_KEYS_HELD); });
+                ETGModConsole.Commands.AddUnit("decrypt_save", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
+                ETGModConsole.Commands.AddUnit("boi", x => { if (GameManager.Instance.PrimaryPlayer == null) { return; } GameManager.Instance.PrimaryPlayer.GiveItem("tear_jerker"); GameManager.Instance.PrimaryPlayer.GiveItem("lichs_eye_bullets"); ETGModConsole.Log("isek"); });
                 TCultistHandler.Init();
                 SpecialOptions.Setup();
                 SpecialInput.Setup();
-                ETGModConsole.Log($"{NAME} loaded successfully.");
+                //WindowsWindowNamer.RenameWindow();
+                ETGModConsole.Log($"{NAME} loaded successfully.").Foreground = LogColor;
+                List<string> randomBullshit = new()
+                {
+                    "Type \"boi\" for fun.",
+                    "Something special is approaching...",
+                    "The coop versus mod is the most useless mod I think I've ever seen.",
+                    "Built with Harmony.",
+                    "Wwise is stupid.",
+                    "Also try Squirrel Bomb Mod!",
+                    "Also try Actual Beastmode!",
+                    "Over 100 lines of code stolen.",
+                    "Made with Unity.",
+                    "Suspicious."
+                };
+                ETGModConsole.Log(randomBullshit.RandomElement()).Foreground = LogColor;
             }
             catch (Exception ex)
             {
                 ETGModConsole.Log($"Something bad happened while loading {NAME}: " + ex);
             }
         }
+
+
 
         public void Update()
         {

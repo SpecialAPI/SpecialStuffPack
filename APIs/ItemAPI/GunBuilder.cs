@@ -33,7 +33,6 @@ namespace SpecialStuffPack.ItemAPI
             gun.UsesPerCharacterCarryPixelOffsets = false;
             gun.PerCharacterPixelOffsets = new CharacterCarryPixelOffset[0];
             gun.leftFacingPixelOffset = new IntVector2(0, 0);
-            gun.gunHandedness = GunHandedness.AutoDetect;
             gun.overrideOutOfAmmoHandedness = GunHandedness.AutoDetect;
             gun.additionalHandState = AdditionalHandState.None;
             gun.gunPosition = GunPositionOverride.AutoDetect;
@@ -174,7 +173,13 @@ namespace SpecialStuffPack.ItemAPI
             if(obj.transform.Find("SecondaryHand") != null)
             {
                 attachPoint.attachPoints.Add(obj.transform.Find("SecondaryHand"));
+                gun.gunHandedness = GunHandedness.TwoHanded;
             }
+            else
+            {
+                gun.gunHandedness = GunHandedness.OneHanded;
+            }
+            //gun.gunHandedness = GunHandedness.AutoDetect;
             attachPoint.deactivateUnusedAttachPoints = false;
             attachPoint.disableEmissionOnUnusedParticleSystems = false;
             attachPoint.ignorePosition = false;

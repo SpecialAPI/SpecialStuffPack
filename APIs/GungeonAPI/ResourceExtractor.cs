@@ -39,6 +39,15 @@ namespace SpecialStuffPack.GungeonAPI
             return tex;
         }
 
+        public static Texture2D GetTextureFromBytes(byte[] ba, string name = "")
+        {
+            Texture2D tex = new(1, 1, TextureFormat.RGBA32, false);
+            tex.LoadImage(ba);
+            tex.filterMode = FilterMode.Point;
+            tex.name = name;
+            return tex;
+        }
+
         public static string BytesToString(byte[] b)
         {
             return Encoding.UTF8.GetString(b);
