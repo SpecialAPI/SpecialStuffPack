@@ -150,6 +150,10 @@ While SpecialAPI's Stuff is active, the Cultist in the Breach will be active eve
 If you haven't installed BepInEx and/or Mod the Gungeon API, follow its installation guide (linked on Mod the Gungeon API's page: https://enter-the-gungeon.thunderstore.io/package/MtG_API/Mod_the_Gungeon_API/). After you've installed BepInEx, just unzip WMITF.zip into your BepInEx's `plugins` folder.
 
 # Changelog
+ * 1.1.1:
+   * Fixed singleplayer Cultist breaking boss intros when reaching the bosscard part.
+   * Fixed Guardian of Time resetting cleared rooms.
+   * Fixed Guardian of Time being able to unseal boss rooms.
  * 1.1.0:
    * Added Magic 8 Ball.
    * Added guns: AK-SoundEngine, Ender Gun, Leather Whip, Pistol Whip, Whipped Cream and Lich's Old Gun.
