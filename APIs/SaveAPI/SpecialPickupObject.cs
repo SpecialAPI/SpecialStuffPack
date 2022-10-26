@@ -14,6 +14,6 @@ namespace SpecialStuffPack.SaveAPI
         /// <summary>
         /// The custom SaveAPI flag that will be set when the object is acquired
         /// </summary>
-        public CustomDungeonFlags CustomSaveFlagToSetOnAcquisition;
+        public string CustomSaveFlagToSetOnAcquisition;
     }
 }

@@ -106,7 +106,7 @@ namespace SpecialStuffPack.SaveAPI
         public static void HandleEncounterableHook(Action<PickupObject, PlayerController> orig, PickupObject po, PlayerController player)
         {
             orig(po, player);
-            if (po != null && po.GetComponent<SpecialPickupObject>() != null && po.GetComponent<SpecialPickupObject>().CustomSaveFlagToSetOnAcquisition != CustomDungeonFlags.NONE)
+            if (po != null && po.GetComponent<SpecialPickupObject>() != null && !string.IsNullOrEmpty(po.GetComponent<SpecialPickupObject>().CustomSaveFlagToSetOnAcquisition))
             {
                 AdvancedGameStatsManager.Instance.SetFlag(po.GetComponent<SpecialPickupObject>().CustomSaveFlagToSetOnAcquisition, true);
             }
@@ -127,7 +127,7 @@ namespace SpecialStuffPack.SaveAPI
                             PickupObject po = GetBlueprintUnlockedItem(shopItem.item.encounterTrackable);
                             if (po != null && po.encounterTrackable != null && po.encounterTrackable.prerequisites != null)
                             {
-                                CustomDungeonFlags saveFlagToSetOnAcquisition = CustomDungeonFlags.NONE;
+                                string saveFlagToSetOnAcquisition = null;
                                 for (int i = 0; i < po.encounterTrackable.prerequisites.Length; i++)
                                 {
                                     if (po.encounterTrackable.prerequisites[i] is CustomDungeonPrerequisite && (po.encounterTrackable.prerequisites[i] as CustomDungeonPrerequisite).advancedPrerequisiteType ==
@@ -136,7 +136,7 @@ namespace SpecialStuffPack.SaveAPI
                                         saveFlagToSetOnAcquisition = (po.encounterTrackable.prerequisites[i] as CustomDungeonPrerequisite).customFlagToCheck;
                                     }
                                 }
-                                if (saveFlagToSetOnAcquisition != CustomDungeonFlags.NONE)
+                                if (!string.IsNullOrEmpty(saveFlagToSetOnAcquisition))
                                 {
                                     shopItem.item.gameObject.AddComponent<SpecialPickupObject>().CustomSaveFlagToSetOnAcquisition = saveFlagToSetOnAcquisition;
                                 }
@@ -160,8 +160,8 @@ namespace SpecialStuffPack.SaveAPI
                         PickupObject po = GetBlueprintUnlockedItem(shopItem.item.encounterTrackable);
                         if (po != null && po.encounterTrackable != null && po.encounterTrackable.prerequisites != null)
                         {
-                            CustomDungeonFlags saveFlagToSetOnAcquisition = GetCustomFlagFromTargetItem(po.PickupObjectId);
-                            if (saveFlagToSetOnAcquisition != CustomDungeonFlags.NONE)
+                            string saveFlagToSetOnAcquisition = GetCustomFlagFromTargetItem(po.PickupObjectId);
+                            if (!string.IsNullOrEmpty(saveFlagToSetOnAcquisition))
                             {
                                 shopItem.item.gameObject.AddComponent<SpecialPickupObject>().CustomSaveFlagToSetOnAcquisition = saveFlagToSetOnAcquisition;
                                 if (AdvancedGameStatsManager.Instance.GetFlag(saveFlagToSetOnAcquisition))
@@ -186,8 +186,8 @@ namespace SpecialStuffPack.SaveAPI
         /// </returns>
         private static bool GetMetaItemUnlockedAdvanced(int pickupObjectId)
         {
-            CustomDungeonFlags flag = GetCustomFlagFromTargetItem(pickupObjectId);
-            if(flag == CustomDungeonFlags.NONE)
+            string flag = GetCustomFlagFromTargetItem(pickupObjectId);
+            if(string.IsNullOrEmpty(flag))
             {
                 return true;
             }
@@ -279,9 +279,9 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="shopItemId">The item's id</param>
         /// <returns>The flag from the last <see cref="CustomDungeonPrerequisite"/> with the type <see cref="CustomDungeonPrerequisite.AdvancedPrerequisiteType.CUSTOM_FLAG"/> of the item or <see cref="CustomDungeonFlags.NONE"/> if it didn't find it</returns>
-        public static CustomDungeonFlags GetCustomFlagFromTargetItem(int shopItemId)
+        public static string GetCustomFlagFromTargetItem(int shopItemId)
         {
-            CustomDungeonFlags result = CustomDungeonFlags.NONE;
+            string result = null;
             PickupObject byId = PickupObjectDatabase.GetById(shopItemId);
             for (int i = 0; i < byId.encounterTrackable.prerequisites.Length; i++)
             {
@@ -740,7 +740,7 @@ namespace SpecialStuffPack.SaveAPI
         {
             foreach(MetaShopController meta in UnityEngine.Object.FindObjectsOfType<MetaShopController>())
             {
-                meta.metaShopTiers = SaveTools.CloneList(BaseMetaShopController.metaShopTiers);
+                meta.metaShopTiers = new(BaseMetaShopController.metaShopTiers);
             }
         }
 

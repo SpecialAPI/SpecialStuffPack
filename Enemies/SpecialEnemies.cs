@@ -177,19 +177,19 @@ namespace SpecialStuffPack.Enemies
                 collection.spriteDefinitions[id].ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter, null, false, false);
                 collection.spriteDefinitions[id].material.SetFloat("_VertexColor", 1f);
             }
-            tk2dSpriteAnimationClip front = new tk2dSpriteAnimationClip { fps = 6, frames = idleFrontIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "idle_front" };
+            tk2dSpriteAnimationClip front = new tk2dSpriteAnimationClip { fps = 6, frames = idleFrontIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "idle_front" };
             front.ApplyOffsetsToAnimation(idleOffsets);
-            tk2dSpriteAnimationClip left = new tk2dSpriteAnimationClip { fps = 6, frames = idleLeftIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "idle_left" };
+            tk2dSpriteAnimationClip left = new tk2dSpriteAnimationClip { fps = 6, frames = idleLeftIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "idle_left" };
             left.ApplyOffsetsToAnimation(idleOffsets);
-            tk2dSpriteAnimationClip right = new tk2dSpriteAnimationClip { fps = 6, frames = idleRightIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "idle_right" };
+            tk2dSpriteAnimationClip right = new tk2dSpriteAnimationClip { fps = 6, frames = idleRightIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "idle_right" };
             right.ApplyOffsetsToAnimation(idleOffsets);
-            tk2dSpriteAnimationClip chargefront = new tk2dSpriteAnimationClip { fps = 12, frames = chargeFrontIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "charge_front" };
+            tk2dSpriteAnimationClip chargefront = new tk2dSpriteAnimationClip { fps = 12, frames = chargeFrontIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "charge_front" };
             chargefront.ApplyOffsetsToAnimation(horizontalChargeOffsets);
-            tk2dSpriteAnimationClip chargeleft = new tk2dSpriteAnimationClip { fps = 12, frames = chargeLeftIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "charge_left" };
+            tk2dSpriteAnimationClip chargeleft = new tk2dSpriteAnimationClip { fps = 12, frames = chargeLeftIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "charge_left" };
             chargeleft.ApplyOffsetsToAnimation(verticalChargeOffsets);
-            tk2dSpriteAnimationClip chargeright = new tk2dSpriteAnimationClip { fps = 12, frames = chargeRightIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "charge_right" };
+            tk2dSpriteAnimationClip chargeright = new tk2dSpriteAnimationClip { fps = 12, frames = chargeRightIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "charge_right" };
             chargeright.ApplyOffsetsToAnimation(verticalChargeOffsets);
-            tk2dSpriteAnimationClip dash = new tk2dSpriteAnimationClip { fps = 1, frames = dashIds.Convert((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "dash" };
+            tk2dSpriteAnimationClip dash = new tk2dSpriteAnimationClip { fps = 1, frames = dashIds.ConvertAll((int id) => new tk2dSpriteAnimationFrame { spriteId = id, spriteCollection = collection }).ToArray(), name = "dash" };
             animation.clips = new tk2dSpriteAnimationClip[]
             {
                 front,

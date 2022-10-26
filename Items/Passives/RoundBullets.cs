@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             var name = "Round-s";
             var shortdesc = "Completely Circular";
             var longdesc = "Bullets spin around the shooter.";
-            var item = EasyInitItem<RoundBullets>("OrbitBullets", "orbit_bullets_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            var item = EasyItemInit<RoundBullets>("OrbitBullets", "orbit_bullets_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
         }
 
         public override void Pickup(PlayerController player)

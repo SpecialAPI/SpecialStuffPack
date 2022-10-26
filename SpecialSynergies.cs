@@ -25,7 +25,7 @@ namespace SpecialStuffPack
             CreateSynergy("Double the Wish!", new() { ItemIds["wishorb"], LifeOrbId });
             CreateSynergy("Wish of Power", new() { ItemIds["wishorb"], SprunId });
             CreateSynergy("Wish of Reflection", new() { ItemIds["wishorb"], RollingEyeId });
-            CreateSynergy("50% OFF ON ALL IN-GAME PURCHASES!", new() { ItemIds["paytowin"], MicrotransactionGunId });
+            CreateSynergy("25% OFF ON ALL IN-GAME PURCHASES!", new() { ItemIds["paytowin"], MicrotransactionGunId });
             CreateSynergy("Super Blasts", new() { ItemIds["bombammolet"], GoldAmmoletId });
             CreateSynergy("Stunning Blasts", new() { ItemIds["bombammolet"], LodestoneAmmoletId });
             CreateSynergy("Random Blasts", new() { ItemIds["bombammolet"], ChaosAmmoletId });
@@ -61,7 +61,7 @@ namespace SpecialStuffPack
                 StatModifier.Create(PlayerStats.StatType.ProjectileSpeed, StatModifier.ModifyMethod.MULTIPLICATIVE, 3f),
                 StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.MULTIPLICATIVE, 2f)
             });
-            CreateSynergy("static readonly", new() { ItemIds["staticroll"] }, new() { BookOfChestAnatomyId, MagazineRackId, GungeonBlueprintId });
+            CreateSynergy("static readonly", new() { ItemIds["staticroll"] }, new() { BookOfChestAnatomyId, MagazineRackId, GungeonBlueprintId, ItemIds["guardianbook"] });
             CreateSynergy("static void", new() { ItemIds["staticroll"] }, new() { VoidCoreCannonId, VoidShotgunId, VoidCoreAssaultRifleId, VoidMarshalId });
             CreateSynergy("private static", new() { ItemIds["staticroll"] }, new() { GreyMauserId, ThePredatorId, SmokeBombId, BoxId, RingOfEtherealFormId });
             CreateSynergy("Infinite Mirror", new() { ItemIds["mirrorbullet"], ItemIds["truthmirror"] });
@@ -232,6 +232,87 @@ namespace SpecialStuffPack
                 RingOfMiserlyProtectionId,
                 EscapeRopeId
             });
+            CreateSynergy("Dynamite", new() { ItemIds["shredder"] }, new()
+            {
+                ExplosiveRoundsId,
+                Com4nd0Id,
+                RpgId,
+                YariLauncherId,
+                BombId,
+                GrenadeLauncherId,
+                ClusterMineId,
+                ProximityMineId,
+                C4Id,
+                AirStrikeId
+            });
+            CreateSynergy("Plastic Explosive", new() { ItemIds["shredder"] }, new()
+            {
+                FatBulletsId,
+                BigShotgunId,
+                HeavyBulletsId,
+                BlastHelmetId,
+                SeriousCannonId,
+                RailgunId,
+                RcRocketId,
+                VulcanCannonId,
+                BigBoyId,
+                BigIronId
+            });
+            CreateSynergy("Shredder II", new() { ItemIds["shredder"] }, new() { Plus1BulletsId, AmuletOfThePitLordId, UtilityBeltId, DuctTapeId, BroccoliId });
+            CreateSynergy("Good Game Design", new() { ItemIds["infinitycrystal"], MicrotransactionGunId });
+            CreateSynergy("Enter the Gungeon 2", new() { ItemIds["dlchest"] }, new()
+            {
+                BookOfChestAnatomyId,
+                RingOfChestFriendshipId,
+                ChestTeleporterId,
+                RingOfChestVampirismId,
+                RingOfMimicFriendshipId,
+                MicrotransactionGunId
+            });
+            CreateSynergy("50% OFF ON ALL DLCHESTS!", new() { ItemIds["dlchest"], ItemIds["paytowin"] });
+            CreateSynergy("True Knight", new() { ItemIds["marinehelmet"] }, new()
+            {
+                GunknightArmorId,
+                GunknightGauntletId,
+                GunknightGreavesId,
+                GunknightHelmetId,
+                OldKnightsHelmId,
+                OldKnightsShieldId,
+                BlastHelmetId,
+                ArmorOfThornsId,
+                HeavyBootsId,
+                KnightsGunId
+            });
+            CreateSynergy("A Little More", new() { ItemIds["totem"] }, new()
+            {
+                BulletIdolId,
+                SprunId,
+                CogOfBattleId
+            });
+            CreateSynergy("Wrath of the Keys", new() { ItemIds["plushie"] }, new()
+            {
+                AngryBulletsId,
+                HomingBulletsId
+            });
+            CreateSynergy("Keybag", new() { ItemIds["plushie"] }, new()
+            {
+                LootBagId,
+                BackpackId,
+                ResourcefulSackId,
+                ItemIds["magicbag"]
+            });
+            CreateSynergy("Ring of Lock Friendship", new() { ItemIds["plushie"] }, new()
+            {
+                RingOfChestFriendshipId,
+                RingOfChestVampirismId,
+                RingOfEtherealFormId,
+                RingOfFireResistanceId,
+                RingOfMiserlyProtectionId,
+                RingOfMimicFriendshipId
+            });
+            CreateSynergy("Rusty Shovel", new() { ItemIds["rustybullets"], ItemIds["gravediggershovel"] });
+            CreateSynergy("Rusty Iron", new() { ItemIds["rustybullets"], BigIronId }, activeWhenGunsUnequipped: false);
+            CreateSynergy("Rusty Coin", new() { ItemIds["rustybullets"], IronCoinId });
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);
@@ -239,6 +320,10 @@ namespace SpecialStuffPack
                 HoveringGunController.AimType.PLAYER_AIM, HoveringGunController.FireType.ON_FIRED_GUN, 0.5f, -1f, false, "", "", "", HoveringGunSynergyProcessor.TriggerStyle.CONSTANT, 1, -1f, false, 0f);
             Guns["frogun"].AddHoveringGunSynergyProcessor("Revenge", 149, false, null, HoveringGunController.HoverPosition.CIRCULATE,
                 HoveringGunController.AimType.PLAYER_AIM, HoveringGunController.FireType.ON_RELOAD, 0.2f, 0f, false, "", "", "", HoveringGunSynergyProcessor.TriggerStyle.CONSTANT, 1, -1f, false, 0f);
+            var goodgamedesign = MicrotransactionGunObject.AddComponent<MiscSynergyProcessor>();
+            goodgamedesign.synergy = "Good Game Design";
+            goodgamedesign.toggleFundsToShoot = true;
+            MicrotransactionGunObject.ammo = MicrotransactionGunObject.maxAmmo;
 
             //add this long synergy
             List<StatModifier> sm = new();
@@ -258,13 +343,15 @@ namespace SpecialStuffPack
             AddItemToSynergy(CustomSynergyType.LOADED_DICE, ItemIds["greencandle"]);
             AddItemToSynergy(CustomSynergyType.RELODESTAR, ItemIds["bombammolet"]);
             AddItemToSynergy(CustomSynergyType.MINOR_BLANKABLES, ItemIds["bombammolet"]);
+            AddItemToSynergy(CustomSynergyType.RELODESTAR, ItemIds["redammolet"]);
+            AddItemToSynergy(CustomSynergyType.MINOR_BLANKABLES, ItemIds["redammolet"]);
             AddItemToSynergy(CustomSynergyType.BATTERY_POWERED, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.LOTUS_BLOOM, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.MACHINE_PISTOL, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.LASER_THOMPSON, ItemIds["energydrink"]);
 
             //add synergy components
-            PickupObjectDatabase.GetById(476).AddComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck = "50% OFF ON ALL IN-GAME PURCHASES!";
+            PickupObjectDatabase.GetById(476).AddComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck = "25% OFF ON ALL IN-GAME PURCHASES!";
 
             //add synergy hooks
             new Hook(

@@ -18,7 +18,7 @@ namespace SpecialStuffPack.Items
             string name = "Fused Ammolet";
             string shortdesc = "Explode Bullets";
             string longdesc = "Turns blanks into bombs, which explode and erase all bullets in the room. The bombs will not explode instantly.\n\nAre blanks a good idea? Yes. Are bombs a good idea? Yes. Are bomb blanks a good idea? Probably not.";
-            FusedAmmolet item = EasyInitItem<FusedAmmolet>("items/bombammolet", "sprites/fused_ammolet_idle_001", name, shortdesc, longdesc, ItemQuality.D, 344, null);
+            FusedAmmolet item = EasyItemInit<FusedAmmolet>("items/bombammolet", "sprites/fused_ammolet_idle_001", name, shortdesc, longdesc, ItemQuality.D, 344, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.AdditionalBlanksPerFloor, 1f, StatModifier.ModifyMethod.ADDITIVE);
             //setup bomb
             GameObject bombObject = AssetBundleManager.Load<GameObject>("assets/itemeffects/blombk.prefab");

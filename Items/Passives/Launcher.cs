@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Launcher";
             string shortdesc = "Launch your bullets!";
             string longdesc = "Bullets are launched into the air when fired, but increases accuracy and damage.";
-            var launcher = EasyInitItem<Launcher>("items/launcher", "sprites/jumppad_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
+            var launcher = EasyItemInit<Launcher>("items/launcher", "sprites/jumppad_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
             launcher.AddPassiveStatModifier(PlayerStats.StatType.Accuracy, 0.25f, StatModifier.ModifyMethod.MULTIPLICATIVE);
             launcher.AddPassiveStatModifier(PlayerStats.StatType.Damage, 0.5f, StatModifier.ModifyMethod.ADDITIVE);
             launcher.AddToTrorkShop();

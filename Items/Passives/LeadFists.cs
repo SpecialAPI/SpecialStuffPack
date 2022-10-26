@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Lead Fists";
             string shortdesc = "Cheater...";
             string longdesc = "Made for stinky people who want to cheat in punchout.";
-            EasyInitItem<LeadFists>("LeadFists", "solid_lead_fists_idle_001", name, shortdesc, longdesc, ItemQuality.EXCLUDED, null, null);
+            EasyItemInit<LeadFists>("LeadFists", "solid_lead_fists_idle_001", name, shortdesc, longdesc, ItemQuality.EXCLUDED, null, null);
         }
 
         public override void Pickup(PlayerController player)

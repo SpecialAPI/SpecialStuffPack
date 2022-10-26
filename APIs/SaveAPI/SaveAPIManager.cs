@@ -189,7 +189,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">The flag to check</param>
         /// <returns>The value of <paramref name="flag"/> or <see langword="false"/> if <see cref="AdvancedGameStatsManager"/> doesn't have an instance</returns>
-        public static bool GetFlag(CustomDungeonFlags flag)
+        public static bool GetFlag(string flag)
         {
             if (!AdvancedGameStatsManager.HasInstance)
             {
@@ -203,7 +203,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Target stat.</param>
         /// <returns>The value of <paramref name="stat"/> or 0 if <see cref="AdvancedGameStatsManager"/> doesn't have an instance</returns>
-        public static float GetPlayerStatValue(CustomTrackedStats stat)
+        public static float GetPlayerStatValue(string stat)
         {
             if (!AdvancedGameStatsManager.HasInstance)
             {
@@ -217,7 +217,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Target stat</param>
         /// <returns>The value of <paramref name="stat"/> in the current session or 0 if <see cref="AdvancedGameStatsManager"/> doesn't have an instance or the player isn't in a session</returns>
-        public static float GetSessionStatValue(CustomTrackedStats stat)
+        public static float GetSessionStatValue(string stat)
         {
             if (AdvancedGameStatsManager.HasInstance && AdvancedGameStatsManager.Instance.IsInSession)
             {
@@ -232,7 +232,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="stat">Target stat</param>
         /// <param name="character">The character</param>
         /// <returns><paramref name="character"/>'s <paramref name="stat"/> value or 0 if <see cref="AdvancedGameStatsManager"/> doesn't have an instance</returns>
-        public static float GetCharacterStatValue(PlayableCharacters character, CustomTrackedStats stat)
+        public static float GetCharacterStatValue(PlayableCharacters character, string stat)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -246,7 +246,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Target stat</param>
         /// <returns>Primary player's or the Pilot's (if primary player doesn't exist) <paramref name="stat"/> value or 0 if <see cref="AdvancedGameStatsManager"/> doesn't haven an instance</returns>
-        public static float GetCharacterStatValue(CustomTrackedStats stat)
+        public static float GetCharacterStatValue(string stat)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -264,7 +264,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">The character-specific flag to check</param>
         /// <returns>The session character's or the Pilot's (if the player isn't in session) <paramref name="flag"/> value or 0 if <see cref="AdvancedGameStatsManager"/> doesn't have an instance</returns>
-        public static bool GetCharacterSpecificFlag(CustomCharacterSpecificGungeonFlags flag)
+        public static bool GetCharacterSpecificFlag(string flag)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -283,7 +283,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="character">Target character</param>
         /// <param name="flag">The character-specific flag to check</param>
         /// <returns><paramref name="character"/>'s <paramref name="flag"/> value or 0 if <see cref="AdvancedGameStatsManager"/> doesn't have an instance</returns>
-        public static bool GetCharacterSpecificFlag(PlayableCharacters character, CustomCharacterSpecificGungeonFlags flag)
+        public static bool GetCharacterSpecificFlag(PlayableCharacters character, string flag)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -297,7 +297,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="maximum">Target maximum</param>
         /// <returns><paramref name="maximum"/> value or 0 if <see cref="AdvancedGameStatsManager"/> doesn't have an instance</returns>
-        public static float GetPlayerMaximum(CustomTrackedMaximums maximum)
+        public static float GetPlayerMaximum(string maximum)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -311,7 +311,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">The target flag</param>
         /// <param name="value">Value to set</param>
-        public static void SetFlag(CustomDungeonFlags flag, bool value)
+        public static void SetFlag(string flag, bool value)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -324,7 +324,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">The target stat</param>
         /// <param name="value">Value to set</param>
-        public static void SetStat(CustomTrackedStats stat, float value)
+        public static void SetStat(string stat, float value)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -337,7 +337,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Target stat</param>
         /// <param name="value">Increment value</param>
-        public static void RegisterStatChange(CustomTrackedStats stat, float value)
+        public static void RegisterStatChange(string stat, float value)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -350,7 +350,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="maximum">Target maximum</param>
         /// <param name="value">Value to set</param>
-        public static void UpdateMaximum(CustomTrackedMaximums maximum, float value)
+        public static void UpdateMaximum(string maximum, float value)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -363,7 +363,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">Target flag</param>
         /// <param name="value">Value to set</param>
-        public static void SetCharacterSpecificFlag(CustomCharacterSpecificGungeonFlags flag, bool value)
+        public static void SetCharacterSpecificFlag(string flag, bool value)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {
@@ -377,7 +377,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="character">Target character</param>
         /// <param name="flag">Target flag</param>
         /// <param name="value">Value to set</param>
-        public static void SetCharacterSpecificFlag(PlayableCharacters character, CustomCharacterSpecificGungeonFlags flag, bool value)
+        public static void SetCharacterSpecificFlag(PlayableCharacters character, string flag, bool value)
         {
             if (AdvancedGameStatsManager.HasInstance)
             {

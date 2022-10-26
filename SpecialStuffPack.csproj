@@ -62,9 +62,6 @@
     <Compile Include="APIs\SaveAPI\CustomDungeonPrerequisite.cs" />
     <Compile Include="APIs\SaveAPI\CustomHuntQuest.cs" />
     <Compile Include="APIs\SaveAPI\CustomHuntQuests.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\Comparers\CustomDungeonFlagsComparer.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\Comparers\CustomTrackedMaximumsComparer.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\Comparers\CustomTrackedStatsComparer.cs" />
     <Compile Include="APIs\SaveAPI\Enums\CustomCharacterSpecificGungeonFlags.cs" />
     <Compile Include="APIs\SaveAPI\Enums\CustomDungeonFlags.cs" />
     <Compile Include="APIs\SaveAPI\Enums\CustomTrackedMaximums.cs" />
@@ -138,14 +135,17 @@
     <Compile Include="Components\AdvancedProjectileModule.cs" />
     <Compile Include="Components\AsteroidProjectile.cs" />
     <Compile Include="Components\BadLuckAffectedChest.cs" />
+    <Compile Include="Components\BetterSquishyBounceWiggler.cs" />
     <Compile Include="Components\BinaryGunMarkedBehaviour.cs" />
     <Compile Include="Components\BinaryGunProjectile.cs" />
     <Compile Include="Components\BounceResetsDistance.cs" />
     <Compile Include="Components\CactiClubProjectile.cs" />
     <Compile Include="Components\ChanceBasedDropItemOnKill.cs" />
+    <Compile Include="Components\ChanceBasedExplodeOnEnemyHit.cs" />
     <Compile Include="Components\ChanceBasedSpawnTimedProjectileOnKill.cs" />
     <Compile Include="Components\CharmJammedComponent.cs" />
     <Compile Include="Components\ChestChoiceComponent.cs" />
+    <Compile Include="Components\DontLoseDamageOnPierce.cs" />
     <Compile Include="Components\DoubleChargeActive.cs" />
     <Compile Include="Components\FishingReward.cs" />
     <Compile Include="Components\GamerComponent.cs" />
@@ -153,11 +153,12 @@
     <Compile Include="Components\HookProjectile.cs" />
     <Compile Include="Components\IndoctrinateFollowerInteractable.cs" />
     <Compile Include="Components\IndoctrinateJammedEnemies.cs" />
-    <Compile Include="Components\InheritOwnersRoomBehaviour.cs" />
+    <Compile Include="Components\BetterCompanions.cs" />
     <Compile Include="Components\LeaveRoomResetter.cs" />
     <Compile Include="Components\LobbedProjectileMotion.cs" />
     <Compile Include="Components\LobberGun.cs" />
     <Compile Include="Components\LobbedProjectile.cs" />
+    <Compile Include="Components\MiscSynergyProcessor.cs" />
     <Compile Include="Components\ModifiedMetalGearRatBehavior.cs" />
     <Compile Include="Components\OrbitProjectile.cs" />
     <Compile Include="Components\OutlineAdder.cs" />
@@ -182,10 +183,12 @@
     <Compile Include="Enemies\LockGhostController.cs" />
     <Compile Include="Enemies\PoofOnDeath.cs" />
     <Compile Include="Enemies\SpecialEnemies.cs" />
+    <Compile Include="EnumExtensions\EffectResistanceTypeE.cs" />
     <Compile Include="EnumExtensions\EnumExtensionAttribute.cs" />
     <Compile Include="EnumExtensions\GungeonFlagsE.cs" />
     <Compile Include="EnumExtensions\PlayableCharactersE.cs" />
     <Compile Include="Items\Actives\ActiveOverchargeItem.cs" />
+    <Compile Include="Items\Actives\BananaJam.cs" />
     <Compile Include="Items\Actives\EnergyDrink.cs" />
     <Compile Include="Items\Actives\HotSauce.cs" />
     <Compile Include="Items\Actives\MagicBag.cs" />
@@ -202,10 +205,12 @@
     <Compile Include="Items\Guns\GunBehaviourFormeSynergyProcessor.cs" />
     <Compile Include="Items\Guns\HelloWorld.cs" />
     <Compile Include="Items\Guns\LeatherWhip.cs" />
+    <Compile Include="Items\Guns\Magnificus.cs" />
     <Compile Include="Items\Guns\NoShootyShootyGun.cs" />
     <Compile Include="Items\Guns\PistolWhip.cs" />
     <Compile Include="Items\Guns\RedGun.cs" />
     <Compile Include="Items\Guns\Revolvever.cs" />
+    <Compile Include="Items\Guns\Shredder.cs" />
     <Compile Include="Items\Guns\SoulGun.cs" />
     <Compile Include="Items\Guns\SusShotgun.cs" />
     <Compile Include="Items\Guns\SynergyCompletionGun.cs" />
@@ -224,6 +229,8 @@
     <Compile Include="Items\Passives\Butter.cs" />
     <Compile Include="Items\Passives\Calendar.cs" />
     <Compile Include="Items\Passives\Chaos.cs" />
+    <Compile Include="Items\Passives\CrownBullets.cs" />
+    <Compile Include="Items\Passives\CustomBlankModificationItem.cs" />
     <Compile Include="Items\Passives\DiamondItem.cs" />
     <Compile Include="Items\Passives\FlatBullets.cs" />
     <Compile Include="Items\Passives\FrailHeart.cs" />
@@ -250,10 +257,12 @@
     <Compile Include="Items\Passives\Launcher.cs" />
     <Compile Include="Items\Passives\LeadFists.cs" />
     <Compile Include="Items\Passives\LegitCoupon.cs" />
+    <Compile Include="Items\Passives\MarkedCalendar.cs" />
     <Compile Include="Items\Passives\MirroredBullet.cs" />
     <Compile Include="Items\Passives\MirrorOfTruth.cs" />
     <Compile Include="Items\Passives\OpalItem.cs" />
     <Compile Include="Items\Actives\OrbOfKnowledge.cs" />
+    <Compile Include="Items\Passives\RedAmmolet.cs" />
     <Compile Include="Items\Passives\RoundBullets.cs" />
     <Compile Include="Items\Passives\OtherworldlyAssistance.cs" />
     <Compile Include="Items\Actives\PayToWin.cs" />
@@ -261,6 +270,7 @@
     <Compile Include="Items\Passives\ProtectiveArmorItem.cs" />
     <Compile Include="Items\Actives\RatWhistle.cs" />
     <Compile Include="Items\Passives\RubyItem.cs" />
+    <Compile Include="Items\Passives\RustyBullets.cs" />
     <Compile Include="Items\Passives\ShacklesItem.cs" />
     <Compile Include="Items\Guns\ShootingStar.cs" />
     <Compile Include="Items\Passives\StaticRoll.cs" />
@@ -268,6 +278,12 @@
     <Compile Include="Items\Actives\UndyingTotem.cs" />
     <Compile Include="Items\Actives\Watermelon.cs" />
     <Compile Include="ParadoxShrine.cs" />
+    <Compile Include="Placeables\LilChest.cs" />
+    <Compile Include="Placeables\LilChestPlacer.cs" />
+    <Compile Include="PlayMakerActions\ThievingRatGrabbyLilChest.cs" />
+    <Compile Include="StatusEffects\RustStatusEffect.cs" />
+    <Compile Include="Tools\AudioManager.cs" />
+    <Compile Include="Tools\PersistentCallToolbox.cs" />
     <Compile Include="Placeables\DiamondShrine.cs" />
     <Compile Include="Placeables\DoorPlaceable.cs" />
     <Compile Include="Placeables\LockUnlockPedestal.cs" />
@@ -523,6 +539,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <EmbeddedResource Include="SPECIAL_SFX.bnk" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\BepInEx.Core.5.4.21\build\BepInEx.Core.targets" Condition="Exists('packages\BepInEx.Core.5.4.21\build\BepInEx.Core.targets')" />

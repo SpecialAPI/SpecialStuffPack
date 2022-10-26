@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Components
         {
             int cachedCost = self.CurrencyCostPerShot;
             bool changedCost = false;
-            if (BraveUtility.RandomBool() && self.RequiresFundsToShoot && self.GetComponent<MicrotransactionDiscountSynergyController>() != null && self.CurrentOwner != null && self.CurrentOwner is PlayerController && 
+            if (self.GetComponent<MicrotransactionDiscountSynergyController>() != null && Random.value < 0.25f && self.RequiresFundsToShoot && self.CurrentOwner != null && self.CurrentOwner is PlayerController && 
                 (self.CurrentOwner as PlayerController).PlayerHasActiveSynergy(self.GetComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck))
             {
                 changedCost = true;

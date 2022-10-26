@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SpecialStuffPack.SaveAPI
 {
-    public enum CustomDungeonFlags
+    public enum CustomGungeonFlags
     {
         NONE, 
         ITEMSPECIFIC_WOODEN_TOKEN,

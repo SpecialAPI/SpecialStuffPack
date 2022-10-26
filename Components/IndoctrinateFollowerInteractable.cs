@@ -11,8 +11,11 @@ namespace SpecialStuffPack.Components
 		public string notEnoughAmmoKey;
 		public string validKey;
 		public string yesKey;
+		public string yesHealthKey;
 		public string noKey;
 		public string enemyGuid;
+		public bool usesHealthAsCurrency;
+		public float healthRequired;
 
         public string GetAnimationState(PlayerController interactor, out bool shouldBeFlipped)
         {
@@ -54,24 +57,37 @@ namespace SpecialStuffPack.Components
 		{
 			var key = validKey;
 			var isValid = false;
-			if (interactor == null || interactor.CurrentGun == null || interactor.CurrentGun.GetComponent<RedGun>() == null)
+            if (usesHealthAsCurrency)
 			{
-				key = noRedgunKey;
+				isValid = interactor.healthHaver.GetCurrentHealth() > healthRequired;
+                if (!isValid)
+                {
+					key = notEnoughAmmoKey;
+                }
 			}
-			else if (interactor.CurrentGun.ammo < interactor.CurrentGun.GetComponent<RedGun>().indoctrinateAmmoCost)
-			{
-				key = notEnoughAmmoKey;
-			}
-			else
-			{
-				isValid = true;
+            else
+            {
+				if (interactor == null || interactor.CurrentGun == null || interactor.CurrentGun.GetComponent<RedGun>() == null)
+				{
+					key = noRedgunKey;
+				}
+				else if (interactor.CurrentGun.ammo < interactor.CurrentGun.GetComponent<RedGun>().indoctrinateAmmoCost)
+				{
+					key = notEnoughAmmoKey;
+				}
+				else
+				{
+					isValid = true;
+				}
 			}
 			TextBoxManager.ShowTextBox(sprite.WorldTopCenter + Vector2.up / 2f, transform, -1f, StringTableManager.GetString(key), "", false, TextBoxManager.BoxSlideOrientation.FORCE_LEFT, false, false);
 			interactor.SetInputOverride("shrineConversation");
 			yield return null;
 			if (isValid)
 			{
-				GameUIRoot.Instance.DisplayPlayerConversationOptions(interactor, null, StringTableManager.GetString(yesKey).Replace("%AMMO", interactor.CurrentGun.GetComponent<RedGun>().indoctrinateAmmoCost.ToString()), 
+				GameUIRoot.Instance.DisplayPlayerConversationOptions(interactor, null, usesHealthAsCurrency ?
+					StringTableManager.GetString(yesHealthKey) :
+					StringTableManager.GetString(yesKey).Replace("%AMMO", interactor.CurrentGun.GetComponent<RedGun>().indoctrinateAmmoCost.ToString()), 
 					StringTableManager.GetString(noKey));
 			}
 			else
@@ -86,7 +102,11 @@ namespace SpecialStuffPack.Components
 			TextBoxManager.ClearTextBox(transform);
 			if (isValid && selectedResponse == 0)
 			{
-				if (interactor != null && interactor.CurrentGun != null && interactor.CurrentGun.GetComponent<RedGun>() != null)
+                if (usesHealthAsCurrency)
+                {
+					interactor.healthHaver.ForceSetCurrentHealth(Mathf.Max(interactor.healthHaver.GetCurrentHealth() - healthRequired, 0.5f));
+                }
+				else if(interactor != null && interactor.CurrentGun != null && interactor.CurrentGun.GetComponent<RedGun>() != null)
 				{
 					interactor.CurrentGun.LoseAmmo(interactor.CurrentGun.GetComponent<RedGun>().indoctrinateAmmoCost);
 				}
@@ -99,7 +119,15 @@ namespace SpecialStuffPack.Components
 					orAddComponent.specRigidbody.PixelColliders.ForEach(x => x.CollisionLayer = x.CollisionLayer == CollisionLayer.EnemyCollider ? CollisionLayer.PlayerCollider : x.CollisionLayer == CollisionLayer.EnemyHitBox ? CollisionLayer.PlayerHitBox : x.CollisionLayer);
                 }
 				orAddComponent.Initialize(interactor);
-                companion.GetOrAddComponent<InheritOwnersRoomBehaviour>();
+                companion.GetOrAddComponent<BetterCompanions>();
+				var onDeathBehaviours = orAddComponent.GetComponents<OnDeathBehavior>().ToArray();
+				foreach (var behav in onDeathBehaviours)
+				{
+					if (behav != null)
+					{
+						DestroyImmediate(behav);
+					}
+				}
 				orAddComponent.behaviorSpeculator.MovementBehaviors.Add(new CompanionFollowPlayerBehavior());
                 if (orAddComponent.specRigidbody)
 				{

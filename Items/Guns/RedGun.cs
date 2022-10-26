@@ -67,7 +67,8 @@ namespace SpecialStuffPack.Items.Guns
                 shootStyle = ProjectileModule.ShootStyle.SemiAutomatic,
                 cooldownTime = 0.15f,
                 ammoType = GameUIAmmoType.AmmoType.MEDIUM_BLASTER,
-                numberOfShotsInClip = 6
+                numberOfShotsInClip = 6,
+				angleVariance = 5f
             });
             var redgun = gun.AddComponent<RedGun>();
 			redgun.shiftStartFrame = 7;
@@ -154,6 +155,7 @@ namespace SpecialStuffPack.Items.Guns
 					RequiresSynergy = !string.IsNullOrEmpty(formes[i].Key)
 				};
             }
+			gun.AddToCursulaShop();
         }
 
 		public static int InitForm(string objectName, string gunSpriteContainer, string synergyName)

@@ -31,7 +31,7 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Old and Long Forgotten";
             string longdesc = "A shiny golden key found in the walls of the Abbey. Resonates with power.\n\nThere are directions written on it:\n\"FIRST, TO THE LAYER OF THE BOTHERSOME RAT\"\n\"THEN, TO THE GREAT CELL BENEATH THE HOLLOW\"\n" +
                 "\"THEN, TO THE HEART OF THE FORGE\"\n\"AND FINALLY, TO THE VOID OF BULLETS, YOUR DESTINATION\"";
-            GoldKey item = EasyInitItem<GoldKey>("items/goldkey", "sprites/golden_key_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
+            GoldKey item = EasyItemInit<GoldKey>("items/goldkey", "sprites/golden_key_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             AddSpriteToCollection("sprites/key_bit_001", item.sprite.Collection);
             AddSpriteToCollection("sprites/emerald_bit_001", item.sprite.Collection);
             item.ShatterVFX = (GameObject)BraveResources.Load("Global VFX/BlankVFX_Ghost", ".prefab");
@@ -1171,7 +1171,7 @@ namespace SpecialStuffPack.Items
             }
             else if (GameManager.Instance.Dungeon.IsEndTimes)
             {
-                SaveAPIManager.SetFlag(CustomDungeonFlags.LOCK_UNLOCKED, true);
+                SaveAPIManager.SetFlag("LockUnlocked", true);
                 ghost.Fade();
                 Owner.RemovePassiveItem(PickupObjectId);
             }

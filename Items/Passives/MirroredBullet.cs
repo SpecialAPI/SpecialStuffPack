@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Mirrored Bullet";
             string shortdesc = "Double bullets for a cost";
             string longdesc = "All bullets are doubled, but doubles the user's spread.";
-            MirroredBullet item = EasyInitItem<MirroredBullet>("items/mirrorbullet", "sprites/mirrored_bullet_idle_001", name, shortdesc, longdesc, ItemQuality.S, null, null);
+            MirroredBullet item = EasyItemInit<MirroredBullet>("items/mirrorbullet", "sprites/mirrored_bullet_idle_001", name, shortdesc, longdesc, ItemQuality.S, null, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.Accuracy, 2f, StatModifier.ModifyMethod.MULTIPLICATIVE);
             item.AddPassiveStatModifier(PlayerStats.StatType.Curse, 2f, StatModifier.ModifyMethod.ADDITIVE);
             item.AddToCursulaShop();

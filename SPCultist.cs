@@ -47,6 +47,17 @@ namespace SpecialStuffPack
             {
                 __instance.m_overridePlayerSwitchState = "CoopCultist";
                 __instance.characterIdentity = PlayableCharactersE.SPCultist;
+                if (__instance.BosscardSprites == null || __instance.BosscardSprites.Count <= 0)
+                {
+                    __instance.BosscardSprites = new()
+                    {
+                        SpecialStuffModule.spCultistBosscard
+                    };
+                }
+                if (__instance.BosscardSpriteFPS < 1)
+                {
+                    __instance.BosscardSpriteFPS = 1;
+                }
             }
         }
 

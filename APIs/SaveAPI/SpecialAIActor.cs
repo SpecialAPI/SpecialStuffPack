@@ -9,10 +9,10 @@ namespace SpecialStuffPack.SaveAPI
     public class SpecialAIActor : MonoBehaviour
     {
         public bool SetsCustomFlagOnActivation;
-        public CustomDungeonFlags CustomFlagToSetOnActivation;
+        public string CustomFlagToSetOnActivation;
         public bool SetsCustomFlagOnDeath;
-        public CustomDungeonFlags CustomFlagToSetOnDeath;
+        public string CustomFlagToSetOnDeath;
         public bool SetsCustomCharacterSpecificFlagOnDeath;
-        public CustomCharacterSpecificGungeonFlags CustomCharacterSpecificFlagToSetOnDeath;
+        public string CustomCharacterSpecificFlagToSetOnDeath;
     }
 }

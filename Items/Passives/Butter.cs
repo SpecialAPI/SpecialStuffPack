@@ -17,7 +17,7 @@ namespace SpecialStuffPack.Items
             string name = "Butter";
             string shortdesc = "It's Too Slippery!";
             string longdesc = "Makes the owner throw active items when using them. Active items that take longer to recharge deal more damage.\n\nA regular bar of butter. It's very difficult to hold, and now your items are covered in it.";
-            EasyInitItem<Butter>("items/butter", "sprites/butter_idle_001", name, shortdesc, longdesc, ItemQuality.D, 306, null);
+            EasyItemInit<Butter>("items/butter", "sprites/butter_idle_001", name, shortdesc, longdesc, ItemQuality.D, 306, null);
         }
 
         public override void Pickup(PlayerController player)

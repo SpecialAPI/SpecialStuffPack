@@ -27,7 +27,7 @@ namespace SpecialStuffPack
 
         public static T Load<T>(string path, tk2dSpriteCollectionData spriteCollection = null, string shader = null) where T : Object
         {
-            if(loaded.TryGetValue(path, out var val))
+            if (loaded.TryGetValue($"{path}||{typeof(T)}", out var val))
             {
                 return (T)val;
             }
@@ -55,9 +55,9 @@ namespace SpecialStuffPack
                 }
             }
             var result = specialeverything.LoadAsset<T>(path);
-            if (!loaded.ContainsKey(path))
+            if (!loaded.ContainsKey($"{path}||{typeof(T)}"))
             {
-                loaded.Add(path, result);
+                loaded.Add($"{path}||{typeof(T)}", result);
             }
             GameObject go = null;
             if(result is GameObject gameobj)
@@ -76,8 +76,7 @@ namespace SpecialStuffPack
                     foreach(var comp in specialobjectinfo.objectNames[result.name])
                     {
                         var type = 
-                                typeof(AssetBundleManager).Assembly.GetTypes().Where(x2 => x2.Name == comp.Key && x2.IsSubclassOf(typeof(Component)) && !x2.IsAbstract).FirstOrDefault() ?? 
-                                typeof(PlayerController).Assembly.GetTypes().Where(x2 => x2.Name == comp.Key && x2.IsSubclassOf(typeof(Component)) && !x2.IsAbstract).FirstOrDefault();
+                                typeof(AssetBundleManager).Assembly.GetTypes().Where(x2 => x2.Name == comp.Key && x2.IsSubclassOf(typeof(Component)) && !x2.IsAbstract).FirstOrDefault();
                         if(type != null && type.IsSubclassOf(typeof(Component)) && !type.IsAbstract)
                         {
                             var co = go.AddComponent(type);
@@ -91,7 +90,7 @@ namespace SpecialStuffPack
                                         var f = cotype.GetField(field.Key, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
                                         if (f != null)
                                         {
-                                            f.SetValue(co, ObjectInfo.DeformatValue(field.Value));
+                                            f.SetValue(co, ObjectInfo.DeformatValue(field.Value, go));
                                         }
                                     }
                                     catch { }
@@ -143,56 +142,125 @@ namespace SpecialStuffPack
 
             public static ObjectInfo FromFile(List<string> file)
             {
-                var obj = new ObjectInfo();
-                foreach (var line in file)
+                var obj = new ObjectInfo { objectNames = new Dictionary<string, Dictionary<string, Dictionary<string, KeyValuePair<string, string>>>>() };
+                for (int i = 1; i < file.Count; i++)
                 {
-                    if (string.IsNullOrEmpty(line))
+                    var line = file[i];
+                    if (line.Trim() == "}" || string.IsNullOrEmpty(line.Trim()))
                     {
-                        continue;
+                        break;
                     }
-                    var name = line.Substring(0, line.IndexOf(":"));
-                    var everythingElse = line.Substring(line.IndexOf(":") + 1).Trim();
-                    obj.objectNames.Add(name, everythingElse.Split('|').Select(x =>
+                    var name = line.Trim().Substring(line.Trim().IndexOf("\"") + 1);
+                    name = name.Substring(0, name.LastIndexOf("\""));
+                    Dictionary<string, Dictionary<string, KeyValuePair<string, string>>> components = new Dictionary<string, Dictionary<string, KeyValuePair<string, string>>>();
+                    i += 2;
+                    for (; i < file.Count; i++)
                     {
-                        var componentName = x.Substring(0, x.IndexOf(":"));
-                        var componentFields = x.Substring(x.IndexOf(":") + 1).Trim();
-                        return new KeyValuePair<string, Dictionary<string, KeyValuePair<string, string>>>(componentName, componentFields.Split(',').Select(x2 =>
+                        line = file[i];
+                        if (line.Trim() == "},")
                         {
-                            var fieldName = x2.Substring(0, x2.IndexOf(":"));
-                            var fieldValue = x2.Substring(x2.IndexOf(":") + 1).Trim();
-                            return new KeyValuePair<string, KeyValuePair<string, string>>(fieldName, new KeyValuePair<string, string>(fieldValue.Substring(0, fieldValue.IndexOf("%")), fieldValue.Substring(fieldValue.IndexOf("%") + 1)));
-                        }).ToDictionary());
-                    }).ToDictionary());
+                            break;
+                        }
+                        var compname = line.Trim().Substring(line.Trim().IndexOf("\"") + 1);
+                        compname = compname.Substring(0, compname.LastIndexOf("\""));
+                        Dictionary<string, KeyValuePair<string, string>> fields = new Dictionary<string, KeyValuePair<string, string>>();
+                        i += 2;
+                        for (; i < file.Count; i++)
+                        {
+                            line = file[i];
+                            if (line.Trim() == "},")
+                            {
+                                break;
+                            }
+                            var fieldname = line.Trim().Substring(line.Trim().IndexOf("\"") + 1);
+                            fieldname = fieldname.Substring(0, fieldname.IndexOf(":"));
+                            fieldname = fieldname.Substring(0, fieldname.LastIndexOf("\""));
+                            var typeAndValue = line.Trim().Substring(line.Trim().IndexOf(":") + 1).Trim();
+                            typeAndValue = typeAndValue.Substring(0, typeAndValue.LastIndexOf(","));
+                            var type = typeAndValue.Substring(0, typeAndValue.IndexOf("%"));
+                            var value = typeAndValue.Substring(typeAndValue.IndexOf("%") + 1);
+                            KeyValuePair<string, string> d = new KeyValuePair<string, string>(type, value);
+                            fields.Add(fieldname, d);
+                        }
+                        components.Add(compname, fields);
+                    }
+                    obj.objectNames.Add(name, components);
                 }
                 return obj;
             }
 
-            public static object DeformatValue(KeyValuePair<string, string> value)
+            public static Type GetTypeFromAssemblies(string name)
             {
+                return AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetTypes()).SelectMany(x => x).Where(x => x.FullName == name).FirstOrDefault();
+            }
+
+            public static object DeformatValue(KeyValuePair<string, string> value, GameObject serializedObject)
+            {
+                if (value.Value.StartsWith("ENUM^"))
+                {
+                    try
+                    {
+                        return Enum.Parse(GetTypeFromAssemblies(value.Key), value.Value.Substring(value.Value.IndexOf("^") + 1));
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            return ETGModCompatibility.ExtendEnum(SpecialStuffModule.GUID, value.Value.Substring(value.Value.IndexOf("^") + 1), GetTypeFromAssemblies(value.Key));
+                        }
+                        catch
+                        {
+                            ETGModConsole.Log($"bad and evil enum encountered: {value.Key}, {value.Value}");
+                        }
+                    }
+                }
                 switch (value.Key)
                 {
                     case "System.Int32": return int.Parse(value.Value);
                     case "System.Int64": return long.Parse(value.Value);
                     case "System.Boolean": return bool.Parse(value.Value);
                     case "System.Single": return float.Parse(value.Value);
-                    case "System.String": return value.Value.ToString().Replace("🐸", ",");
+                    case "System.String": return value;
                     case "System.Int16": return short.Parse(value.Value);
                     case "System.Double": return double.Parse(value.Value);
                     case "System.UInt16": return ushort.Parse(value.Value);
                     case "System.UInt64": return ulong.Parse(value.Value);
                     case "System.UInt32": return uint.Parse(value.Value);
+                    case "System.Byte": return byte.Parse(value.Value);
                 }
-                return JsonUtility.FromJson(value.Value, AppDomain.CurrentDomain.GetAssemblies().Select(x => x.GetTypes()).SelectMany(x => x).Where(x =>
+                var type = GetTypeFromAssemblies(value.Key);
+                if (type.IsSubclassOf(typeof(Object)))
                 {
-                    if (value.Key.Contains("."))
+                    if (value.Value.StartsWith("?CHILD_"))
                     {
-                        return x.Namespace == value.Key.Substring(0, value.Key.LastIndexOf(".")) && x.Name == value.Key.Substring(value.Key.LastIndexOf(".") + 1);
+                        if (type.IsSubclassOf(typeof(Component)))
+                        {
+                            try
+                            {
+                                var childidx = value.Value.Substring(value.Value.IndexOf("_") + 1);
+                                childidx = childidx.Substring(value.Value.IndexOf("*"));
+                                return serializedObject.GetComponentsInChildren<Transform>()[int.Parse(childidx)].GetComponents(type)[int.Parse(value.Value.Substring(value.Value.IndexOf("*") + 1))];
+                            }
+                            catch
+                            {
+                                ETGModConsole.Log($"bad and evil child component encountered: {value.Key}, {value.Value}, {type.FullName}");
+                            }
+                        }
+                        else if (type == typeof(GameObject))
+                        {
+                            try
+                            {
+                                return serializedObject.GetComponentsInChildren<Transform>()[int.Parse(value.Value.Substring(value.Value.IndexOf("_") + 1))].gameObject;
+                            }
+                            catch
+                            {
+                                ETGModConsole.Log($"bad and evil child object encountered: {value.Key}, {value.Value}");
+                            }
+                        }
                     }
-                    else
-                    {
-                        return x.Name == value.Key;
-                    }
-                }).FirstOrDefault());
+                    return Load<Object>(value.Value, null, null);
+                }
+                return JsonUtility.FromJson(value.Value, type);
             }
 
             public static string FormatValue(object value)

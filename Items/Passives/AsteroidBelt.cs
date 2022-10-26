@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Asteroid Belt";
             string shortdesc = "Shoot Asteroids!";
             string longdesc = "Makes all the user's guns shoot asteroids.\n\nA belt made out of space metal, with a piece of an asteroid in the middle.";
-            AsteroidBelt item = EasyInitItem<AsteroidBelt>("items/asteroidbelt", "sprites/asteroid_belt_idle_001", name, shortdesc, longdesc, ItemQuality.S, 662, null);
+            AsteroidBelt item = EasyItemInit<AsteroidBelt>("items/asteroidbelt", "sprites/asteroid_belt_idle_001", name, shortdesc, longdesc, ItemQuality.S, 662, null);
             Projectile proj = EasyProjectileInit<Projectile>("projectiles/asteroidprojectile", "projectilesprites/asteroid_projectile_001", 1.25f, 23, 10000, 40, true, false, false, null,
                 tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, null, null, null, null);
             AsteroidProjectile asteroid = proj.AddComponent<AsteroidProjectile>();

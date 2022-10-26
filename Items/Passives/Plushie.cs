@@ -12,9 +12,9 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Lock Plushie";
             string shortdesc = "He believes in you";
             string longdesc = "A weird looking plushie that almost looks alive.";
-            var item = EasyInitItem<Plushie>("items/plushie", "sprites/plushie_idle_001", name, shortdesc, longdesc, ItemQuality.S);
+            var item = EasyItemInit<Plushie>("items/plushie", "sprites/plushie_idle_001", name, shortdesc, longdesc, ItemQuality.S);
             item.AddToFlyntShop();
-            item.SetupUnlockOnCustomFlag(CustomDungeonFlags.LOCK_UNLOCKED, true);
+            item.SetupUnlockOnCustomFlag("LockUnlocked", true);
         }
 
         public override void Pickup(PlayerController player)
@@ -48,7 +48,13 @@ namespace SpecialStuffPack.Items.Passives
                     pierce.penetratesBreakables = true;
                     key.Owner = Owner;
                     key.Shooter = Owner.specRigidbody;
-                    key.OnHitEnemy += (x, enemy, b) => LootEngine.SpawnItem(PickupObjectDatabase.GetById(GlobalItemIds.Key).gameObject, enemy.UnitCenter, Random.insideUnitCircle, 1f, false, false, false);
+                    key.OnHitEnemy += (x, enemy, b) =>
+                    { 
+                        if (enemy != null && enemy.aiActor != null && enemy.aiActor.IsNormalEnemy && !enemy.aiActor.IsHarmlessEnemy && !enemy.aiActor.IgnoreForRoomClear)
+                        {
+                            LootEngine.SpawnItem(PickupObjectDatabase.GetById(GlobalItemIds.Key).gameObject, enemy.UnitCenter, Random.insideUnitCircle, 1f, false, false, false);
+                        }
+                    };
                     /*if (Owner.carriedConsumables.InfiniteKeys)
                     {
                         key.baseData.damage *= 1.25f;
@@ -57,8 +63,17 @@ namespace SpecialStuffPack.Items.Passives
                         pierce.penetration = 50;
                         pierce.penetratesBreakables = true;
                     }*/
+                    if(Owner.PlayerHasActiveSynergy("Wrath of the Keys"))
+                    {
+                        var homing = key.GetOrAddComponent<HomingModifier>();
+                        homing.HomingRadius = Mathf.Max(homing.HomingRadius, 10f);
+                        homing.AngularVelocity = Mathf.Max(homing.AngularVelocity, 420f);
+                    }
                 }
-                Owner.carriedConsumables.KeyBullets--;
+                if ((!Owner.PlayerHasActiveSynergy("Keybag") || Random.value < 0.25f) && (!Owner.PlayerHasActiveSynergy("Ring of Lock Friendship") || Owner.IsInCombat))
+                {
+                    Owner.carriedConsumables.KeyBullets--;
+                }
             }
         }
     }

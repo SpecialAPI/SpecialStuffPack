@@ -313,12 +313,10 @@ namespace SpecialStuffPack.SoundAPI
                     name += "_SPAPI";
                 }
                 Marshal.Copy(array, 0, intPtr, array.Length);
+                Debug.Log("SOUND BANK AAAAA " + name);
                 AKRESULT akresult = AkSoundEngine.LoadAndDecodeBankFromMemory(intPtr, (uint)array.Length, false, name, false, out uint num);
+                Debug.Log("SOUND BANK b " + name);
                 Debug.LogWarning(name + " bank load result: " + akresult);
-                if(akresult == AKRESULT.AK_Fail)
-                {
-                    Debug.LogError("edmund mcmillen you little fucker you made a shit of piece with your trash isaac it's fucking bad i will become back my money i hope you will next time a cow on a trash farm you sucker");
-                }
             }
             finally
             {

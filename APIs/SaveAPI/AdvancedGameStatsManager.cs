@@ -12,13 +12,12 @@ namespace SpecialStuffPack.SaveAPI
     /// The class that stores all your custom information
     /// </summary>
     [fsObject]
-    class AdvancedGameStatsManager
+    public class AdvancedGameStatsManager
     {
         public AdvancedGameStatsManager()
         {
-            m_flags = new HashSet<CustomDungeonFlags>(new CustomDungeonFlagsComparer());
+            flags = new();
             m_characterStats = new Dictionary<PlayableCharacters, AdvancedGameStats>(new PlayableCharactersComparer());
-            m_numCharacters = -1;
             cachedHuntIndex = -1;
         }
 
@@ -36,9 +35,9 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="character">The character</param>
         /// <param name="flag">Target flag</param>
         /// <param name="value">The flag's new value</param>
-        public void SetCharacterSpecificFlag(PlayableCharacters character, CustomCharacterSpecificGungeonFlags flag, bool value)
+        public void SetCharacterSpecificFlag(PlayableCharacters character, string flag, bool value)
         {
-            if (flag == CustomCharacterSpecificGungeonFlags.NONE)
+            if (string.IsNullOrEmpty(flag))
             {
                 Debug.LogError("Something is attempting to set a NONE character-specific save flag!");
                 return;
@@ -62,7 +61,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Target stat</param>
         /// <param name="value">The stat's new value</param>
-        public void SetStat(CustomTrackedStats stat, float value)
+        public void SetStat(string stat, float value)
         {
             if (float.IsNaN(value))
             {
@@ -84,7 +83,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="maximum">The maximum to set</param>
         /// <param name="val">The maximum's new value</param>
-        public void UpdateMaximum(CustomTrackedMaximums maximum, float val)
+        public void UpdateMaximum(string maximum, float val)
         {
             if (float.IsNaN(val))
             {
@@ -106,7 +105,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">Target flag</param>
         /// <returns>The value of session character's <paramref name="flag"/></returns>
-        public bool GetCharacterSpecificFlag(CustomCharacterSpecificGungeonFlags flag)
+        public bool GetCharacterSpecificFlag(string flag)
         {
             return GetCharacterSpecificFlag(m_sessionCharacter, flag);
         }
@@ -117,9 +116,9 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="character">Target character</param>
         /// <param name="flag">The flag to check</param>
         /// <returns><paramref name="character"/>'s <paramref name="flag"/> value</returns>
-        public bool GetCharacterSpecificFlag(PlayableCharacters character, CustomCharacterSpecificGungeonFlags flag)
+        public bool GetCharacterSpecificFlag(PlayableCharacters character, string flag)
         {
-            if (flag == CustomCharacterSpecificGungeonFlags.NONE)
+            if (string.IsNullOrEmpty(flag))
             {
                 Debug.LogError("Something is attempting to get a NONE character-specific save flag!");
                 return false;
@@ -156,7 +155,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Stat to increment</param>
         /// <param name="value">Increment value</param>
-        public void RegisterStatChange(CustomTrackedStats stat, float value)
+        public void RegisterStatChange(string stat, float value)
         {
             if (m_sessionStats == null)
             {
@@ -253,17 +252,9 @@ namespace SpecialStuffPack.SaveAPI
         {
             m_sessionStats.ClearAllState();
             m_savedSessionStats.ClearAllState();
-            if (m_numCharacters <= 0)
+            foreach(var stat in m_characterStats)
             {
-                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
-            }
-            for (int i = 0; i < m_numCharacters; i++)
-            {
-                AdvancedGameStats gameStats;
-                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
-                {
-                    gameStats.ClearAllState();
-                }
+                stat.Value.ClearAllState();
             }
         }
 
@@ -271,25 +262,17 @@ namespace SpecialStuffPack.SaveAPI
         /// Clears a <paramref name="stat"/>'s value from session stats, saved session stats and character stats
         /// </summary>
         /// <param name="stat"></param>
-        public void ClearStatValueGlobal(CustomTrackedStats stat)
+        public void ClearStatValueGlobal(string stat)
         {
             m_sessionStats.SetStat(stat, 0f);
             m_savedSessionStats.SetStat(stat, 0f);
-            if (m_numCharacters <= 0)
+            foreach (var stats in m_characterStats)
             {
-                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
-            }
-            for (int i = 0; i < m_numCharacters; i++)
-            {
-                AdvancedGameStats gameStats;
-                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
-                {
-                    gameStats.SetStat(stat, 0f);
-                }
+                stats.Value.SetStat(stat, 0f);
             }
         }
 
-        private PlayableCharacters GetCurrentCharacter()
+        public PlayableCharacters GetCurrentCharacter()
         {
             return GameManager.Instance.PrimaryPlayer.characterIdentity;
         }
@@ -299,12 +282,8 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="maximum">Target maximum</param>
         /// <returns><paramref name="maximum"/> value</returns>
-        public float GetPlayerMaximum(CustomTrackedMaximums maximum)
+        public float GetPlayerMaximum(string maximum)
         {
-            if (m_numCharacters <= 0)
-            {
-                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
-            }
             float num = 0f;
             if (m_sessionStats != null)
             {
@@ -315,13 +294,9 @@ namespace SpecialStuffPack.SaveAPI
                 m_savedSessionStats.GetMaximumValue(maximum)
                 });
             }
-            for (int i = 0; i < m_numCharacters; i++)
+            foreach (var stats in m_characterStats)
             {
-                AdvancedGameStats gameStats;
-                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
-                {
-                    num = Mathf.Max(num, gameStats.GetMaximumValue(maximum));
-                }
+                num = Mathf.Max(num, stats.Value.GetMaximumValue(maximum));
             }
             return num;
         }
@@ -331,24 +306,16 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat">Target stat.</param>
         /// <returns>The value of <paramref name="stat"/></returns>
-        public float GetPlayerStatValue(CustomTrackedStats stat)
+        public float GetPlayerStatValue(string stat)
         {
-            if (m_numCharacters <= 0)
-            {
-                m_numCharacters = Enum.GetValues(typeof(PlayableCharacters)).Length;
-            }
             float num = 0f;
             if (m_sessionStats != null)
             {
                 num += m_sessionStats.GetStatValue(stat);
             }
-            for (int i = 0; i < m_numCharacters; i++)
+            foreach (var stats in m_characterStats)
             {
-                AdvancedGameStats gameStats;
-                if (m_characterStats.TryGetValue((PlayableCharacters)i, out gameStats))
-                {
-                    num += gameStats.GetStatValue(stat);
-                }
+                num += stats.Value.GetStatValue(stat);
             }
             return num;
         }
@@ -358,7 +325,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">Target flag</param>
         /// <param name="value">Value to set</param>
-        public void SetCharacterSpecificFlag(CustomCharacterSpecificGungeonFlags flag, bool value)
+        public void SetCharacterSpecificFlag(string flag, bool value)
         {
             SetCharacterSpecificFlag(m_sessionCharacter, flag, value);
         }
@@ -368,7 +335,7 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="stat"></param>
         /// <returns></returns>
-        public float GetSessionStatValue(CustomTrackedStats stat)
+        public float GetSessionStatValue(string stat)
         {
             return m_sessionStats.GetStatValue(stat) + m_savedSessionStats.GetStatValue(stat);
         }
@@ -380,7 +347,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns>Primary player's or the Pilot's (if primary player doesn't exist) <paramref name="stat"/> value</returns>
         /// <exception cref="T:System.NullReferenceException">
 		///   Primary player is null</exception>
-        public float GetCharacterStatValue(CustomTrackedStats stat)
+        public float GetCharacterStatValue(string stat)
         {
             return GetCharacterStatValue(GetCurrentCharacter(), stat);
         }
@@ -413,7 +380,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="stat">Target stat</param>
         /// <param name="character">The character</param>
         /// <returns><paramref name="character"/>'s <paramref name="stat"/> value</returns>
-        public float GetCharacterStatValue(PlayableCharacters character, CustomTrackedStats stat)
+        public float GetCharacterStatValue(PlayableCharacters character, string stat)
         {
             float num = 0f;
             if (m_sessionCharacter == character)
@@ -540,14 +507,9 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">Flag to check</param>
         /// <returns>The value of <paramref name="flag"/></returns>
-        public bool GetFlag(CustomDungeonFlags flag)
+        public bool GetFlag(string flag)
         {
-            if (flag == CustomDungeonFlags.NONE)
-            {
-                Debug.LogError("Something is attempting to get a NONE save flag!");
-                return false;
-            }
-            return m_flags.Contains(flag);
+            return flags.Contains(flag);
         }
 
         /// <summary>
@@ -555,20 +517,15 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="flag">Flag to set</param>
         /// <param name="value">The flag's new value</param>
-        public void SetFlag(CustomDungeonFlags flag, bool value)
+        public void SetFlag(string flag, bool value)
         {
-            if (flag == CustomDungeonFlags.NONE)
-            {
-                Debug.LogError("Something is attempting to set a NONE save flag!");
-                return;
-            }
             if (value)
             {
-                m_flags.Add(flag);
+                flags.Add(flag);
             }
             else
             {
-                m_flags.Remove(flag);
+                flags.Remove(flag);
             }
         }
 
@@ -633,7 +590,7 @@ namespace SpecialStuffPack.SaveAPI
 
         private static AdvancedGameStatsManager m_instance;
         [fsProperty]
-        public HashSet<CustomDungeonFlags> m_flags;
+        public HashSet<string> flags;
         [fsProperty]
         public string midGameSaveGuid;
         [fsProperty]
@@ -641,7 +598,6 @@ namespace SpecialStuffPack.SaveAPI
         private AdvancedGameStats m_sessionStats;
         private AdvancedGameStats m_savedSessionStats;
         private PlayableCharacters m_sessionCharacter;
-        private int m_numCharacters;
         [fsIgnore]
         public int cachedHuntIndex;
         [fsIgnore]

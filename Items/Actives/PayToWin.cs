@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string name = "PAY 2 WIN";
             string shortdesc = "Upgrade Chests for $$$";
             string longdesc = "Consumes casings to upgrade chests. Upgrading better chests costs more.";
-            PayToWin item = EasyInitItem<PayToWin>("items/paytowin", "sprites/ptw_idle_001", name, shortdesc, longdesc, ItemQuality.B, 494, null);
+            PayToWin item = EasyItemInit<PayToWin>("items/paytowin", "sprites/ptw_idle_001", name, shortdesc, longdesc, ItemQuality.B, 494, null);
             item.SetCooldownType(CooldownType.Timed, 0.5f);
             item.dUpgradePrice = 25;
             item.cUpgradePrice = 35;
@@ -206,7 +206,17 @@ namespace SpecialStuffPack.Items
             float pricemult = GameManager.Instance.PrimaryPlayer.stats.GetStatValue(PlayerStats.StatType.GlobalPriceMultiplier);
             if(price != null)
             {
-                if(LastOwner.PlayerHasActiveSynergy(""))
+                if (LastOwner.PlayerHasActiveSynergy("50% OFF ON ALL DLCHESTS!"))
+                {
+                    if (LastOwner.CurrentRoom != null && LastOwner.CurrentRoom.area != null && !string.IsNullOrEmpty(LastOwner.CurrentRoom.area.PrototypeRoomName) && LastOwner.CurrentRoom.area.PrototypeRoomName.ToLower().Contains("dlchest"))
+                    {
+                        pricemult *= 0.5f;
+                    }
+                }
+                if(LastOwner.PlayerHasActiveSynergy("25% OFF ON ALL IN-GAME PURCHASES!"))
+                {
+                    pricemult *= 0.75f;
+                }
                 price = Mathf.RoundToInt(price.Value * pricemult);
             }
             return price;

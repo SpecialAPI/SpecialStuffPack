@@ -69,7 +69,7 @@ namespace SpecialStuffPack.Items
                     break;
             }
             longdesc += "\n\nWhile calendars can be useful in other places, they aren't really that useful in gungeon, because of how time in gungeon works.";
-            PassiveItem item = EasyInitItem<PassiveItem>("items/calendar", "sprites/calendar_idle_001", name, shortdesc, longdesc, PickupObject.ItemQuality.B, 524, null);
+            PassiveItem item = EasyItemInit<PassiveItem>("items/calendar", "sprites/calendar_idle_001", name, shortdesc, longdesc, PickupObject.ItemQuality.B, 524, null);
             item.AddPassiveStatModifier(statType, statIncrease, modifyMethod);
         }
     }

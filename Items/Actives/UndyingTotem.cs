@@ -15,16 +15,20 @@ namespace SpecialStuffPack.Items
             string name = "Totem of Gundying";
             string shortdesc = "Cheat Death";
             string longdesc = "Revives the owner, but only once.\n\nFound in a mansion in the woods.";
-            UndyingTotem item = EasyInitItem<UndyingTotem>("items/totem", "sprites/totem_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
+            UndyingTotem item = EasyItemInit<UndyingTotem>("items/totem", "sprites/totem_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
             item.InvulnerabilityDuration = 3f;
             item.HeartsToSpawn = 5f;
             item.ArmorToGive = 3;
+            item.SetCooldownType(CooldownType.None, 0f);
+            item.timedCooldown = 1f;
+            item.synergyProjectile = EyeOfTheBeholsterObject.GetProjectile();
         }
 
         public override void Pickup(PlayerController player)
         {
             base.Pickup(player);
             player.healthHaver.OnPreDeath += CheatDeath;
+            player.PostProcessProjectile += Synergy;
         }
 
         public void CheatDeath(Vector2 damageDirection)
@@ -109,23 +113,38 @@ namespace SpecialStuffPack.Items
             if(LastOwner != null)
             {
                 LastOwner.healthHaver.OnPreDeath -= CheatDeath;
+                LastOwner.PostProcessProjectile -= Synergy;
             }
             base.OnDestroy();
+        }
+
+        public void Synergy(Projectile proj, float f)
+        {
+            if (!IsOnCooldown && LastOwner.CurrentItem == this && LastOwner.PlayerHasActiveSynergy("A Little More"))
+            {
+                timeCooldown = timedCooldown;
+                ApplyCooldown(LastOwner);
+                timeCooldown = 0f;
+                OwnedShootProjectile(synergyProjectile, LastOwner.CenterPosition, LastOwner.GetAimDirection(), LastOwner);
+            }
         }
 
         public override void OnPreDrop(PlayerController user)
         {
             user.healthHaver.OnPreDeath -= CheatDeath;
+            user.PostProcessProjectile += Synergy;
             base.OnPreDrop(user);
         }
 
         public override bool CanBeUsed(PlayerController user)
         {
-            return false;
+            return user.PlayerHasActiveSynergy("A Little More");
         }
 
         public float HeartsToSpawn;
         public float InvulnerabilityDuration;
         public int ArmorToGive;
+        public float timedCooldown;
+        public Projectile synergyProjectile;
     }
 }

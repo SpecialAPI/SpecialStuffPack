@@ -34,6 +34,18 @@ namespace SpecialStuffPack
             return mod;
         }
 
+        public static EncounterDatabaseEntry DatabaseEntry(this EncounterTrackable self)
+        {
+            return EncounterDatabase.GetEntry(self.EncounterGuid);
+        }
+
+        public static ExplosionData Copy(this ExplosionData original)
+        {
+            ExplosionData data = new();
+            data.CopyFrom(original);
+            return data;
+        }
+
         public static T RandomElement<T>(this IEnumerable<T> collection)
         {
             return BraveUtility.RandomElement(collection.ToArray());
@@ -56,6 +68,38 @@ namespace SpecialStuffPack
             }
             user.OnDidUnstealthyAction += BreakStealthOnUnstealthy;
             user.OnItemStolen += BreakStealthOnStolen;
+        }
+
+        public static void LogFrames(this tk2dSpriteAnimationClip clippy)
+        {
+            if(clippy.frames.Length <= 0)
+            {
+                ETGModConsole.Log($"The clip {clippy.name} (fps = {clippy.fps}, wrap mode = {clippy.wrapMode}) doesn't have any frames");
+            }
+            else
+            {
+                ETGModConsole.Log($"Animation frames of clip {clippy.name} (fps = {clippy.fps}, wrap mode = {clippy.wrapMode}):");
+            }
+            int i = 1;
+            foreach(var frame in clippy.frames)
+            {
+                var stuffInBrackets = new List<string>();
+                if (!string.IsNullOrEmpty(frame.eventAudio))
+                {
+                    stuffInBrackets.Add("Audio: " + frame.eventAudio);
+                }
+                if (!string.IsNullOrEmpty(frame.eventInfo))
+                {
+                    stuffInBrackets.Add("Info: " + frame.eventInfo);
+                }
+                var message = $"{i}: {frame.spriteCollection.spriteDefinitions[frame.spriteId].name}";
+                if(stuffInBrackets.Count > 0)
+                {
+                    message += $" ({string.Join(", ", stuffInBrackets.ToArray())})";
+                }
+                ETGModConsole.Log(message);
+                i++;
+            }
         }
 
         public static void MakeContinuous(this Gun gun)
@@ -153,6 +197,15 @@ namespace SpecialStuffPack
         public static VFXPool GetMuzzleFlash(int id)
         {
             return GetGunById(id)?.muzzleFlashEffects;
+        }
+
+        public static float Scale(this float self, float scale)
+        {
+            if(self < 1)
+            {
+                return self * scale;
+            }
+            return self;
         }
 
         public static void BreakStealth(PlayerController obj, string reason, Action<PlayerController> unstealthyActionDelegate, Action<PlayerController, ShopItemController> stolenDelegate)
@@ -280,6 +333,228 @@ namespace SpecialStuffPack
                 }
             }
             return a;
+        }
+
+        public static tk2dSpriteCollectionData EasyCollectionSetup(string name)
+        {
+            var go = AssetBundleManager.Load<GameObject>(name, null, null);
+            if(go == null)
+            {
+                return null;
+            }
+            var coll = go.GetComponent<tk2dSpriteCollectionData>();
+            if(coll != null)
+            {
+                return coll;
+            }
+            coll = go.AddComponent<tk2dSpriteCollectionData>();
+            coll.spriteDefinitions = new tk2dSpriteDefinition[0];
+            coll.spriteDefinitions = new tk2dSpriteDefinition[0];
+            coll.spriteCollectionName = coll.assetName = go.name;
+            return coll;
+        }
+
+        public static tk2dSpriteAnimation EasyAnimationSetup(string name)
+        {
+            var go = AssetBundleManager.Load<GameObject>(name, null, null);
+            if (go == null)
+            {
+                return null;
+            }
+            var anim = go.GetComponent<tk2dSpriteAnimation>();
+            if (anim != null)
+            {
+                return anim;
+            }
+            anim = go.AddComponent<tk2dSpriteAnimation>();
+            anim.clips = new tk2dSpriteAnimationClip[0];
+            return anim;
+        }
+
+        public static tk2dSpriteAnimationClip AddClip(this tk2dSpriteAnimation library, string animationName, tk2dSpriteCollectionData collection, int fps = 15, 
+            tk2dSpriteAnimationClip.WrapMode wrapMode = tk2dSpriteAnimationClip.WrapMode.Once)
+        {
+            var clip = library.GetClipByName(animationName);
+            if (clip != null)
+            {
+                return clip;
+            }
+            List<tk2dSpriteAnimationFrame> frames = new();
+            for(int i = 1; i < 1000; i++)
+            {
+                var tostring = i.ToString();
+                string text;
+                if(tostring.Length < 2)
+                {
+                    text = $"{animationName}_00{tostring}";
+                }
+                else if(tostring.Length < 3)
+                {
+                    text = $"{animationName}_0{tostring}";
+                }
+                else
+                {
+                    text = $"{animationName}_{tostring}";
+                }
+                var tex = AssetBundleManager.Load<Texture2D>(text);
+                if(tex == null)
+                {
+                    break;
+                }
+                else
+                {
+                    tk2dSpriteAnimationFrame frame = new()
+                    {
+                        spriteCollection = collection,
+                        spriteId = AddSpriteToCollection(tex, collection)
+                    };
+                    var animationMetadata = AssetBundleManager.Load<TextAsset>(text);
+                    if (animationMetadata != null)
+                    {
+                        var lines = animationMetadata.text.Split('\n');
+                        foreach (var line in lines)
+                        {
+                            if(!string.IsNullOrEmpty(line) && line.Length > 2 && line.Contains(":"))
+                            {
+                                var key = line.Substring(0, line.IndexOf(":")).Trim().ToLower();
+                                var value = line.Substring(line.IndexOf(":") + 1);
+                                if(key == "audio")
+                                {
+                                    frame.eventAudio = value.Trim();
+                                    frame.triggerEvent = true;
+                                }
+                                else if(key == "info")
+                                {
+                                    frame.eventInfo = value.TrimStart();
+                                    frame.triggerEvent = true;
+                                }
+                                else if (key == "vfx")
+                                {
+                                    frame.eventVfx = value;
+                                }
+                                else if (key == "stopvfx")
+                                {
+                                    frame.eventStopVfx = value;
+                                }
+                            }
+                        }
+                    }
+                    frames.Add(frame);
+                }
+            }
+            clip = new()
+            {
+                fps = fps,
+                wrapMode = wrapMode,
+                loopStart = 0,
+                name = animationName,
+                maxFidgetDuration = 0f,
+                minFidgetDuration = 0f,
+                frames = frames.ToArray()
+            };
+            library.clips = library.clips.AddToArray(clip);
+            return clip;
+        }
+
+        public static LilChest GenerationSpawnLilChestAt(this RewardManager man, IntVector2 positionInRoom, RoomHandler targetRoom, PickupObject.ItemQuality? targetQuality = null)
+        {
+            System.Random random = (!GameManager.Instance.IsSeeded) ? null : BraveRandom.GeneratorRandom;
+            FloorRewardData rewardDataForFloor = man.GetRewardDataForFloor(GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId);
+            bool forceDChanceZero = StaticReferenceManager.DChestsSpawnedInTotal >= 2;
+            if (targetQuality == null)
+            {
+                targetQuality = new PickupObject.ItemQuality?(rewardDataForFloor.GetRandomTargetQuality(true, forceDChanceZero));
+                if (PassiveItem.IsFlagSetAtAll(typeof(SevenLeafCloverItem)))
+                {
+                    targetQuality = new PickupObject.ItemQuality?((((random == null) ? UnityEngine.Random.value : ((float)random.NextDouble())) >= 0.5f) ? PickupObject.ItemQuality.S : PickupObject.ItemQuality.A);
+                }
+            }
+            if (targetQuality == PickupObject.ItemQuality.D && StaticReferenceManager.DChestsSpawnedOnFloor >= 1 && GameManager.Instance.Dungeon.tileIndices.tilesetId != GlobalDungeonData.ValidTilesets.CASTLEGEON)
+            {
+                targetQuality = new PickupObject.ItemQuality?(PickupObject.ItemQuality.C);
+            }
+            Vector2 zero = Vector2.zero;
+            if (targetQuality == PickupObject.ItemQuality.A || targetQuality == PickupObject.ItemQuality.S)
+            {
+                zero = new Vector2(-0.5f, 0f);
+            }
+            Chest chest = LilChest.GetLilChestForQuality(targetQuality.GetValueOrDefault());
+            if (GameStatsManager.Instance.GetFlag(GungeonFlags.SYNERGRACE_UNLOCKED) && GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId != GlobalDungeonData.ValidTilesets.CASTLEGEON)
+            {
+                float num = (random == null) ? UnityEngine.Random.value : ((float)random.NextDouble());
+                if (num < man.GlobalSynerchestChance)
+                {
+                    chest = LilChest.LilSynergy;
+                    zero = new Vector2(-0.1875f, 0f);
+                }
+            }
+            Chest.GeneralChestType generalChestType = (BraveRandom.GenerationRandomValue() >= rewardDataForFloor.GunVersusItemPercentChance) ? Chest.GeneralChestType.ITEM : Chest.GeneralChestType.WEAPON;
+            if (StaticReferenceManager.ItemChestsSpawnedOnFloor > 0 && StaticReferenceManager.WeaponChestsSpawnedOnFloor == 0)
+            {
+                generalChestType = Chest.GeneralChestType.WEAPON;
+            }
+            else if (StaticReferenceManager.WeaponChestsSpawnedOnFloor > 0 && StaticReferenceManager.ItemChestsSpawnedOnFloor == 0)
+            {
+                generalChestType = Chest.GeneralChestType.ITEM;
+            }
+            GenericLootTable genericLootTable = (generalChestType != Chest.GeneralChestType.WEAPON) ? man.ItemsLootTable : man.GunsLootTable;
+            GameObject gameObject = DungeonPlaceableUtility.InstantiateDungeonPlaceable(chest.gameObject, targetRoom, positionInRoom, true, AIActor.AwakenAnimationType.Default, false);
+            gameObject.transform.position = gameObject.transform.position + zero.ToVector3ZUp(0f);
+            Chest component = gameObject.GetComponent<Chest>();
+            Component[] componentsInChildren = gameObject.GetComponentsInChildren(typeof(IPlaceConfigurable));
+            for (int i = 0; i < componentsInChildren.Length; i++)
+            {
+                IPlaceConfigurable placeConfigurable = componentsInChildren[i] as IPlaceConfigurable;
+                if (placeConfigurable != null)
+                {
+                    placeConfigurable.ConfigureOnPlacement(targetRoom);
+                }
+            }
+            if (targetQuality == PickupObject.ItemQuality.A)
+            {
+                GameManager.Instance.Dungeon.GeneratedMagnificence += 1f;
+                component.GeneratedMagnificence += 1f;
+            }
+            else if (targetQuality == PickupObject.ItemQuality.S)
+            {
+                GameManager.Instance.Dungeon.GeneratedMagnificence += 1f;
+                component.GeneratedMagnificence += 1f;
+            }
+            component.ChestType = generalChestType;
+            component.lootTable.lootTable = genericLootTable;
+            if (component.lootTable.canDropMultipleItems && component.lootTable.overrideItemLootTables != null && component.lootTable.overrideItemLootTables.Count > 0)
+            {
+                component.lootTable.overrideItemLootTables[0] = genericLootTable;
+            }
+            if (targetQuality == PickupObject.ItemQuality.D && !component.IsMimic)
+            {
+                StaticReferenceManager.DChestsSpawnedOnFloor++;
+                StaticReferenceManager.DChestsSpawnedInTotal++;
+                component.IsLocked = true;
+                if (component.LockAnimator)
+                {
+                    component.LockAnimator.renderer.enabled = true;
+                }
+            }
+            if (man.SeededRunManifests.ContainsKey(GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId))
+            {
+                component.GenerationDetermineContents(man.SeededRunManifests[GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId], random);
+            }
+            return component as LilChest;
+        }
+
+        public static bool ScaledChance(float chance, float scale)
+        {
+            if(chance >= 1f)
+            {
+                return true;
+            }
+            return Random.value < chance * scale;
+        }
+
+        public static float GetAimDirection(this PlayerController player)
+        {
+            return player.GetRelativeAim().ToAngle();
         }
 
         public static T AddComponent<T>(this Component self) where T : Component

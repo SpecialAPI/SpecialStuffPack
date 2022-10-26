@@ -18,11 +18,11 @@ namespace SpecialStuffPack.Placeables
             {
 				yield return null;
 			}
-			m_hasAmethyst = SaveAPIManager.GetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST);
-			m_hasOpal = SaveAPIManager.GetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_OPAL);
-			m_hasEmerald = SaveAPIManager.GetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_EMERALD);
-			m_hasAquamarine = SaveAPIManager.GetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE);
-			m_hasRuby = SaveAPIManager.GetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST);
+			m_hasAmethyst = SaveAPIManager.GetFlag("SSAmethyst");
+			m_hasOpal = SaveAPIManager.GetFlag("SSOpal");
+			m_hasEmerald = SaveAPIManager.GetFlag("SSEmerald");
+			m_hasAquamarine = SaveAPIManager.GetFlag("SSAquamarine");
+			m_hasRuby = SaveAPIManager.GetFlag("SSRuby");
             if (!m_hasAmethyst)
             {
 				m_hasOpal = false;
@@ -45,11 +45,11 @@ namespace SpecialStuffPack.Placeables
 			{
 				m_hasRuby = false;
 			}
-			SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST, m_hasAmethyst);
-			SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_OPAL, m_hasOpal);
-			SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_EMERALD, m_hasEmerald);
-			SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, m_hasAquamarine);
-			SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, m_hasRuby);
+			SaveAPIManager.SetFlag("SSAmethyst", m_hasAmethyst);
+			SaveAPIManager.SetFlag("SSOpal", m_hasOpal);
+			SaveAPIManager.SetFlag("SSEmerald", m_hasEmerald);
+			SaveAPIManager.SetFlag("SSAquamarine", m_hasAquamarine);
+			SaveAPIManager.SetFlag("SSRuby", m_hasRuby);
 			UpdateSprite();
 			bool canBeUsed = false;
 			foreach (PlayerController play in GameManager.Instance.AllPlayers)
@@ -115,27 +115,27 @@ namespace SpecialStuffPack.Placeables
                     case 0:
 						player.RemovePassiveItem(AmethystItem.AmethystId);
                         m_hasAmethyst = true;
-						SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST, true);
+						SaveAPIManager.SetFlag("SSAmethyst", true);
                         break;
                     case 1:
                         player.RemovePassiveItem(OpalItem.OpalId);
                         m_hasOpal = true;
-						SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_OPAL, true);
+						SaveAPIManager.SetFlag("SSOpal", true);
 						break;
                     case 2:
                         player.RemovePassiveItem(EmeraldItem.EmeraldId);
                         m_hasEmerald = true;
-						SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_EMERALD, true);
+						SaveAPIManager.SetFlag("SSEmerald", true);
 						break;
                     case 3:
                         player.RemovePassiveItem(AquamarineItem.AquamarineId);
                         m_hasAquamarine = true;
-						SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, true);
+						SaveAPIManager.SetFlag("SSAquamarine", true);
 						break;
                     case 4:
                         player.RemovePassiveItem(RubyItem.RubyId);
                         m_hasRuby = true;
-						SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, true);
+						SaveAPIManager.SetFlag("SSRuby", true);
 						break;
                     case 5:
 						yield return null;

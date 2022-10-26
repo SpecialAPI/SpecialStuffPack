@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Watermelon";
             string shortdesc = "Heavy Hitter";
             string longdesc = "Throws watermelons at all enemies in the room.";
-            Watermelon item = EasyInitItem<Watermelon>("items/watermelon", "sprites/watermelon_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
+            Watermelon item = EasyItemInit<Watermelon>("items/watermelon", "sprites/watermelon_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
             LobbedProjectile proj = EasyProjectileInit<LobbedProjectile>("projectiles/melonprojectile", "projectilesprites/melon_projectile_001", 67f, 1f, 999999f, 0f, true, false, false, null, tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, 
                 null, null, null, null);
             proj.initialSpeed = 23f;

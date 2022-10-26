@@ -389,25 +389,25 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns>The built quest</returns>
         /// <returns></returns>
         public static MonsterHuntQuest AddProceduralQuest(List<string> questIntroConversation, string targetEnemyName, List<string> targetEnemyGuids, int numberKillsRequired, JammedEnemyState requiredState = JammedEnemyState.NoCheck, 
-            Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, List<GungeonFlags> rewardFlags = null, List<CustomDungeonFlags> customRewardFlags = null)
+            Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, List<string> customRewardFlags = null, List<GungeonFlags> rewardFlags = null)
         {
             string questStringPrefix = "#CUSTOMQUEST_PROCEDURAL_" + Guid.NewGuid().ToString().ToUpper() + "_" + Guid.NewGuid().ToString().ToUpper();
             string questIntroString = questStringPrefix + "_INTRO";
             string questTargetEnemyString = questStringPrefix + "_TARGET";
             ETGMod.Databases.Strings.Core.SetComplex(questIntroString, questIntroConversation.ToArray());
-            ETGMod.Databases.Strings.Core.Set(questTargetEnemyString, targetEnemyName);
+            ETGMod.Databases.Strings.Enemies.Set(questTargetEnemyString, targetEnemyName);
             return AddProceduralQuest(new CustomHuntQuest() 
             {
                 QuestFlag = GungeonFlags.NONE,
                 QuestIntroString = questIntroString,
                 TargetStringKey = questTargetEnemyString,
-                ValidTargetMonsterGuids = SaveTools.CloneList(targetEnemyGuids),
-                FlagsToSetUponReward = rewardFlags != null ? SaveTools.CloneList(rewardFlags) : new List<GungeonFlags>(),
-                CustomFlagsToSetUponReward = customRewardFlags != null ? SaveTools.CloneList(customRewardFlags) : new List<CustomDungeonFlags>(),
+                ValidTargetMonsterGuids = new(targetEnemyGuids),
+                FlagsToSetUponReward = rewardFlags != null ? new(rewardFlags) : new(),
+                CustomFlagsToSetUponReward = customRewardFlags != null ? new(customRewardFlags) : new(),
                 NumberKillsRequired = numberKillsRequired,
                 RequiredEnemyState = requiredState,
                 ValidTargetCheck = validTargetCheck,
-                CustomQuestFlag = CustomDungeonFlags.NONE
+                CustomQuestFlag = null
             });
         }
 
@@ -425,7 +425,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns>The built quest</returns>
         /// <returns></returns>
         public static MonsterHuntQuest AddProceduralQuest(List<string> questIntroConversation, string targetEnemyName, List<AIActor> targetEnemies, int numberKillsRequired, JammedEnemyState requiredState = JammedEnemyState.NoCheck,
-            Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, List<GungeonFlags> rewardFlags = null, List<CustomDungeonFlags> customRewardFlags = null)
+            Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, List<string> customRewardFlags = null, List<GungeonFlags> rewardFlags = null)
         {
             string questStringPrefix = "#CUSTOMQUEST_PROCEDURAL_" + Guid.NewGuid().ToString().ToUpper() + "_" + Guid.NewGuid().ToString().ToUpper();
             string questIntroString = questStringPrefix + "_INTRO";
@@ -437,13 +437,13 @@ namespace SpecialStuffPack.SaveAPI
                 QuestFlag = GungeonFlags.NONE,
                 QuestIntroString = questIntroString,
                 TargetStringKey = questTargetEnemyString,
-                ValidTargetMonsterGuids = targetEnemies.Convert(delegate(AIActor enemy) { return enemy.EnemyGuid; }),
-                FlagsToSetUponReward = rewardFlags != null ? SaveTools.CloneList(rewardFlags) : new List<GungeonFlags>(),
-                CustomFlagsToSetUponReward = customRewardFlags != null ? SaveTools.CloneList(customRewardFlags) : new List<CustomDungeonFlags>(),
+                ValidTargetMonsterGuids = targetEnemies.ConvertAll(x => x.EnemyGuid),
+                FlagsToSetUponReward = rewardFlags != null ? new(rewardFlags) : new List<GungeonFlags>(),
+                CustomFlagsToSetUponReward = customRewardFlags != null ? new(customRewardFlags) : new(),
                 NumberKillsRequired = numberKillsRequired,
                 RequiredEnemyState = requiredState,
                 ValidTargetCheck = validTargetCheck,
-                CustomQuestFlag = CustomDungeonFlags.NONE
+                CustomQuestFlag = null
             });
         }
 
@@ -461,8 +461,8 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="validTargetCheck">Custom check function that will be used to check if a kill is valid</param>
         /// <param name="index">Index to add the quest at</param>
         /// <returns>The built quest</returns>
-        public static MonsterHuntQuest AddQuest(CustomDungeonFlags questFlag, List<string> questIntroConversation, string targetEnemyName, List<string> targetEnemyGuids, int numberKillsRequired, List<GungeonFlags> rewardFlags = null,
-            List<CustomDungeonFlags> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
+        public static MonsterHuntQuest AddQuest(string questFlag, List<string> questIntroConversation, string targetEnemyName, List<string> targetEnemyGuids, int numberKillsRequired, List<GungeonFlags> rewardFlags = null,
+            List<string> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
         {
             string questStringPrefix = "#CUSTOMQUEST_" + questFlag.ToString() + "_" + Guid.NewGuid().ToString().ToUpper();
             string questIntroString = questStringPrefix + "_INTRO";
@@ -474,9 +474,9 @@ namespace SpecialStuffPack.SaveAPI
                 QuestFlag = GungeonFlags.NONE,
                 QuestIntroString = questIntroString,
                 TargetStringKey = questTargetEnemyString,
-                ValidTargetMonsterGuids = SaveTools.CloneList(targetEnemyGuids),
-                FlagsToSetUponReward = rewardFlags != null ? SaveTools.CloneList(rewardFlags) : new List<GungeonFlags>(),
-                CustomFlagsToSetUponReward = customRewardFlags != null ? SaveTools.CloneList(customRewardFlags) : new List<CustomDungeonFlags>(),
+                ValidTargetMonsterGuids = new(targetEnemyGuids),
+                FlagsToSetUponReward = rewardFlags != null ? new(rewardFlags) : new(),
+                CustomFlagsToSetUponReward = customRewardFlags != null ? new(customRewardFlags) : new(),
                 NumberKillsRequired = numberKillsRequired,
                 RequiredEnemyState = requiredState,
                 ValidTargetCheck = validTargetCheck,
@@ -499,7 +499,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="index">Index to add the quest at</param>
         /// <returns>The built quest</returns>
         public static MonsterHuntQuest AddQuest(GungeonFlags questFlag, List<string> questIntroConversation, string targetEnemyName, List<string> targetEnemyGuids, int numberKillsRequired, List<GungeonFlags> rewardFlags = null, 
-            List<CustomDungeonFlags> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
+            List<string> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
         {
             string questStringPrefix = "#CUSTOMQUEST_" + questFlag.ToString() + "_" + Guid.NewGuid().ToString().ToUpper();
             string questIntroString = questStringPrefix + "_INTRO";
@@ -511,13 +511,13 @@ namespace SpecialStuffPack.SaveAPI
                 QuestFlag = questFlag,
                 QuestIntroString = questIntroString,
                 TargetStringKey = questTargetEnemyString,
-                ValidTargetMonsterGuids = SaveTools.CloneList(targetEnemyGuids),
-                FlagsToSetUponReward = rewardFlags != null ? SaveTools.CloneList(rewardFlags) : new List<GungeonFlags>(),
-                CustomFlagsToSetUponReward = customRewardFlags != null ? SaveTools.CloneList(customRewardFlags) : new List<CustomDungeonFlags>(),
+                ValidTargetMonsterGuids = new(targetEnemyGuids),
+                FlagsToSetUponReward = rewardFlags != null ? new(rewardFlags) : new List<GungeonFlags>(),
+                CustomFlagsToSetUponReward = customRewardFlags != null ? new(customRewardFlags) : new(),
                 NumberKillsRequired = numberKillsRequired,
                 RequiredEnemyState = requiredState,
                 ValidTargetCheck = validTargetCheck,
-                CustomQuestFlag = CustomDungeonFlags.NONE
+                CustomQuestFlag = null
             }, index);
         }
 
@@ -535,8 +535,8 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="validTargetCheck">Custom check function that will be used to check if a kill is valid</param>
         /// <param name="index">Index to add the quest at</param>
         /// <returns>The built quest</returns>
-        public static MonsterHuntQuest AddQuest(CustomDungeonFlags questFlag, List<string> questIntroConversation, string targetEnemyName, List<AIActor> targetEnemies, int numberKillsRequired, List<GungeonFlags> rewardFlags = null,
-            List<CustomDungeonFlags> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
+        public static MonsterHuntQuest AddQuest(string questFlag, List<string> questIntroConversation, string targetEnemyName, List<AIActor> targetEnemies, int numberKillsRequired, List<GungeonFlags> rewardFlags = null,
+            List<string> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
         {
             string questStringPrefix = "#CUSTOMQUEST_" + questFlag.ToString() + "_" + Guid.NewGuid().ToString().ToUpper();
             string questIntroString = questStringPrefix + "_INTRO";
@@ -548,9 +548,9 @@ namespace SpecialStuffPack.SaveAPI
                 QuestFlag = GungeonFlags.NONE,
                 QuestIntroString = questIntroString,
                 TargetStringKey = questTargetEnemyString,
-                ValidTargetMonsterGuids = targetEnemies.Convert(delegate (AIActor enemy) { return enemy.EnemyGuid; }),
-                FlagsToSetUponReward = rewardFlags != null ? SaveTools.CloneList(rewardFlags) : new List<GungeonFlags>(),
-                CustomFlagsToSetUponReward = customRewardFlags != null ? SaveTools.CloneList(customRewardFlags) : new List<CustomDungeonFlags>(),
+                ValidTargetMonsterGuids = targetEnemies.ConvertAll(x => x.EnemyGuid),
+                FlagsToSetUponReward = rewardFlags != null ? new(rewardFlags) : new List<GungeonFlags>(),
+                CustomFlagsToSetUponReward = customRewardFlags != null ? new(customRewardFlags) : new(),
                 NumberKillsRequired = numberKillsRequired,
                 RequiredEnemyState = requiredState,
                 ValidTargetCheck = validTargetCheck,
@@ -573,25 +573,25 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="index">Index to add the quest at</param>
         /// <returns>The built quest</returns>
         public static MonsterHuntQuest AddQuest(GungeonFlags questFlag, List<string> questIntroConversation, string targetEnemyName, List<AIActor> targetEnemies, int numberKillsRequired, List<GungeonFlags> rewardFlags = null,
-            List<CustomDungeonFlags> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
+            List<string> customRewardFlags = null, JammedEnemyState requiredState = JammedEnemyState.NoCheck, Func<AIActor, MonsterHuntProgress, bool> validTargetCheck = null, int? index = null)
         {
             string questStringPrefix = "#CUSTOMQUEST_" + questFlag.ToString() + "_" + Guid.NewGuid().ToString().ToUpper();
             string questIntroString = questStringPrefix + "_INTRO";
             string questTargetEnemyString = questStringPrefix + "_TARGET";
             ETGMod.Databases.Strings.Core.SetComplex(questIntroString, questIntroConversation.ToArray());
-            ETGMod.Databases.Strings.Core.Set(questTargetEnemyString, targetEnemyName);
+            ETGMod.Databases.Strings.Enemies.Set(questTargetEnemyString, targetEnemyName);
             return AddQuest(new CustomHuntQuest()
             {
                 QuestFlag = questFlag,
                 QuestIntroString = questIntroString,
                 TargetStringKey = questTargetEnemyString,
-                ValidTargetMonsterGuids = targetEnemies.Convert(delegate (AIActor enemy) { return enemy.EnemyGuid; }),
-                FlagsToSetUponReward = rewardFlags != null ? SaveTools.CloneList(rewardFlags) : new List<GungeonFlags>(),
-                CustomFlagsToSetUponReward = customRewardFlags != null ? SaveTools.CloneList(customRewardFlags) : new List<CustomDungeonFlags>(),
+                ValidTargetMonsterGuids = targetEnemies.ConvertAll(x => x.EnemyGuid),
+                FlagsToSetUponReward = rewardFlags != null ? new(rewardFlags) : new List<GungeonFlags>(),
+                CustomFlagsToSetUponReward = customRewardFlags != null ? new(customRewardFlags) : new(),
                 NumberKillsRequired = numberKillsRequired,
                 RequiredEnemyState = requiredState,
                 ValidTargetCheck = validTargetCheck,
-                CustomQuestFlag = CustomDungeonFlags.NONE
+                CustomQuestFlag = null
             }, index);
         }
 

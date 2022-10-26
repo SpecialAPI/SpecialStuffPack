@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string name = "Otherworldly Assistance";
             string shortdesc = "Help From... Somewhere";
             string longdesc = "Opens a door to another plane of existence, causing spirits to ocassinally appear. Confused, they will target random enemies.\n\nA shiny golden key. Looks very familiar.";
-            OtherworldlyAssistance item = EasyInitItem<OtherworldlyAssistance>("items/keytobeyond", "sprites/key_to_beyond_idle_001", name, shortdesc, longdesc, ItemQuality.A, null, null);
+            OtherworldlyAssistance item = EasyItemInit<OtherworldlyAssistance>("items/keytobeyond", "sprites/key_to_beyond_idle_001", name, shortdesc, longdesc, ItemQuality.A, null, null);
             item.GhostSummonInterval = 7f;
             item.GhostSummonIntervalVariance = 1f;
             tk2dSpriteDefinition def = item.sprite.GetCurrentSpriteDef();

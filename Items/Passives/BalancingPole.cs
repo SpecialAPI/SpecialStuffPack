@@ -34,7 +34,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Balancing Pole";
             string shortdesc = "Fair and balanced";
             string longdesc = "Balances the owner's stats.";
-            EasyInitItem<BalancingPole>("items/balancingpole", "sprites/balancing_pole_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
+            EasyItemInit<BalancingPole>("items/balancingpole", "sprites/balancing_pole_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
             new Hook(typeof(PlayerStats).GetMethod(nameof(PlayerStats.RecalculateStatsInternal)), typeof(BalancingPole).GetMethod(nameof(BalancingPole.BalanceStats)));
         }
 

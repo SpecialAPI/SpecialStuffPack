@@ -22,7 +22,10 @@ namespace SpecialStuffPack.Components
         {
             if(parentRoom != null)
             {
-                parentRoom.ResetPredefinedRoomLikeDarkSouls();
+                if (parentRoom.GetActiveEnemiesCount(RoomHandler.ActiveEnemyType.RoomClear) > 0)
+                {
+                    parentRoom.ResetPredefinedRoomLikeDarkSouls();
+                }
                 parentRoom.BecameInvisible -= ResetParentRoom;
                 parentRoom = null;
                 Destroy(gameObject);

@@ -74,7 +74,7 @@ namespace SpecialStuffPack
         
         public static void ApplyOffsetsToAnimation(this tk2dSpriteAnimationClip clip, List<IntVector2> offsets)
         {
-            ApplyOffsetsToAnimation(clip, offsets.Convert((IntVector2 vec) => new Vector2(vec.x / 16f, vec.y / 16f)));
+            ApplyOffsetsToAnimation(clip, offsets.ConvertAll((IntVector2 vec) => new Vector2(vec.x / 16f, vec.y / 16f)));
         }
 
         public static void ApplyOffsetsToAnimation(this tk2dSpriteAnimationClip clip, List<Vector2> offsets)

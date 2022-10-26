@@ -91,6 +91,52 @@ namespace SpecialStuffPack.GungeonAPI
             baseInjection.AttachedInjectionData.Add(injector);
             BaseInjection = baseInjection;
         }
+
+        public static void AddInjection(GenericRoomTable roomTable, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
+           string injectorName)
+        {
+            ProceduralFlowModifierData injection = new ProceduralFlowModifierData()
+            {
+                annotation = injectionAnnotation,
+                DEBUG_FORCE_SPAWN = false,
+                OncePerRun = false,
+                placementRules = new List<ProceduralFlowModifierData.FlowModifierPlacementType>(placementRules),
+                roomTable = roomTable,
+                exactRoom = null,
+                IsWarpWing = false,
+                RequiresMasteryToken = false,
+                chanceToLock = chanceToLock,
+                selectionWeight = 1,
+                chanceToSpawn = 1,
+                RequiredValidPlaceable = null,
+                prerequisites = prerequisites.ToArray(),
+                CanBeForcedSecret = true,
+                RandomNodeChildMinDistanceFromEntrance = 0,
+                exactSecondaryRoom = null,
+                framedCombatNodes = 0,
+            };
+            SharedInjectionData injector = ScriptableObject.CreateInstance<SharedInjectionData>();
+            injector.UseInvalidWeightAsNoInjection = true;
+            injector.PreventInjectionOfFailedPrerequisites = false;
+            injector.IsNPCCell = false;
+            injector.IgnoreUnmetPrerequisiteEntries = false;
+            injector.OnlyOne = false;
+            injector.ChanceToSpawnOne = 0.5f;
+            injector.AttachedInjectionData = new List<SharedInjectionData>();
+            injector.InjectionData = new List<ProceduralFlowModifierData>
+            {
+                injection
+            };
+            injector.name = injectorName;
+            SharedInjectionData baseInjection = LoadHelper.LoadAssetFromAnywhere<SharedInjectionData>("Base Shared Injection Data");
+            if (baseInjection.AttachedInjectionData == null)
+            {
+                baseInjection.AttachedInjectionData = new List<SharedInjectionData>();
+            }
+            baseInjection.AttachedInjectionData.Add(injector);
+            BaseInjection = baseInjection;
+        }
+
         public static PrototypeDungeonRoom Build(Texture2D texture, RoomData roomData)
         {
             try

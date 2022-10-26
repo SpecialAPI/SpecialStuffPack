@@ -21,6 +21,10 @@ namespace SpecialStuffPack.SaveAPI
             {
                 return AdvancedGameStatsManager.Instance.GetFlag(customFlagToCheck) == requireCustomFlag;
             }
+            else if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_CHARACTER_SPECIFIC_FLAG)
+            {
+                return AdvancedGameStatsManager.Instance.GetCharacterSpecificFlag(characterToCheck, customCharacterSpecificFlagToCheck) == requireCustomCharacterSpecificFlag;
+            }
             else if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_STAT_COMPARISION)
             {
                 float playerStatValue = AdvancedGameStatsManager.Instance.GetPlayerStatValue(customStatToCheck);
@@ -284,11 +288,14 @@ namespace SpecialStuffPack.SaveAPI
         }
 
         public AdvancedPrerequisiteType advancedPrerequisiteType;
-        public CustomDungeonFlags customFlagToCheck;
+        public string customFlagToCheck;
         public bool requireCustomFlag;
+        public string customCharacterSpecificFlagToCheck;
+        public bool requireCustomCharacterSpecificFlag;
+        public PlayableCharacters characterToCheck;
         public Type requiredPassiveFlag;
-        public CustomTrackedMaximums customMaximumToCheck;
-        public CustomTrackedStats customStatToCheck;
+        public string customMaximumToCheck;
+        public string customStatToCheck;
         public enum AdvancedPrerequisiteType
         {
             NONE,
@@ -296,7 +303,8 @@ namespace SpecialStuffPack.SaveAPI
             CUSTOM_STAT_COMPARISION,
             CUSTOM_MAXIMUM_COMPARISON,
             NUMBER_PASTS_COMPLETED_BETTER,
-            ENCOUNTER_OR_CUSTOM_FLAG
+            ENCOUNTER_OR_CUSTOM_FLAG,
+            CUSTOM_CHARACTER_SPECIFIC_FLAG
         }
     }
 }

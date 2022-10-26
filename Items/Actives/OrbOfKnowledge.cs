@@ -14,7 +14,7 @@ namespace SpecialStuffPack.Items
             string name = "Magic 8 Ball";
             string shortdesc = "28 Souls Left";
             string longdesc = "A weird object, seemignly from a different world.";
-            OrbOfKnowledge item = EasyInitItem<OrbOfKnowledge>("items/8ball", "sprites/8_ball_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            OrbOfKnowledge item = EasyItemInit<OrbOfKnowledge>("items/8ball", "sprites/8_ball_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.SetCooldownType(CooldownType.Timed, 1.5f);
             item.knowledge = new List<string>
             {

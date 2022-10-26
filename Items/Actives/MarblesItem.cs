@@ -15,7 +15,7 @@ namespace SpecialStuffPack.Items
             string name = "Marbles";
             string shortdesc = "Powerful";
             string longdesc = "Just ten marbles. You can launch them at your foes.";
-            MarblesItem item = EasyInitItem<MarblesItem>("items/marbles", "sprites/marbles_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
+            MarblesItem item = EasyItemInit<MarblesItem>("items/marbles", "sprites/marbles_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.numberOfUses = 10;
             item.consumable = true;
             item.SetCooldownType(CooldownType.Timed, 0.5f);
@@ -24,7 +24,7 @@ namespace SpecialStuffPack.Items
             { 
                 if(module != null && module.chargeProjectiles != null && module.chargeProjectiles.Count > 0)
                 {
-                    item.Projectiles.AddRange(module.chargeProjectiles.Convert((ProjectileModule.ChargeProjectile proj) => proj.Projectile));
+                    item.Projectiles.AddRange(module.chargeProjectiles.ConvertAll((ProjectileModule.ChargeProjectile proj) => proj.Projectile));
                 }
             }
         }

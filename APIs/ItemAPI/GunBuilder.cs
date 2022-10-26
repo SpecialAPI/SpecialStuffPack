@@ -243,7 +243,7 @@ namespace SpecialStuffPack.ItemAPI
         }
 
         public static T EasyProjectileInit<T>(string assetPath, string spritePath, float damage, float speed, float range, float knockback, bool shouldRotate, bool ignoreDamageCaps, bool pierceMinorBreakables, int? overrideSpriteId = null, 
-            tk2dBaseSprite.Anchor anchor = tk2dBaseSprite.Anchor.LowerLeft, int offsetX = 0, int offsetY = 0, int? overrideColliderPixelWidth = null, int? overrideColliderPixelHeight = null, int? overrideColliderOffsetX = null, 
+            tk2dBaseSprite.Anchor anchor = tk2dBaseSprite.Anchor.MiddleCenter, int offsetX = 0, int offsetY = 0, int? overrideColliderPixelWidth = null, int? overrideColliderPixelHeight = null, int? overrideColliderOffsetX = null, 
             int? overrideColliderOffsetY = null) where T : Projectile
         {
             T proj = SetupBasicProjectileComponents<T>(AssetBundleManager.Load<GameObject>(assetPath));
@@ -314,14 +314,9 @@ namespace SpecialStuffPack.ItemAPI
             }
             GameObject gameObject = baseObject ?? AssetBundleManager.Load<GameObject>(assetPath);
             Gun gun = SetupBasicGunComponents(gameObject);
-            ETGMod.Databases.Items.SetupItem(gun, gunName);
             gun.gunName = gunName;
             Game.Items.Add(overrideConsoleId ?? (SpecialStuffModule.globalPrefix + ":" + gunName.ToMTGId()), gun);
-            gun.SetName(gunName);
-            gun.SetShortDescription(gunShortDesc);
-            gun.SetLongDescription(gunLongDesc);
             int id2 = SpriteBuilder.AddSpriteToCollection(ammonomiconSprite, SpriteBuilder.ammonomiconCollection, "tk2d/CutoutVertexColorTilted");
-            gun.encounterTrackable.journalData.AmmonomiconSprite = SpriteBuilder.ammonomiconCollection.spriteDefinitions[id2].name;
             List<int> ids = new();
             foreach (string asset in AssetBundleManager.specialeverything.GetAllAssetNames())
             {
@@ -358,8 +353,21 @@ namespace SpecialStuffPack.ItemAPI
             };
 
             gun.sprite.SetSprite(ETGMod.Databases.Items.WeaponCollection, defaultId);
-
             gun.UpdateAnimations();
+            var notSpapiName = gun.name;
+            gun.gameObject.name = $"spapi_{gun.gameObject.name}";
+            gun.encounterTrackable.journalData = new();
+            gun.encounterTrackable.journalData.AmmonomiconSprite = SpriteBuilder.ammonomiconCollection.spriteDefinitions[id2].name;
+            gun.encounterTrackable.EncounterGuid = gun.gameObject.name.RemoveUnacceptableCharactersForGUID();
+            gun.encounterTrackable.prerequisites = new DungeonPrerequisite[0];
+            gun.encounterTrackable.journalData.SuppressKnownState = false;
+            string keyName = "#" + gun.name.Replace(" ", "").ToUpperInvariant();
+            gun.encounterTrackable.journalData.PrimaryDisplayName = keyName + "_ENCNAME";
+            gun.encounterTrackable.journalData.NotificationPanelDescription = keyName + "_SHORTDESC";
+            gun.encounterTrackable.journalData.AmmonomiconFullEntry = keyName + "_LONGDESC";
+            gun.SetName(gunName);
+            gun.SetShortDescription(gunShortDesc);
+            gun.SetLongDescription(gunLongDesc);
             gun.SetBaseMaxAmmo(maxAmmo);
             gun.ammo = maxAmmo;
             gun.quality = quality;
@@ -367,8 +375,6 @@ namespace SpecialStuffPack.ItemAPI
             gun.reloadTime = realoadTime;
             gun.gunSwitchGroup = gunSwitchGroup;
             gun.barrelOffset.position = barrelOffset.ToVector3() / 16f;
-            var notSpapiName = gun.name;
-            gun.gameObject.name = $"spapi_{gun.gameObject.name}";
             if (muzzleflash != null)
             {
                 gun.muzzleFlashEffects = muzzleflash;

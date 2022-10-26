@@ -11,7 +11,7 @@ namespace SpecialStuffPack.SaveAPI
 	{
 		public new bool IsQuestComplete()
 		{
-			if (CustomQuestFlag != CustomDungeonFlags.NONE && AdvancedGameStatsManager.Instance.GetFlag(CustomQuestFlag))
+			if (!string.IsNullOrEmpty(CustomQuestFlag) && AdvancedGameStatsManager.Instance.GetFlag(CustomQuestFlag))
             {
 				return true;
             }
@@ -33,7 +33,7 @@ namespace SpecialStuffPack.SaveAPI
             {
 				GameStatsManager.Instance.SetFlag(QuestFlag, true);
 			}
-			if(CustomQuestFlag != CustomDungeonFlags.NONE)
+			if(!string.IsNullOrEmpty(CustomQuestFlag))
             {
 				AdvancedGameStatsManager.Instance.SetFlag(CustomQuestFlag, true);
 			}
@@ -53,10 +53,10 @@ namespace SpecialStuffPack.SaveAPI
 
 		[LongEnum]
 		[SerializeField]
-		public CustomDungeonFlags CustomQuestFlag;
+		public string CustomQuestFlag;
 		[LongEnum]
 		[SerializeField]
-		public List<CustomDungeonFlags> CustomFlagsToSetUponReward;
+		public List<string> CustomFlagsToSetUponReward;
 		[SerializeField]
 		public Func<AIActor, MonsterHuntProgress, bool> ValidTargetCheck;
 		[SerializeField]

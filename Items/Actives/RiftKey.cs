@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Actives
             string name = "Rift Key";
             string shortdesc = "";
             string longdesc = "";
-            var item = EasyInitItem<RiftKey>("items/riftkey", "sprites/rift_key_idle_001", name, shortdesc, longdesc, ItemQuality.A, null, null);
+            var item = EasyItemInit<RiftKey>("items/riftkey", "sprites/rift_key_idle_001", name, shortdesc, longdesc, ItemQuality.A, null, null);
             item.MaxExitDistance = 2f;
         }
 

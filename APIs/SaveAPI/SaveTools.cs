@@ -73,9 +73,9 @@ namespace SpecialStuffPack.SaveAPI
             {
                 if (allRewardsUnlocked)
                 {
-                    foreach (CustomDungeonFlags flag in custom.CustomFlagsToSetUponReward)
+                    foreach (string flag in custom.CustomFlagsToSetUponReward)
                     {
-                        if (flag != CustomDungeonFlags.NONE && !AdvancedGameStatsManager.Instance.GetFlag(flag))
+                        if (!string.IsNullOrEmpty(flag) && !AdvancedGameStatsManager.Instance.GetFlag(flag))
                         {
                             allRewardsUnlocked = false;
                             break;
@@ -87,31 +87,13 @@ namespace SpecialStuffPack.SaveAPI
                 {
                     anyQuestFlagCompleted = GameStatsManager.Instance.GetFlag(quest.QuestFlag);
                 }
-                else if(custom.CustomQuestFlag != CustomDungeonFlags.NONE)
+                else if(!string.IsNullOrEmpty(custom.CustomQuestFlag))
                 {
                     anyQuestFlagCompleted = AdvancedGameStatsManager.Instance.GetFlag(custom.CustomQuestFlag);
                 }
                 return anyQuestFlagCompleted && allRewardsUnlocked;
             }
             return GameStatsManager.Instance.GetFlag(quest.QuestFlag) && allRewardsUnlocked;
-        }
-
-        /// <summary>
-        /// Converts a List{<typeparamref name="T"/>} to List{<typeparamref name="T2"/>} using <paramref name="convertor"/>
-        /// </summary>
-        /// <typeparam name="T">Element type of the source list</typeparam>
-        /// <typeparam name="T2">Element type of the result list</typeparam>
-        /// <param name="self">The source list.</param>
-        /// <param name="convertor">Delegate that converts an object of type <typeparamref name="T"/> to an object of type <typeparamref name="T2"/></param>
-        /// <returns>Converted list with element type of <typeparamref name="T2"/></returns>
-        public static List<T2> Convert<T, T2>(this List<T> self, Func<T, T2> convertor)
-        {
-            List<T2> result = new List<T2>();
-            foreach(T element in self)
-            {
-                result.Add(convertor(element));
-            }
-            return result;
         }
 
         /// <summary>
@@ -129,9 +111,9 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="enemy">Target <see cref="AIActor"/></param>
         /// <returns>Custom flag that will be set on <paramref name="enemy"/>'s death.</returns>
-        public static CustomDungeonFlags GetCustomFlagToSetOnDeath(this AIActor enemy)
+        public static string GetCustomFlagToSetOnDeath(this AIActor enemy)
         {
-            return (enemy.GetComponent<SpecialAIActor>() != null && enemy.GetComponent<SpecialAIActor>().SetsCustomFlagOnDeath) ? enemy.GetComponent<SpecialAIActor>().CustomFlagToSetOnDeath : CustomDungeonFlags.NONE;
+            return (enemy.GetComponent<SpecialAIActor>() != null && enemy.GetComponent<SpecialAIActor>().SetsCustomFlagOnDeath) ? enemy.GetComponent<SpecialAIActor>().CustomFlagToSetOnDeath : null;
         }
 
         /// <summary>
@@ -139,14 +121,14 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="enemy">Target <see cref="AIActor"/></param>
         /// <param name="flag">New custom flag that will be set on <paramref name="enemy"/>'s death</param>
-        public static void SetCustomFlagToSetOnDeath(this AIActor enemy, CustomDungeonFlags flag)
+        public static void SetCustomFlagToSetOnDeath(this AIActor enemy, string flag)
         {
             SpecialAIActor aiactor = enemy.gameObject.GetOrAddComponent<SpecialAIActor>();
-            if(flag == CustomDungeonFlags.NONE)
+            if(string.IsNullOrEmpty(flag))
             {
                 aiactor.SetsCustomFlagOnDeath = false;
             }
-            else if(flag != CustomDungeonFlags.NONE)
+            else
             {
                 aiactor.SetsCustomFlagOnDeath = true;
             }
@@ -168,9 +150,9 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="enemy">Target <see cref="AIActor"/></param>
         /// <returns>Custom flag that will be set when <paramref name="enemy"/> is activated.</returns>
-        public static CustomDungeonFlags GetCustomFlagToSetOnActivation(this AIActor enemy)
+        public static string GetCustomFlagToSetOnActivation(this AIActor enemy)
         {
-            return (enemy.GetComponent<SpecialAIActor>() != null && enemy.GetComponent<SpecialAIActor>().SetsCustomFlagOnActivation) ? enemy.GetComponent<SpecialAIActor>().CustomFlagToSetOnActivation : CustomDungeonFlags.NONE;
+            return (enemy.GetComponent<SpecialAIActor>() != null && enemy.GetComponent<SpecialAIActor>().SetsCustomFlagOnActivation) ? enemy.GetComponent<SpecialAIActor>().CustomFlagToSetOnActivation : null;
         }
 
         /// <summary>
@@ -178,14 +160,14 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="enemy">Target <see cref="AIActor"/></param>
         /// <param name="flag">New custom flag that will be set when <paramref name="enemy"/> is activated</param>
-        public static void SetCustomFlagToSetOnActivation(this AIActor enemy, CustomDungeonFlags flag)
+        public static void SetCustomFlagToSetOnActivation(this AIActor enemy, string flag)
         {
             SpecialAIActor aiactor = enemy.gameObject.GetOrAddComponent<SpecialAIActor>();
-            if (flag == CustomDungeonFlags.NONE)
+            if (string.IsNullOrEmpty(flag))
             {
                 aiactor.SetsCustomFlagOnActivation = false;
             }
-            else if (flag != CustomDungeonFlags.NONE)
+            else
             {
                 aiactor.SetsCustomFlagOnActivation = true;
             }
@@ -207,10 +189,10 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="enemy">Target <see cref="AIActor"/></param>
         /// <returns>Custom character-specific flag that will be set on <paramref name="enemy"/>'s death.</returns>
-        public static CustomCharacterSpecificGungeonFlags GetCustomCharacterSpecificFlagToSetOnDeath(this AIActor enemy)
+        public static string GetCustomCharacterSpecificFlagToSetOnDeath(this AIActor enemy)
         {
             return (enemy.GetComponent<SpecialAIActor>() != null && enemy.GetComponent<SpecialAIActor>().SetsCustomCharacterSpecificFlagOnDeath) ? enemy.GetComponent<SpecialAIActor>().CustomCharacterSpecificFlagToSetOnDeath : 
-                CustomCharacterSpecificGungeonFlags.NONE;
+                null;
         }
 
         /// <summary>
@@ -218,14 +200,14 @@ namespace SpecialStuffPack.SaveAPI
         /// </summary>
         /// <param name="enemy">Target <see cref="AIActor"/></param>
         /// <param name="flag">New custom character-specific flag that will be set on <paramref name="enemy"/>'s death</param>
-        public static void SetCustomCharacterSpecificFlagToSetOnDeath(this AIActor enemy, CustomCharacterSpecificGungeonFlags flag)
+        public static void SetCustomCharacterSpecificFlagToSetOnDeath(this AIActor enemy, string flag)
         {
             SpecialAIActor aiactor = enemy.gameObject.GetOrAddComponent<SpecialAIActor>();
-            if (flag == CustomCharacterSpecificGungeonFlags.NONE)
+            if (string.IsNullOrEmpty(flag))
             {
                 aiactor.SetsCustomCharacterSpecificFlagOnDeath = false;
             }
-            else if (flag != CustomCharacterSpecificGungeonFlags.NONE)
+            else
             {
                 aiactor.SetsCustomCharacterSpecificFlagOnDeath = true;
             }
@@ -613,7 +595,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="requiredNumberOfEncounters">The value to compare the amount of times the player encountered the object with <paramref name="encounterObjectGuid"/> GUID to</param>
         /// <param name="comparisonOperation">Comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this PickupObject self, CustomDungeonFlags flag, bool requiredFlagValue, string encounterObjectGuid, int requiredNumberOfEncounters,
+        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this PickupObject self, string flag, bool requiredFlagValue, string encounterObjectGuid, int requiredNumberOfEncounters,
             DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             if (self.encounterTrackable == null)
@@ -635,7 +617,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="requiredNumberOfEncounters">The value to compare the amount of times the player encountered the object with <paramref name="encounterObjectGuid"/> GUID to</param>
         /// <param name="comparisonOperation">Comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this EncounterTrackable self, CustomDungeonFlags flag, bool requiredFlagValue, string encounterObjectGuid, int requiredNumberOfEncounters,
+        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this EncounterTrackable self, string flag, bool requiredFlagValue, string encounterObjectGuid, int requiredNumberOfEncounters,
             DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             return self.AddPrerequisite(new CustomDungeonPrerequisite
@@ -661,7 +643,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="requiredNumberOfEncounters">The value to compare the amount of times the player encountered <paramref name="encounterRoom"/> to</param>
         /// <param name="comparisonOperation">Comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this PickupObject self, CustomDungeonFlags flag, bool requiredFlagValue, PrototypeDungeonRoom encounterRoom, int requiredNumberOfEncounters,
+        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this PickupObject self, string flag, bool requiredFlagValue, PrototypeDungeonRoom encounterRoom, int requiredNumberOfEncounters,
             DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             if (self.encounterTrackable == null)
@@ -683,7 +665,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="requiredNumberOfEncounters">The value to compare the amount of times the player encountered <paramref name="encounterRoom"/> to</param>
         /// <param name="comparisonOperation">Comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this EncounterTrackable self, CustomDungeonFlags flag, bool requiredFlagValue, PrototypeDungeonRoom encounterRoom, int requiredNumberOfEncounters,
+        public static DungeonPrerequisite SetupUnlockOnEncounterOrCustomFlag(this EncounterTrackable self, string flag, bool requiredFlagValue, PrototypeDungeonRoom encounterRoom, int requiredNumberOfEncounters,
             DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             return self.AddPrerequisite(new CustomDungeonPrerequisite
@@ -705,7 +687,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="flag">The <see cref="CustomDungeonFlags"/> to get the value from</param>
         /// <param name="requiredFlagValue">Value to compare <paramref name="flag"/>'s value to</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnCustomFlag(this PickupObject self, CustomDungeonFlags flag, bool requiredFlagValue)
+        public static DungeonPrerequisite SetupUnlockOnCustomFlag(this PickupObject self, string flag, bool requiredFlagValue = true)
         {
             if (self.encounterTrackable == null)
             {
@@ -722,7 +704,43 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="flag">The <see cref="CustomDungeonFlags"/> to get the value from</param>
         /// <param name="requiredFlagValue">Value to compare <paramref name="flag"/>'s value to</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnCustomFlag(this EncounterTrackable self, CustomDungeonFlags flag, bool requiredFlagValue)
+        public static DungeonPrerequisite SetupUnlockOnCustomCharacterSpecificFlag(this EncounterTrackable self, string flag, PlayableCharacters character, bool requiredFlagValue = true)
+        {
+            return self.AddPrerequisite(new CustomDungeonPrerequisite
+            {
+                advancedPrerequisiteType = CustomDungeonPrerequisite.AdvancedPrerequisiteType.CUSTOM_CHARACTER_SPECIFIC_FLAG,
+                requireCustomCharacterSpecificFlag = requiredFlagValue,
+                customCharacterSpecificFlagToCheck = flag,
+                characterToCheck = character
+            });
+        }
+
+        /// <summary>
+        /// Setups a <see cref="DungeonPrerequisite"/> with the type of <see cref="CustomDungeonPrerequisite.AdvancedPrerequisiteType.CUSTOM_FLAG"/>, flag of <paramref name="flag"/> and requiredFlagValue of 
+        /// <paramref name="requiredFlagValue"/> and adds it to <paramref name="self"/>'s list of <see cref="DungeonPrerequisite"/>s
+        /// </summary>
+        /// <param name="self">The <see cref="PickupObject"/> to add the <see cref="DungeonPrerequisite"/> to</param>
+        /// <param name="flag">The <see cref="CustomDungeonFlags"/> to get the value from</param>
+        /// <param name="requiredFlagValue">Value to compare <paramref name="flag"/>'s value to</param>
+        /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
+        public static DungeonPrerequisite SetupUnlockOnCustomCharacterSpecificFlag(this PickupObject self, string flag, PlayableCharacters character, bool requiredFlagValue = true)
+        {
+            if (self.encounterTrackable == null)
+            {
+                return null;
+            }
+            return self.encounterTrackable.SetupUnlockOnCustomCharacterSpecificFlag(flag, character, requiredFlagValue);
+        }
+
+        /// <summary>
+        /// Setups a <see cref="DungeonPrerequisite"/> with the type of <see cref="CustomDungeonPrerequisite.AdvancedPrerequisiteType.CUSTOM_FLAG"/>, flag of <paramref name="flag"/> and requiredFlagValue of 
+        /// <paramref name="requiredFlagValue"/> and adds it to <paramref name="self"/>'s list of <see cref="DungeonPrerequisite"/>s
+        /// </summary>
+        /// <param name="self">The <see cref="EncounterTrackable"/> to add the <see cref="DungeonPrerequisite"/> to</param>
+        /// <param name="flag">The <see cref="CustomDungeonFlags"/> to get the value from</param>
+        /// <param name="requiredFlagValue">Value to compare <paramref name="flag"/>'s value to</param>
+        /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
+        public static DungeonPrerequisite SetupUnlockOnCustomFlag(this EncounterTrackable self, string flag, bool requiredFlagValue = true)
         {
             return self.AddPrerequisite(new CustomDungeonPrerequisite
             {
@@ -741,7 +759,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="comparisonValue">The value to compare <paramref name="stat"/>'s value to</param>
         /// <param name="comparisonOperation">The comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnCustomStat(this PickupObject self, CustomTrackedStats stat, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
+        public static DungeonPrerequisite SetupUnlockOnCustomStat(this PickupObject self, string stat, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             if (self.encounterTrackable == null)
             {
@@ -759,7 +777,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="comparisonValue">The value to compare <paramref name="stat"/>'s value to</param>
         /// <param name="comparisonOperation">The comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnCustomStat(this EncounterTrackable self, CustomTrackedStats stat, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
+        public static DungeonPrerequisite SetupUnlockOnCustomStat(this EncounterTrackable self, string stat, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             return self.AddPrerequisite(new CustomDungeonPrerequisite
             {
@@ -779,7 +797,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="comparisonValue">The value to compare <paramref name="maximum"/>'s value to</param>
         /// <param name="comparisonOperation">The comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnCustomMaximum(this PickupObject self, CustomTrackedMaximums maximum, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
+        public static DungeonPrerequisite SetupUnlockOnCustomMaximum(this PickupObject self, string maximum, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             if (self.encounterTrackable == null)
             {
@@ -797,7 +815,7 @@ namespace SpecialStuffPack.SaveAPI
         /// <param name="comparisonValue">The value to compare <paramref name="maximum"/>'s value to</param>
         /// <param name="comparisonOperation">The comparison operation</param>
         /// <returns>The <see cref="DungeonPrerequisite"/> that was added to the list of <see cref="DungeonPrerequisite"/>s</returns>
-        public static DungeonPrerequisite SetupUnlockOnCustomMaximum(this EncounterTrackable self, CustomTrackedMaximums maximum, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
+        public static DungeonPrerequisite SetupUnlockOnCustomMaximum(this EncounterTrackable self, string maximum, float comparisonValue, DungeonPrerequisite.PrerequisiteOperation comparisonOperation)
         {
             return self.AddPrerequisite(new CustomDungeonPrerequisite
             {
@@ -976,22 +994,6 @@ namespace SpecialStuffPack.SaveAPI
             {
                 Debug.Log(text);
             }
-        }
-
-        /// <summary>
-        /// Clones <paramref name="orig"/>
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="orig">List to clone</param>
-        /// <returns>The clone of <paramref name="orig"/></returns>
-        public static List<T> CloneList<T>(List<T> orig)
-        {
-            List<T> result = new List<T>();
-            for (int i = 0; i < orig.Count; i++)
-            {
-                result.Add(orig[i]);
-            }
-            return result;
         }
 
         /// <summary>

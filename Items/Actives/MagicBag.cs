@@ -13,7 +13,7 @@ namespace SpecialStuffPack.Items.Actives
             var shortdesc = "Dedication";
             var longdesc = "Use near an item to put it in the bag. Can be used again after recharging to spit out 2 duplicates of that item.\n\nUsing magic and dedication this bag can duplicate anything! It's mostly magic. " +
                 "Ok, it's all magic.";
-            var item = EasyInitItem<MagicBag>("MagicBag", "magic_sack_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
+            var item = EasyItemInit<MagicBag>("MagicBag", "magic_sack_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
 			item.SetCooldownType(CooldownType.Damage, item.damageBasedRecharge = 250f);
 			item.timedRecharge = 0.5f;
 			item.spawnLaunchForce = 1f;

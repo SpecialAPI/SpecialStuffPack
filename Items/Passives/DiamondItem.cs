@@ -16,7 +16,7 @@ namespace SpecialStuffPack.Items
             string longdesc = "Grants a little bit of everything.\n\nImproves the owner's ability to hold massive power.\n\nA powerful gemstone formed from the combination of tiny cosmic particles swarming around the Shrine and the " +
                 "blood of a gungeoneer determined to kill the past. It pulsates with " +
                 "incredible power.";
-            DiamondItem item = EasyInitItem<DiamondItem>("items/diamond", "sprites/diamond_idle_001", name, shortdesc, longdesc , ItemQuality.SPECIAL, null, null);
+            DiamondItem item = EasyItemInit<DiamondItem>("items/diamond", "sprites/diamond_idle_001", name, shortdesc, longdesc , ItemQuality.SPECIAL, null, null);
             item.AddPassiveStatModifier(PlayerStats.StatType.Damage, 0.05f, StatModifier.ModifyMethod.ADDITIVE);
             item.AddPassiveStatModifier(PlayerStats.StatType.ReloadSpeed, -0.05f, StatModifier.ModifyMethod.ADDITIVE);
             item.AddPassiveStatModifier(PlayerStats.StatType.RateOfFire, 0.05f, StatModifier.ModifyMethod.ADDITIVE);

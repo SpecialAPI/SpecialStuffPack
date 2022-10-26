@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Infinity Crystal";
             string shortdesc = "Neverending";
             string longdesc = "Shooting consumes no ammo, but damage is decreased and clip size is halved.";
-            var item = EasyInitItem<InfinityCrystal>("items/infinitycrystal", "sprites/infinity_crystal", name, shortdesc, longdesc, ItemQuality.S);
+            var item = EasyItemInit<InfinityCrystal>("items/infinitycrystal", "sprites/infinity_crystal", name, shortdesc, longdesc, ItemQuality.S);
             item.AddPassiveStatModifier(PlayerStats.StatType.Damage, .75f, StatModifier.ModifyMethod.MULTIPLICATIVE);
             item.AddPassiveStatModifier(PlayerStats.StatType.AdditionalClipCapacityMultiplier, .5f, StatModifier.ModifyMethod.MULTIPLICATIVE);
             item.AddPassiveStatModifier(PlayerStats.StatType.Curse, 2f, StatModifier.ModifyMethod.ADDITIVE);

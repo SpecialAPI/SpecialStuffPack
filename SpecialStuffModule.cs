@@ -40,8 +40,9 @@ namespace SpecialStuffPack
     {
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
-        public const string VERSION = "1.0.0";
-        public static readonly Color LogColor = new Color32(100, 100, 50, 255);
+        public const string VERSION = "1.2.92022";
+        public static readonly Color LogColor = new Color32(50, 200, 50, 255);
+        public static Texture2D spCultistBosscard;
 
         public static int? GetActiveItemUICount(PlayerItem input)
         {
@@ -73,7 +74,8 @@ namespace SpecialStuffPack
             new Harmony(GUID).PatchAll();
             //asset bundle setup
             AssetBundleManager.LoadBundle();
-            //SoundManager.Init();
+            SoundManager.Init();
+            spCultistBosscard = AssetBundleManager.Load<Texture2D>("cultist_bosscard");
 
             //saveapi setup
             SaveAPIManager.Setup("spapistuff");
@@ -88,6 +90,8 @@ namespace SpecialStuffPack
         {
             try
             {
+                SoundManager.LoadBankFromModProject("SpecialStuffPack.SPECIAL_SFX.bnk");
+
                 //init apis
                 InitItemBuilder();
                 InitSynergyBuilder();
@@ -102,6 +106,18 @@ namespace SpecialStuffPack
                     "Don't know how to fight, do you? You also don't have a main character for me to beat up, so have these keys as a consolation prize instead.\n\n" +
                     "Later, %INSULT! - R.R.");
 
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_INTRODUCTION", "I break mods and am a stupid feature.");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_AGREE", "Save and Quit (and probably break everything)");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_DISAGREE", "Pick This Option");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_BRINGING_CRYOELEVATOR", "*sounds of mods breaking*");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_NOT_BRINGING_CRYOELEVATOR", "Good.");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_OUCH", "Oh no... It's arriving...");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_CHANGEDMIND", "I am a dumb design decition and shouldn't have been in the game to begin with.");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_DIDCHANGEMIND", "Unbreak everything");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_DIDNTCHANGEMIND", "Remain in the broken spaghetti land");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_BRINGING_ELEVATOR", "Is that mass of frozen spaghetti gone? Good.");
+                ETGMod.Databases.Strings.Core.Set("#CRYOBUTTON_ANNOYED", "I wouldn't recommend wasting your time on a dumb feature such as me.");
+
                 RedGun.globalIndoctrinateInteractable = AssetBundleManager.Load<GameObject>("IndoctrinateFollowerInteractable");
                 var interactable = RedGun.globalIndoctrinateInteractable.AddComponent<IndoctrinateFollowerInteractable>();
                 interactable.AddComponent<tk2dSprite>().SetSprite(BulletKinEnemy.sprite.Collection, BulletKinEnemy.sprite.spriteId);
@@ -110,6 +126,7 @@ namespace SpecialStuffPack
                 interactable.notEnoughAmmoKey = SetString("#INDOCTRINATE_NOTENOUGH", "You don't have enough resources to convert me!");
                 interactable.validKey = SetString("#INDOCTRINATE_VALID", "Convert me to your cult, I will follow your teachings faithfully.");
                 interactable.yesKey = SetString("#INDOCTRINATE_YES", "<Indoctrinate follower <Lose %AMMO ammo>>");
+                interactable.yesHealthKey = SetString("#INDOCTRINATE_YESHEALTH", "<Indoctrinate follower <Lose %HEART_SYMBOL>>");
                 interactable.noKey = SetString("#INDOCTRINATE_NO", "<Walk away>");
 
                 //init items
@@ -182,9 +199,17 @@ namespace SpecialStuffPack
                 HeartPiece.Init();
                 HotSauce.Init();
                 MagicBag.Init();
+                BananaJam.Init();
+                CrownBullets.Init();
+                RedAmmolet.Init();
+                MarkedCalendar.Init();
+                Shredder.Init();
+                RustyBullets.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();
                 //ForceOfTwilight.Init();
+
+                LilChest.SetupChests();
 
                 //init synergies
                 SpecialSynergies.Init();
@@ -215,7 +240,7 @@ namespace SpecialStuffPack
                 {
                     if (asset.ToLowerInvariant().StartsWith("assets/rooms/sewerentrance"))
                     {
-                        RoomFactory.AddRoomToSewerGratePool(RoomFactory.BuildFromTextAsset(AssetBundleManager.Load<TextAsset>(asset)));
+                        //RoomFactory.AddRoomToSewerGratePool(RoomFactory.BuildFromTextAsset(AssetBundleManager.Load<TextAsset>(asset)));
                     }
                 }
 
@@ -225,14 +250,6 @@ namespace SpecialStuffPack
                 ETGModConsole.Commands.AddUnit("switch", x => ETGModConsole.Log(Game.Items[x[0]].GetComponent<Gun>().gunSwitchGroup), ETGModConsole.GiveAutocompletionSettings);
                 ETGModConsole.Commands.AddUnit("use", UseItem, ETGModConsole.GiveAutocompletionSettings);
                 ETGModConsole.Commands.AddUnit("showhitboxes", x => ETGModConsole.SwitchValue(x.FirstOrDefault(), ref showHitboxes, "Show Hitboxes"));
-                ETGModConsole.Commands.AddUnit("reset_ss_completion", delegate (string[] s)
-                {
-                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AMETHYST, false);
-                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_OPAL, false);
-                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_EMERALD, false);
-                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_AQUAMARINE, false);
-                    SaveAPIManager.SetFlag(CustomDungeonFlags.SOMETHINGSPECIAL_RUBY, false);
-                });
                 ETGModConsole.Commands.AddUnit("decrypt_save", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
                 ETGModConsole.Commands.AddUnit("boi", x => { if (GameManager.Instance.PrimaryPlayer == null) { return; } GameManager.Instance.PrimaryPlayer.GiveItem("tear_jerker"); GameManager.Instance.PrimaryPlayer.GiveItem("lichs_eye_bullets"); ETGModConsole.Log("isek"); });
                 TCultistHandler.Init();
@@ -240,20 +257,6 @@ namespace SpecialStuffPack
                 SpecialInput.Setup();
                 //WindowsWindowNamer.RenameWindow();
                 ETGModConsole.Log($"{NAME} loaded successfully.").Foreground = LogColor;
-                List<string> randomBullshit = new()
-                {
-                    "Type \"boi\" for fun.",
-                    "Something special is approaching...",
-                    "The coop versus mod is the most useless mod I think I've ever seen.",
-                    "Built with Harmony.",
-                    "Wwise is stupid.",
-                    "Also try Squirrel Bomb Mod!",
-                    "Also try Actual Beastmode!",
-                    "Over 100 lines of code stolen.",
-                    "Made with Unity.",
-                    "Suspicious."
-                };
-                ETGModConsole.Log(randomBullshit.RandomElement()).Foreground = LogColor;
             }
             catch (Exception ex)
             {

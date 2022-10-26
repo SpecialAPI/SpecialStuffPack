@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Actives
             var name = "Hot Sauce";
             var shortdesc = "Spicy!";
             var longdesc = "Burns the user. Grants various benefits while on fire.\n\nA simple bottle of hot sauce. Spicy but also delicious!";
-            var item = EasyInitItem<HotSauce>("HotSauce", "hot_sauce_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
+            var item = EasyItemInit<HotSauce>("HotSauce", "hot_sauce_idle_001", name, shortdesc, longdesc, ItemQuality.C, null, null);
             item.SetCooldownType(CooldownType.Timed, 0.5f);
             item.FireVFX = PhoenixObject.muzzleFlashEffects;
             item.fireResistanceMultiplier = 0.5f;

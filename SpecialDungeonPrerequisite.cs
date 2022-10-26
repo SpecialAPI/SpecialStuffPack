@@ -14,16 +14,23 @@ namespace SpecialStuffPack
             {
                 return PassiveItem.IsFlagSetAtAll(flagToCheck);
             }
+            else if(specialPrerequisiteType == SpecialPrerequisiteType.SYNERGY)
+            {
+                return AnyoneHasActiveSynergy(synergyToCheck) == shouldHaveSynergy;
+            }
             return base.CheckConditionsFulfilled();
         }
 
         public SpecialPrerequisiteType specialPrerequisiteType;
         public Type flagToCheck;
+        public string synergyToCheck;
+        public bool shouldHaveSynergy = true;
 
         public enum SpecialPrerequisiteType
         {
             NONE,
-            ITEM_FLAG
+            ITEM_FLAG,
+            SYNERGY
         }
     }
 }

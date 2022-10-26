@@ -16,25 +16,16 @@ namespace SpecialStuffPack.Components
 
         public void DeathChecks(Vector2 v)
         {
-            if(GameManager.Instance.CurrentGameMode == GameManager.GameMode.BOSSRUSH)
+            SaveAPIManager.SetCharacterSpecificFlag("BeatDragun", true);
+            if (GameManager.Instance.CurrentGameMode == GameManager.GameMode.BOSSRUSH)
             {
-                switch (GameManager.Instance.PrimaryPlayer.characterIdentity)
-                {
-                    case PlayableCharacters.Convict:
-                        SaveAPIManager.SetFlag(CustomDungeonFlags.ITEMSPECIFIC_CONVICTS_SHACKLES, true);
-                        break;
-                    case PlayableCharacters.Soldier:
-                        SaveAPIManager.SetFlag(CustomDungeonFlags.ITEMSPECIFIC_MARINES_HELMET, true);
-                        break;
-                    default:
-                        break;
-                }
+                SaveAPIManager.SetCharacterSpecificFlag("BeatBossrush", true);
             }
             else
             {
                 if(GameManager.Instance.CurrentGameMode == GameManager.GameMode.SHORTCUT && GameManager.Instance.LastShortcutFloorLoaded == 4)
                 {
-                    SaveAPIManager.SetFlag(CustomDungeonFlags.ITEMSPECIFIC_WOODEN_TOKEN, true);
+                    SaveAPIManager.SetFlag("WoodenToken", true);
                 }
             }
         }

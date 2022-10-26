@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Amethyst Round";
             string shortdesc = "Power";
             string longdesc = "One of the five master rounds enchanted with the power of the Gems. Provides massive benefits.\n\nHolding too many of these at once might not be a good idea...";
-            //var item = EasyInitItem<AmethystRound>()
+            //var item = EasyItemInit<AmethystRound>()
         }
     }
 }

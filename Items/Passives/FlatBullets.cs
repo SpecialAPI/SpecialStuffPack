@@ -12,7 +12,7 @@ namespace SpecialStuffPack.Items.Passives
             string name = "Flat Bullets";
             string shortdesc = "Flat Damage";
             string longdesc = "Increases damage.";
-            var item = EasyInitItem<FlatBullets>("items/flatbullets", "sprites/flat_bullets_idle_001", name, shortdesc, longdesc, ItemQuality.B);
+            var item = EasyItemInit<FlatBullets>("items/flatbullets", "sprites/flat_bullets_idle_001", name, shortdesc, longdesc, ItemQuality.B);
             item.FlatDamage = 2f;
             item.FlatDamageSynergy = 3f;
             item.AddToTrorkShop();
