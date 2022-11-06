@@ -308,15 +308,8 @@ namespace SpecialStuffPack.SoundAPI
             IntPtr intPtr = Marshal.AllocHGlobal(array.Length);
             try
             {
-                if(name.ToLower() == "init")
-                {
-                    name += "_SPAPI";
-                }
                 Marshal.Copy(array, 0, intPtr, array.Length);
-                Debug.Log("SOUND BANK AAAAA " + name);
                 AKRESULT akresult = AkSoundEngine.LoadAndDecodeBankFromMemory(intPtr, (uint)array.Length, false, name, false, out uint num);
-                Debug.Log("SOUND BANK b " + name);
-                Debug.LogWarning(name + " bank load result: " + akresult);
             }
             finally
             {

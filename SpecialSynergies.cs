@@ -313,6 +313,10 @@ namespace SpecialStuffPack
             CreateSynergy("Rusty Shovel", new() { ItemIds["rustybullets"], ItemIds["gravediggershovel"] });
             CreateSynergy("Rusty Iron", new() { ItemIds["rustybullets"], BigIronId }, activeWhenGunsUnequipped: false);
             CreateSynergy("Rusty Coin", new() { ItemIds["rustybullets"], IronCoinId });
+            CreateSynergy("Snake Eyes", new() { ItemIds["woodendice"], SnakemakerId });
+            CreateSynergy("Gambling Addiction", new() { ItemIds["woodendice"], ChanceBulletsId });
+            CreateSynergy("Midnight", new() { ItemIds["woodendice"], SixthChamberId });
+            CreateSynergy("Recycling at its Finest", new() { ItemIds["rustyammobox"] }, new List<int>() { AmmoSynthesizerId, AmmoBeltId, UtilityBeltId, HipHolsterId });
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);
@@ -349,6 +353,7 @@ namespace SpecialStuffPack
             AddItemToSynergy(CustomSynergyType.LOTUS_BLOOM, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.MACHINE_PISTOL, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.LASER_THOMPSON, ItemIds["energydrink"]);
+            AddItemToSynergy(CustomSynergyType.RECYCLING, ItemIds["rustyammobox"]);
 
             //add synergy components
             PickupObjectDatabase.GetById(476).AddComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck = "25% OFF ON ALL IN-GAME PURCHASES!";

@@ -166,6 +166,7 @@
     <Compile Include="Components\RocketLauncherProjectile.cs" />
     <Compile Include="Components\SerializedWeightedList.cs" />
     <Compile Include="Components\SetProjectileDestroyMode.cs" />
+    <Compile Include="Components\ShowMultiplierOnHit.cs" />
     <Compile Include="Components\SpawnBulletScriptOnDestroy.cs" />
     <Compile Include="Components\SpecialPlayerController.cs" />
     <Compile Include="Components\UltimateDragunIntroDoer.cs" />
@@ -186,7 +187,13 @@
     <Compile Include="EnumExtensions\EffectResistanceTypeE.cs" />
     <Compile Include="EnumExtensions\EnumExtensionAttribute.cs" />
     <Compile Include="EnumExtensions\GungeonFlagsE.cs" />
+    <Compile Include="EnumExtensions\MenuOpenedE.cs" />
     <Compile Include="EnumExtensions\PlayableCharactersE.cs" />
+    <Compile Include="Feedback\FeedbackCore.cs" />
+    <Compile Include="Feedback\FeedbackForm.cs" />
+    <Compile Include="Feedback\FeedbackType.cs" />
+    <Compile Include="Feedback\Label.cs" />
+    <Compile Include="Feedback\TrelloAPI.cs" />
     <Compile Include="Items\Actives\ActiveOverchargeItem.cs" />
     <Compile Include="Items\Actives\BananaJam.cs" />
     <Compile Include="Items\Actives\EnergyDrink.cs" />
@@ -199,6 +206,7 @@
     <Compile Include="Items\Guns\CactiClub.cs" />
     <Compile Include="Items\Guns\CultCharmEffect.cs" />
     <Compile Include="Items\Guns\EnderGun.cs" />
+    <Compile Include="Items\Guns\Evergun.cs" />
     <Compile Include="Items\Guns\FireVolleyOnReload.cs" />
     <Compile Include="Items\Guns\FishingRodGun.cs" />
     <Compile Include="Items\Guns\Frogun.cs" />
@@ -270,6 +278,7 @@
     <Compile Include="Items\Passives\ProtectiveArmorItem.cs" />
     <Compile Include="Items\Actives\RatWhistle.cs" />
     <Compile Include="Items\Passives\RubyItem.cs" />
+    <Compile Include="Items\Passives\RustyAmmoBox.cs" />
     <Compile Include="Items\Passives\RustyBullets.cs" />
     <Compile Include="Items\Passives\ShacklesItem.cs" />
     <Compile Include="Items\Guns\ShootingStar.cs" />
@@ -277,6 +286,8 @@
     <Compile Include="Items\Passives\SubscribeButton.cs" />
     <Compile Include="Items\Actives\UndyingTotem.cs" />
     <Compile Include="Items\Actives\Watermelon.cs" />
+    <Compile Include="Items\Passives\WoodenDice.cs" />
+    <Compile Include="LogRecorder.cs" />
     <Compile Include="ParadoxShrine.cs" />
     <Compile Include="Placeables\LilChest.cs" />
     <Compile Include="Placeables\LilChestPlacer.cs" />
@@ -318,6 +329,7 @@
     <Compile Include="Items\Actives\WoodenToken.cs" />
     <Compile Include="Items\Actives\WishingOrb.cs" />
     <Compile Include="Tools\UnityEventHandler.cs" />
+    <Compile Include="Feedback\TrelloCardResponse.cs" />
     <Compile Include="WindowsWindowNamer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -540,6 +552,9 @@
   <ItemGroup>
     <None Include="packages.config" />
     <EmbeddedResource Include="SPECIAL_SFX.bnk" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="GITIGNORE\TrelloToken.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\BepInEx.Core.5.4.21\build\BepInEx.Core.targets" Condition="Exists('packages\BepInEx.Core.5.4.21\build\BepInEx.Core.targets')" />

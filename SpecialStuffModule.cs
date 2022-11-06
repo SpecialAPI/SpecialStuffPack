@@ -32,6 +32,9 @@ global using InControl;
 global using static SpecialStuffPack.ItemAPI.ItemBuilder;
 global using static SpecialStuffPack.ItemAPI.GunBuilder;
 global using static SpecialStuffPack.SynergyAPI.SynergyBuilder;
+using UnityEngine.Networking;
+using System.IO;
+using SpecialStuffPack.Feedback;
 
 namespace SpecialStuffPack
 {
@@ -55,6 +58,7 @@ namespace SpecialStuffPack
 
         public void Awake()
         {
+            BepInEx.Logging.Logger.Listeners.Add(new LogRecorder());
             var asm = Assembly.GetExecutingAssembly();
             foreach(var type in asm.GetTypes())
             {
@@ -102,7 +106,7 @@ namespace SpecialStuffPack
                 GetItemById(326).AddComponent<SPCultistBandana>();
                 ETGMod.Databases.Strings.Core.Set("#PLAYER_NAME_" + PlayableCharactersE.SPCultist.ToString().ToUpper(), "Cultist");
                 ETGMod.Databases.Strings.Core.Set("#PLAYER_NICK_" + PlayableCharactersE.SPCultist.ToString().ToUpper(), "child");
-                ETGMod.Databases.Strings.Core.Set("#SPAPI_RAT_NOTE_SP_CULTIST", 
+                ETGMod.Databases.Strings.Core.Set("#SPAPI_RAT_NOTE_SP_CULTIST",
                     "Don't know how to fight, do you? You also don't have a main character for me to beat up, so have these keys as a consolation prize instead.\n\n" +
                     "Later, %INSULT! - R.R.");
 
@@ -205,6 +209,9 @@ namespace SpecialStuffPack
                 MarkedCalendar.Init();
                 Shredder.Init();
                 RustyBullets.Init();
+                RustyAmmoBox.Init();
+                WoodenDice.Init();
+                //Evergun.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();
                 //ForceOfTwilight.Init();
@@ -245,26 +252,33 @@ namespace SpecialStuffPack
                 }
 
                 //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
-                ETGModConsole.Commands.AddUnit("play_sound", (string[] args) => ETGModConsole.Log(AkSoundEngine.PostEvent(args[0], GameManager.Instance.PrimaryPlayer.gameObject).ToString()));
-                ETGModConsole.Commands.AddUnit("set_state", (string[] args) => ETGModConsole.Log(AkSoundEngine.SetState(args[0], args[1]).ToString()));
-                ETGModConsole.Commands.AddUnit("switch", x => ETGModConsole.Log(Game.Items[x[0]].GetComponent<Gun>().gunSwitchGroup), ETGModConsole.GiveAutocompletionSettings);
-                ETGModConsole.Commands.AddUnit("use", UseItem, ETGModConsole.GiveAutocompletionSettings);
-                ETGModConsole.Commands.AddUnit("showhitboxes", x => ETGModConsole.SwitchValue(x.FirstOrDefault(), ref showHitboxes, "Show Hitboxes"));
-                ETGModConsole.Commands.AddUnit("decrypt_save", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
-                ETGModConsole.Commands.AddUnit("boi", x => { if (GameManager.Instance.PrimaryPlayer == null) { return; } GameManager.Instance.PrimaryPlayer.GiveItem("tear_jerker"); GameManager.Instance.PrimaryPlayer.GiveItem("lichs_eye_bullets"); ETGModConsole.Log("isek"); });
+
+                ETGModConsole.Commands.AddGroup(globalPrefix);
+                var group = ETGModConsole.Commands.GetGroup(globalPrefix);
+                ETGModConsole.CommandDescriptions.Add(globalPrefix, $"Group used by commands added by {NAME}.");
+
+                group.AddUnit("use_active", UseItem, ETGModConsole.GiveAutocompletionSettings);
+                ETGModConsole.CommandDescriptions.Add($"{globalPrefix} use_active", "Uses the given active item once. If a second argument is given, it specifies how many times the item should be used.");
+                group.AddUnit("showhitboxes", x => ETGModConsole.SwitchValue(x.FirstOrDefault(), ref showHitboxes, "Show Hitboxes"));
+                ETGModConsole.CommandDescriptions.Add($"{globalPrefix} showhitboxes", "Toggles Hitbox display.");
+                group.AddUnit("decrypt_save", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
+                ETGModConsole.CommandDescriptions.Add($"{globalPrefix} decrypt_save", "Temporarily decrypts the current save file for debug purposes.");
+
+                gameObject.AddComponent<FeedbackCore>();
+
                 TCultistHandler.Init();
                 SpecialOptions.Setup();
                 SpecialInput.Setup();
                 //WindowsWindowNamer.RenameWindow();
                 ETGModConsole.Log($"{NAME} loaded successfully.").Foreground = LogColor;
+                ETGModConsole.Log($"Use the feedback form in the F8 menu to send feedback and report bugs.").Foreground = LogColor;
+                ETGModConsole.Log($"You can also use the command \"{globalPrefix} feedback\".").Foreground = LogColor;
             }
             catch (Exception ex)
             {
-                ETGModConsole.Log($"Something bad happened while loading {NAME}: " + ex);
+                ETGModConsole.Log($"Something bad happened while loading {NAME}: " + ex).Foreground = LogColor;
             }
         }
-
-
 
         public void Update()
         {
@@ -358,7 +372,7 @@ namespace SpecialStuffPack
                 ETGModConsole.Log("Invalid item " + args[0] + "!");
                 return;
             }
-            if (!(Game.Items[args[0]] is PlayerItem))
+            if (Game.Items[args[0]] is not PlayerItem)
             {
                 ETGModConsole.Log("Invalid item " + args[0] + "!");
                 return;

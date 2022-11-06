@@ -17,9 +17,9 @@ namespace SpecialStuffPack.Items.Guns
             var time = 0.25f;
             gun.SetAnimationFPS(Mathf.CeilToInt(1 / time));
             gun.LocalInfiniteAmmo = true;
-            var damage = 6;
+            var damage = 6.5f;
             var length = 7;
-            var bullet = GetProjectile(378);
+            var bullet = MarineSidearmObject.GetProjectile();
             var proj = EasyProjectileInit<WhipProjectile>("PistolWhipProjectile", "pistolwhip_projectile_001", damage, 1f, 99999f, 0f, true, false, true, anchor: tk2dBaseSprite.Anchor.MiddleLeft);
             proj.Length = length;
             proj.time = time;

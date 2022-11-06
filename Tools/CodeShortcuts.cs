@@ -10,6 +10,7 @@ using System.Text;
 using UnityEngine;
 using SpecialStuffPack.Components;
 using SpecialStuffPack.Controls;
+using System.IO;
 
 namespace SpecialStuffPack
 {
@@ -25,6 +26,14 @@ namespace SpecialStuffPack
                 return t;
             }
             return default;
+        }
+
+        public static string EraseUserName(string original)
+        {
+            var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            userFolder = userFolder.Substring(0, userFolder.LastIndexOf(Path.DirectorySeparatorChar));
+            userFolder = userFolder.Substring(0, userFolder.LastIndexOf(Path.DirectorySeparatorChar));
+            return original.Replace(userFolder, "C:" + Path.DirectorySeparatorChar + Path.Combine("Users", "USER")).Replace(userFolder.Replace(Path.DirectorySeparatorChar, '/'), "C:/Users/USER");
         }
 
         public static StatModifier CreateStatMod(PlayerStats.StatType targetStat, StatModifier.ModifyMethod method, float amt, bool destroyOnHit = false)
@@ -541,6 +550,29 @@ namespace SpecialStuffPack
                 component.GenerationDetermineContents(man.SeededRunManifests[GameManager.Instance.BestGenerationDungeonPrefab.tileIndices.tilesetId], random);
             }
             return component as LilChest;
+        }
+
+        public static void DoCustomTextPopup(Vector3 worldPosition, float heightOffGround, string whatDoesItSay, Color whatColorIsIt)
+        {
+            var self = GameUIRoot.Instance;
+            if(self == null)
+            {
+                return;
+            }
+            if (self.m_inactiveDamageLabels.Count == 0)
+            {
+                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(BraveResources.Load("DamagePopupLabel", ".prefab"), self.transform);
+                self.m_inactiveDamageLabels.Add(gameObject.GetComponent<dfLabel>());
+            }
+            dfLabel dfLabel = self.m_inactiveDamageLabels[0];
+            self.m_inactiveDamageLabels.RemoveAt(0);
+            dfLabel.gameObject.SetActive(true);
+            dfLabel.Text = whatDoesItSay;
+            dfLabel.Color = whatColorIsIt;
+            dfLabel.Opacity = 1f;
+            dfLabel.transform.position = dfFollowObject.ConvertWorldSpaces(worldPosition, GameManager.Instance.MainCameraController.Camera, self.m_manager.RenderCamera).WithZ(0f);
+            dfLabel.transform.position = dfLabel.transform.position.QuantizeFloor(dfLabel.PixelsToUnits() / (Pixelator.Instance.ScaleTileScale / Pixelator.Instance.CurrentTileScale));
+            dfLabel.StartCoroutine(self.HandleDamageNumberCR(worldPosition, worldPosition.y - heightOffGround, dfLabel));
         }
 
         public static bool ScaledChance(float chance, float scale)

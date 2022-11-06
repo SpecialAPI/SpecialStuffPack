@@ -29,7 +29,7 @@ namespace SpecialStuffPack.SaveAPI
             AdvancedGameSave = new SaveManager.SaveType
             {
                 filePattern = "Slot{0}." + prefix + "Save",
-                encrypted = true,
+                //encrypted = true,
                 backupCount = 3,
                 backupPattern = "Slot{0}." + prefix + "Backup.{1}",
                 backupMinTimeMin = 45,
@@ -39,7 +39,7 @@ namespace SpecialStuffPack.SaveAPI
             {
                 filePattern = "Active{0}." + prefix + "Game",
                 legacyFilePattern = prefix + "ActiveSlot{0}.txt",
-                encrypted = true,
+                //encrypted = true,
                 backupCount = 0,
                 backupPattern = "Active{0}." + prefix + "Backup.{1}",
                 backupMinTimeMin = 60
