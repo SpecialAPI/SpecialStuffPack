@@ -11,6 +11,7 @@ using UnityEngine;
 using SpecialStuffPack.Components;
 using SpecialStuffPack.Controls;
 using System.IO;
+using SpecialStuffPack.CursorAPI;
 
 namespace SpecialStuffPack
 {
@@ -77,6 +78,28 @@ namespace SpecialStuffPack
             }
             user.OnDidUnstealthyAction += BreakStealthOnUnstealthy;
             user.OnItemStolen += BreakStealthOnStolen;
+        }
+
+        public static string AddToAtlas(string textureName, string overrideName = null)
+        {
+            return AddToAtlas(AssetBundleManager.Load<Texture2D>(textureName), out _, overrideName);
+        }
+
+        public static string AddToAtlas(string textureName, out dfAtlas.ItemInfo info, string overrideName = null)
+        {
+            return AddToAtlas(AssetBundleManager.Load<Texture2D>(textureName), out info, overrideName);
+        }
+
+        public static string AddToAtlas(Texture2D tex, string overrideName = null)
+        {
+            return AddToAtlas(tex, out _, overrideName);
+        }
+
+        public static string AddToAtlas(Texture2D tex, out dfAtlas.ItemInfo info, string overrideName = null)
+        {
+            var name = overrideName ?? $"spapi_{tex.name}";
+            info = CursorMaker.UIRootPrefab.Manager.DefaultAtlas.AddNewItemToAtlas(tex, name);
+            return name;
         }
 
         public static void LogFrames(this tk2dSpriteAnimationClip clippy)
@@ -380,8 +403,96 @@ namespace SpecialStuffPack
             return anim;
         }
 
-        public static tk2dSpriteAnimationClip AddClip(this tk2dSpriteAnimation library, string animationName, tk2dSpriteCollectionData collection, int fps = 15, 
-            tk2dSpriteAnimationClip.WrapMode wrapMode = tk2dSpriteAnimationClip.WrapMode.Once)
+        public static tk2dSpriteAnimationClip AddClipWithExistingFrames(this tk2dSpriteAnimation library, string animationName, tk2dSpriteCollectionData collection, float fps = 15f,
+            tk2dSpriteAnimationClip.WrapMode wrapMode = tk2dSpriteAnimationClip.WrapMode.Once, string overrideClipName = null, string[] optionalAnimationNames = null)
+        {
+            var clip = library.GetClipByName(animationName);
+            if (clip != null)
+            {
+                return clip;
+            }
+            List<tk2dSpriteAnimationFrame> frames = new();
+            for (int i = 1; i < 1000; i++)
+            {
+                var tostring = i.ToString();
+                string text;
+                if (tostring.Length < 2)
+                {
+                    text = $"{animationName}_00{tostring}";
+                }
+                else if (tostring.Length < 3)
+                {
+                    text = $"{animationName}_0{tostring}";
+                }
+                else
+                {
+                    text = $"{animationName}_{tostring}";
+                }
+                var id = collection.GetSpriteIdByName(text, -1);
+                if (id < 0)
+                {
+                    if (optionalAnimationNames != null)
+                    {
+                        foreach (var name in optionalAnimationNames)
+                        {
+                            if (tostring.Length < 2)
+                            {
+                                text = $"{name}_00{tostring}";
+                            }
+                            else if (tostring.Length < 3)
+                            {
+                                text = $"{name}_0{tostring}";
+                            }
+                            else
+                            {
+                                text = $"{name}_{tostring}";
+                            }
+                            id = collection.GetSpriteIdByName(text, -1);
+                            if (id >= 0)
+                            {
+                                break;
+                            }
+                        }
+                        if (id < 0)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+                if (id >= 0)
+                {
+                    tk2dSpriteAnimationFrame frame = new()
+                    {
+                        spriteCollection = collection,
+                        spriteId = id
+                    };
+                    frames.Add(frame);
+                }
+            }
+            if (frames.Count <= 0)
+            {
+                return null;
+            }
+            clip = new()
+            {
+                fps = fps,
+                wrapMode = wrapMode,
+                loopStart = 0,
+                name = overrideClipName ?? animationName,
+                maxFidgetDuration = 0f,
+                minFidgetDuration = 0f,
+                frames = frames.ToArray()
+            };
+            library.clips = library.clips.AddToArray(clip);
+            return clip;
+        }
+
+        public static tk2dSpriteAnimationClip AddClip(this tk2dSpriteAnimation library, string animationName, tk2dSpriteCollectionData collection, float fps = 15f, 
+            tk2dSpriteAnimationClip.WrapMode wrapMode = tk2dSpriteAnimationClip.WrapMode.Once, string overrideClipName = null, string[] optionalAnimationNames = null, string overrideShaderName = null)
         {
             var clip = library.GetClipByName(animationName);
             if (clip != null)
@@ -408,14 +519,44 @@ namespace SpecialStuffPack
                 var tex = AssetBundleManager.Load<Texture2D>(text);
                 if(tex == null)
                 {
-                    break;
+                    if(optionalAnimationNames != null)
+                    {
+                        foreach(var name in optionalAnimationNames)
+                        {
+                            if (tostring.Length < 2)
+                            {
+                                text = $"{name}_00{tostring}";
+                            }
+                            else if (tostring.Length < 3)
+                            {
+                                text = $"{name}_0{tostring}";
+                            }
+                            else
+                            {
+                                text = $"{name}_{tostring}";
+                            }
+                            tex = AssetBundleManager.Load<Texture2D>(text);
+                            if (tex != null)
+                            {
+                                break;
+                            }
+                        }
+                        if(tex == null)
+                        {
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        break;
+                    }
                 }
-                else
+                if(tex != null)
                 {
                     tk2dSpriteAnimationFrame frame = new()
                     {
                         spriteCollection = collection,
-                        spriteId = AddSpriteToCollection(tex, collection)
+                        spriteId = SpriteBuilder.AddSpriteToCollection(tex, collection, overrideShaderName ?? "tk2d/CutoutVertexColorTintableTilted", true, false)
                     };
                     var animationMetadata = AssetBundleManager.Load<TextAsset>(text);
                     if (animationMetadata != null)
@@ -423,16 +564,16 @@ namespace SpecialStuffPack
                         var lines = animationMetadata.text.Split('\n');
                         foreach (var line in lines)
                         {
-                            if(!string.IsNullOrEmpty(line) && line.Length > 2 && line.Contains(":"))
+                            if (!string.IsNullOrEmpty(line) && line.Length > 2 && line.Contains(":"))
                             {
-                                var key = line.Substring(0, line.IndexOf(":")).Trim().ToLower();
+                                var key = line.Substring(0, line.IndexOf(":")).Trim().ToLowerInvariant();
                                 var value = line.Substring(line.IndexOf(":") + 1);
-                                if(key == "audio")
+                                if (key == "audio")
                                 {
                                     frame.eventAudio = value.Trim();
                                     frame.triggerEvent = true;
                                 }
-                                else if(key == "info")
+                                else if (key == "info")
                                 {
                                     frame.eventInfo = value.TrimStart();
                                     frame.triggerEvent = true;
@@ -451,12 +592,16 @@ namespace SpecialStuffPack
                     frames.Add(frame);
                 }
             }
+            if(frames.Count <= 0)
+            {
+                return null;
+            }
             clip = new()
             {
                 fps = fps,
                 wrapMode = wrapMode,
                 loopStart = 0,
-                name = animationName,
+                name = overrideClipName ?? animationName,
                 maxFidgetDuration = 0f,
                 minFidgetDuration = 0f,
                 frames = frames.ToArray()
@@ -729,6 +874,66 @@ namespace SpecialStuffPack
             self.GetEventDelegate<Action<T1, T2, T3, T4>>(eventName)?.Invoke(arg1, arg2, arg3, arg4);
         }
 
+        public static void StealthPlayer(this PlayerController player, string reason, bool allowStealing = true, bool disableEnemyCollision = true, GameObject poof = null, string stealthUnstealthSound = null, 
+            bool enableStealthShader = true)
+        {
+            void BreakStealthOnSteal(PlayerController arg1, ShopItemController arg2)
+            {
+                BreakStealth(arg1);
+            }
+
+            void BreakStealth(PlayerController obj)
+            {
+                if (poof != null)
+                {
+                    obj.PlayEffectOnActor(poof, Vector3.zero, false, true, false);
+                }
+                obj.OnDidUnstealthyAction -= BreakStealth;
+                if (allowStealing)
+                {
+                    obj.SetCapableOfStealing(false, reason, null);
+                    obj.OnItemStolen -= BreakStealthOnSteal;
+                }
+                if (disableEnemyCollision)
+                {
+                    obj.specRigidbody.RemoveCollisionLayerIgnoreOverride(CollisionMask.LayerToMask(CollisionLayer.EnemyHitBox, CollisionLayer.EnemyCollider));
+                }
+                if (enableStealthShader)
+                {
+                    obj.ChangeSpecialShaderFlag(1, 0f);
+                }
+                obj.SetIsStealthed(false, reason);
+                if (!string.IsNullOrEmpty(stealthUnstealthSound))
+                {
+                    AkSoundEngine.PostEvent(stealthUnstealthSound, obj.gameObject);
+                }
+            }
+
+            if (enableStealthShader)
+            {
+                player.ChangeSpecialShaderFlag(1, 1f);
+            }
+            player.SetIsStealthed(true, reason);
+            if (disableEnemyCollision)
+            {
+                player.specRigidbody.AddCollisionLayerIgnoreOverride(CollisionMask.LayerToMask(CollisionLayer.EnemyHitBox, CollisionLayer.EnemyCollider));
+            }
+            if (poof != null)
+            {
+                player.PlayEffectOnActor(poof, Vector3.zero, false, true, false);
+            }
+            if (allowStealing)
+            {
+                player.SetCapableOfStealing(true, reason, null);
+                player.OnItemStolen += BreakStealthOnSteal;
+            }
+            player.OnDidUnstealthyAction += BreakStealth;
+            if (!string.IsNullOrEmpty(stealthUnstealthSound))
+            {
+                AkSoundEngine.PostEvent(stealthUnstealthSound, player.gameObject);
+            }
+        }
+
         public static UnityEventHandler Events(this Component comp)
         {
             return comp.gameObject.Events();
@@ -914,5 +1119,7 @@ namespace SpecialStuffPack
         {
             return new GenericFieldInfo<T>(type.GetField(name, flags));
         }
+
+        public static GameObject stealthyPoof;
     }
 }

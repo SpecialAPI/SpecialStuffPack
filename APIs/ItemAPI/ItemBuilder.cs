@@ -64,6 +64,34 @@ namespace SpecialStuffPack.ItemAPI
             return spriteObject;
         }
 
+        public static PlayerOrbital EasyGuonInit(string objectPath, string spritePath, IntVector2 hitboxSize, float orbitRadius = 2.5f, float degreesPerSecond = 120f, int tier = 0, bool shouldRotate = false, 
+            Vector2? additionalSpriteOffset = null, IntVector2? additionalHitboxPixelOffset = null, CollisionLayer? overrideCollisionLayer = null)
+        {
+            GameObject go = AssetBundleManager.Load<GameObject>(objectPath);
+            var sprite = tk2dSprite.AddComponent(go.transform.Find("Sprite").gameObject, SpriteBuilder.itemCollection, AddSpriteToCollection(spritePath, SpriteBuilder.itemCollection));
+            sprite.transform.localPosition = -sprite.GetRelativePositionFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter) + (additionalSpriteOffset ?? Vector2.zero);
+            var rigidbody = go.AddComponent<SpeculativeRigidbody>();
+            var hitboxOffset = additionalHitboxPixelOffset ?? IntVector2.Zero;
+            rigidbody.PixelColliders = new()
+            {
+                new()
+                {
+                    CollisionLayer = overrideCollisionLayer ?? CollisionLayer.EnemyBulletBlocker,
+                    ColliderGenerationMode = PixelCollider.PixelColliderGeneration.Manual,
+                    ManualOffsetX = -hitboxSize.x / 2 + hitboxOffset.x,
+                    ManualOffsetY = -hitboxSize.y / 2 + hitboxOffset.y,
+                    ManualWidth = hitboxSize.x,
+                    ManualHeight = hitboxSize.y
+                }
+            };
+            var guon = go.AddComponent<PlayerOrbital>();
+            guon.orbitRadius = orbitRadius;
+            guon.orbitDegreesPerSecond = degreesPerSecond;
+            guon.SetOrbitalTier(tier);
+            guon.shouldRotate = shouldRotate;
+            return guon;
+        }
+
         public static GameObject SpriteFromResource(string spriteName, GameObject obj = null)
         {
             return SpriteBuilder.SpriteFromResource(spriteName, "tk2d/CutoutVertexColorTintableTilted", obj);
@@ -181,16 +209,16 @@ namespace SpecialStuffPack.ItemAPI
                     Game.Items.Add(idPool + ":" + name.ToMTGId(), item);
                 }
                 ETGMod.Databases.Items.AddSpecific(item);
-                ItemIds.Add(notSpapiName.ToLower(), item.PickupObjectId);
+                ItemIds.Add(notSpapiName.ToLowerInvariant(), item.PickupObjectId);
                 if(item is PassiveItem passive)
                 {
-                    Passive.Add(notSpapiName.ToLower(), passive);
+                    Passive.Add(notSpapiName.ToLowerInvariant(), passive);
                 }
                 else if(item is PlayerItem active)
                 {
-                    Active.Add(notSpapiName.ToLower(), active);
+                    Active.Add(notSpapiName.ToLowerInvariant(), active);
                 }
-                Item.Add(notSpapiName.ToLower(), item);
+                Item.Add(notSpapiName.ToLowerInvariant(), item);
             }
             catch (Exception e)
             {

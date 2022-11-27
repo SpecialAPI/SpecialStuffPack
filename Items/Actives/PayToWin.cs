@@ -208,7 +208,7 @@ namespace SpecialStuffPack.Items
             {
                 if (LastOwner.PlayerHasActiveSynergy("50% OFF ON ALL DLCHESTS!"))
                 {
-                    if (LastOwner.CurrentRoom != null && LastOwner.CurrentRoom.area != null && !string.IsNullOrEmpty(LastOwner.CurrentRoom.area.PrototypeRoomName) && LastOwner.CurrentRoom.area.PrototypeRoomName.ToLower().Contains("dlchest"))
+                    if (LastOwner.CurrentRoom != null && LastOwner.CurrentRoom.area != null && !string.IsNullOrEmpty(LastOwner.CurrentRoom.area.PrototypeRoomName) && LastOwner.CurrentRoom.area.PrototypeRoomName.ToLowerInvariant().Contains("dlchest"))
                     {
                         pricemult *= 0.5f;
                     }

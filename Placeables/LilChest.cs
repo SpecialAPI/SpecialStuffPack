@@ -346,7 +346,7 @@ namespace SpecialStuffPack.Placeables //not really a placeable but whatever
 			var nonActiveBreakable = greenChest.AddComponent<MajorBreakable>();
 			nonActiveBreakable.enabled = false;
 			nonActiveBreakable.InvulnerableToEnemyBullets = true;
-			ETGModConsole.ModdedChests.Add($"{objectName.ToLower()}_small", chest);
+			ETGModConsole.ModdedChests.Add($"{objectName.ToLowerInvariant()}_small", chest);
 			return chest;
 		}
 

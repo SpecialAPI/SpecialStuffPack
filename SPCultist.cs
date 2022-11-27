@@ -12,7 +12,7 @@ namespace SpecialStuffPack
         [HarmonyPostfix]
         public static void AddSPCultist(Foyer __instance)
         {
-            var flag = Object.FindObjectsOfType<FoyerCharacterSelectFlag>().Where(x => !x.IsCoopCharacter).FirstOrDefault();
+            var flag = Object.FindObjectsOfType<FoyerCharacterSelectFlag>().Where(x => !x.IsCoopCharacter && x.transform.parent != null).FirstOrDefault();
             if(flag != null)
             {
                 var coopFlag = flag.transform.parent.GetComponentsInChildren<FoyerCharacterSelectFlag>(false).Where(x => x.IsCoopCharacter).FirstOrDefault();

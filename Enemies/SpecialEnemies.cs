@@ -453,7 +453,7 @@ namespace SpecialStuffPack.Enemies
                 placeableWidth = 2,
                 placeableHeight = 2,
                 isNormalEnemy = isNormalEnemy,
-                path = "assets/enemies/" + aiactorPrefab.name.ToLower() + ".prefab",
+                path = "assets/enemies/" + aiactorPrefab.name.ToLowerInvariant() + ".prefab",
                 isInBossTab = isInBossTab,
                 encounterGuid = guid
             };
@@ -462,14 +462,14 @@ namespace SpecialStuffPack.Enemies
             {
                 EncounterDatabaseEntry encounterDatabaseEntry = new EncounterDatabaseEntry(aiactorPrefab.GetComponent<AIActor>().encounterTrackable)
                 {
-                    path = "assets/enemies/" + aiactorPrefab.name.ToLower() + ".prefab",
+                    path = "assets/enemies/" + aiactorPrefab.name.ToLowerInvariant() + ".prefab",
                     myGuid = guid
                 };
                 EncounterDatabase.Instance.Entries.Add(encounterDatabaseEntry);
             }
             if (addToConsole && !string.IsNullOrEmpty(aiactorPrefab.GetComponent<AIActor>().ActorName))
             {
-                string EnemyName = SpecialStuffModule.globalPrefix + ":" + aiactorPrefab.GetComponent<AIActor>().ActorName.Replace(" ", "_").Replace("(", "_").Replace(")", string.Empty).Replace("-", "_").ToLower();
+                string EnemyName = SpecialStuffModule.globalPrefix + ":" + aiactorPrefab.GetComponent<AIActor>().ActorName.Replace(" ", "_").Replace("(", "_").Replace(")", string.Empty).Replace("-", "_").ToLowerInvariant();
                 if (!Game.Enemies.ContainsID(EnemyName)) { Game.Enemies.Add(EnemyName, aiactorPrefab.GetComponent<AIActor>()); }
             }
         }

@@ -424,28 +424,28 @@ namespace SpecialStuffPack.SoundAPI
                     };
                     return data.Play(go, playData);
                 }
-                if(eventName.ToLower() == "stop_snd_all")
+                if(eventName.ToLowerInvariant() == "stop_snd_all")
                 {
                     foreach(string stop in StopEvents)
                     {
                         orig(stop, go);
                     }
                 }
-                if (eventName.ToLower() == "stop_mus_all")
+                if (eventName.ToLowerInvariant() == "stop_mus_all")
                 {
                     foreach (string stop in StopEventsMusic)
                     {
                         orig(stop, go);
                     }
                 }
-                if (eventName.ToLower() == "stop_wpn_all")
+                if (eventName.ToLowerInvariant() == "stop_wpn_all")
                 {
                     foreach (string stop in StopEventsWeapons)
                     {
                         orig(stop, go);
                     }
                 }
-                if (eventName.ToLower() == "stop_snd_obj")
+                if (eventName.ToLowerInvariant() == "stop_snd_obj")
                 {
                     foreach (string stop in StopEventsObjects)
                     {
@@ -466,7 +466,7 @@ namespace SpecialStuffPack.SoundAPI
             {
                 foreach(CustomSwitchData data in CustomSwitchDatas)
                 {
-                    if(data.OriginalEventName.ToLower() == eventName.ToLower() && Switches[go].ContainsKey(data.SwitchGroup.ToLower()) && Switches[go][data.SwitchGroup.ToLower()] == data.RequiredSwitch.ToLower())
+                    if(data.OriginalEventName.ToLowerInvariant() == eventName.ToLowerInvariant() && Switches[go].ContainsKey(data.SwitchGroup.ToLowerInvariant()) && Switches[go][data.SwitchGroup.ToLowerInvariant()] == data.RequiredSwitch.ToLowerInvariant())
                     {
                         return data;
                     }
@@ -486,23 +486,23 @@ namespace SpecialStuffPack.SoundAPI
             {
                 if (!Switches.ContainsKey(gameObject))
                 {
-                    Switches.Add(gameObject, new Dictionary<string, string> { { switchGroup.ToLower(), switchValue.ToLower() } });
+                    Switches.Add(gameObject, new Dictionary<string, string> { { switchGroup.ToLowerInvariant(), switchValue.ToLowerInvariant() } });
                 }
                 else
                 {
                     if(Switches[gameObject] == null)
                     {
-                        Switches[gameObject] = new Dictionary<string, string> { { switchGroup.ToLower(), switchValue.ToLower() } };
+                        Switches[gameObject] = new Dictionary<string, string> { { switchGroup.ToLowerInvariant(), switchValue.ToLowerInvariant() } };
                     }
                     else
                     {
-                        if (!Switches[gameObject].ContainsKey(switchGroup.ToLower()))
+                        if (!Switches[gameObject].ContainsKey(switchGroup.ToLowerInvariant()))
                         {
-                            Switches[gameObject].Add(switchGroup.ToLower(), switchValue.ToLower());
+                            Switches[gameObject].Add(switchGroup.ToLowerInvariant(), switchValue.ToLowerInvariant());
                         }
                         else
                         {
-                            Switches[gameObject][switchGroup.ToLower()] = switchValue.ToLower();
+                            Switches[gameObject][switchGroup.ToLowerInvariant()] = switchValue.ToLowerInvariant();
                         }
                     }
                 }

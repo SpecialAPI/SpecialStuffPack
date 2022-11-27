@@ -168,7 +168,7 @@ namespace SpecialStuffPack.GungeonAPI
             bool onThisFloor = false;
             foreach (var floor in data.floors)
             {
-                if (floor.ToLower().Equals(dungeonName.ToLower())) { onThisFloor = true; break; }
+                if (floor.ToLowerInvariant().Equals(dungeonName.ToLowerInvariant())) { onThisFloor = true; break; }
             }
             return onThisFloor;
         }

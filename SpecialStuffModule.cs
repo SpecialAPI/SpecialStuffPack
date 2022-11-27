@@ -35,17 +35,38 @@ global using static SpecialStuffPack.SynergyAPI.SynergyBuilder;
 using UnityEngine.Networking;
 using System.IO;
 using SpecialStuffPack.Feedback;
+using SpecialStuffPack.CursorAPI;
+using SpecialStuffPack.Characters;
 
 namespace SpecialStuffPack
 {
     [BepInPlugin(GUID, NAME, VERSION)]
+    [HarmonyPatch]
     public class SpecialStuffModule : BaseUnityPlugin
     {
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
-        public const string VERSION = "1.2.92022";
+        public const string VERSION = "1.3.0";
         public static readonly Color LogColor = new Color32(50, 200, 50, 255);
         public static Texture2D spCultistBosscard;
+        public static int EverhoodCursorId = -1;
+
+        [HarmonyPatch(typeof(AkSoundEngine), nameof(AkSoundEngine.PostEvent), typeof(string), typeof(GameObject))]
+        [HarmonyPrefix]
+        public static void Funny(ref string in_pszEventName)
+        {
+            if(GameManager.Options != null && GameManager.Options.CurrentCursorIndex == EverhoodCursorId)
+            {
+                if(in_pszEventName == "Play_UI_menu_confirm_01" || in_pszEventName == "Play_UI_menu_cancel_01" || in_pszEventName == "Play_UI_menu_back_01" || in_pszEventName == "Play_UI_menu_unpause_01")
+                {
+                    in_pszEventName = "EverhoodMenuConfirm";
+                }
+                if(in_pszEventName == "Play_UI_menu_select_01" || in_pszEventName == "Play_UI_menu_pause_01")
+                {
+                    in_pszEventName = "EverhoodMenuSelect";
+                }
+            }
+        }
 
         public static int? GetActiveItemUICount(PlayerItem input)
         {
@@ -94,6 +115,7 @@ namespace SpecialStuffPack
         {
             try
             {
+                stealthyPoof = SmokeBombObject.poofVfx;
                 SoundManager.LoadBankFromModProject("SpecialStuffPack.SPECIAL_SFX.bnk");
 
                 //init apis
@@ -211,15 +233,53 @@ namespace SpecialStuffPack
                 RustyBullets.Init();
                 RustyAmmoBox.Init();
                 WoodenDice.Init();
+                MagnifyingGlass.Init();
+                DisguiseHat.Init();
                 //Evergun.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();
                 //ForceOfTwilight.Init();
 
+                CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("Mouse"));
+                EverhoodCursorId = CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("EverhoodHand"));
+                CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("SuperliminalCursor"));
+                CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("SuperliminalSmiley"));
+
+                Item["boxofstuff"].associatedItemChanceMods = Item.Where(x => x.Value != null && x.Value.quality >= PickupObject.ItemQuality.D && x.Value.quality <= PickupObject.ItemQuality.S).Select(x => new LootModData
+                {
+                    AssociatedPickupId = x.Value.PickupObjectId,
+                    DropRateMultiplier = 1.25f
+                }).ToArray();
+
                 LilChest.SetupChests();
 
                 //init synergies
                 SpecialSynergies.Init();
+
+                //init characters
+                CharacterBuilder.BuildCharacter<PlayerController>("PlayerExample", "example", "PlayerExampleCollection", "PlayerExampleAnimation", "playersprites/example/sprites/", PlayableCharactersE.CustomCharacterExample,
+                    new(5, 0, 14, 4), new(7, 5, 8, 10),
+                    "player_example_portrait", "playersprites/example/bosscard/", 10, "PlayerExampleMinimapIcon", "example_minimap_001", "PlayerExampleStats", new()
+                    {
+                        { PlayerStats.StatType.Health, 10f },
+                        { PlayerStats.StatType.Damage, 100000f }
+                    }, 5f, 10, 10, 5, new()
+                    {
+                        GuntherId,
+                        CaseyId,
+                        MakeshiftCannonId,
+                        YariLauncherId,
+                        CloneId,
+                        GundromedaStrainId,
+                        BlankBulletsId
+                    }, new()
+                    {
+                        KlobbeId
+                    }, 99999, 99, false, "guide", "guide_hand_001", "guide_hand_001", true, false, "bug");
+
+                LameyRework.Init();
+                NinjaRework.Init();
+                CosmonautRework.Init();
 
                 //init enemies
                 SpecialEnemies.AddAdvancedDragunAmmonomiconEntry();

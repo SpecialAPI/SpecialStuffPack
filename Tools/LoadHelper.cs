@@ -69,7 +69,7 @@ namespace SpecialStuffPack
 				{
 					foreach (string str in ResourceManager.LoadAssetBundle(name).GetAllAssetNames())
 					{
-						if (str.ToLower().Contains(toFind))
+						if (str.ToLowerInvariant().Contains(toFind))
 						{
 							if (ResourceManager.LoadAssetBundle(name).LoadAsset(str).GetType() == typeof(T) && !objects.Contains(ResourceManager.LoadAssetBundle(name).LoadAsset<T>(str)))
 							{
@@ -94,7 +94,7 @@ namespace SpecialStuffPack
 				{
 					foreach (string str in ResourceManager.LoadAssetBundle(name).GetAllAssetNames())
 					{
-						if (str.ToLower().Contains(toFind))
+						if (str.ToLowerInvariant().Contains(toFind))
 						{
 							if (!objects.Contains(ResourceManager.LoadAssetBundle(name).LoadAsset(str)))
 							{

@@ -133,7 +133,7 @@ namespace SpecialStuffPack.GungeonAPI
                 BuilderFlowNode builderFlowNode = allBuilderNodes[j];
                 if (builderFlowNode != null && builderFlowNode.assignedPrototypeRoom)
                 {
-                    string name = builderFlowNode.assignedPrototypeRoom.name.ToLower();
+                    string name = builderFlowNode.assignedPrototypeRoom.name.ToLowerInvariant();
                     if (name.Contains("shrine") || name.Contains("glass"))
                     {
                         Tools.LogPropertiesAndFields(builderFlowNode, "Builder Flow Node");

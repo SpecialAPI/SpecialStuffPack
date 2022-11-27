@@ -13,6 +13,8 @@ namespace SpecialStuffPack
         public static tk2dSpriteCollectionData itemCollection = PickupObjectDatabase.GetById(155).sprite.Collection;
         public static tk2dSpriteCollectionData ammonomiconCollection = AmmonomiconController.ForceInstance.EncounterIconCollection;
         public static Dictionary<Texture2D, Vector2> TextureTrimOffsets = new();
+        public static Dictionary<Texture2D, Vector2> TextureTrimUntrimmedCenters = new();
+        public static Dictionary<Texture2D, Vector2> TextureTrimUntrimmedExtents = new();
 
         public static SpeculativeRigidbody SetUpSpeculativeRigidbody(this tk2dSprite sprite, IntVector2 offset, IntVector2 dimensions)
         {
@@ -97,7 +99,7 @@ namespace SpecialStuffPack
         /// Adds a sprite (from a resource) to a collection
         /// </summary>
         /// <returns>The spriteID of the defintion in the collection</returns>
-        public static int AddSpriteToCollection(string resourcePath, tk2dSpriteCollectionData collection, string shaderName, bool noDuplicates = false)
+        public static int AddSpriteToCollection(string resourcePath, tk2dSpriteCollectionData collection, string shaderName, bool noDuplicates = false, bool disableTrimming = false)
         {
             if(collection == null)
             {
@@ -118,14 +120,14 @@ namespace SpecialStuffPack
                     return id;
                 }
             }
-            return AddSpriteToCollection(texture, collection, shaderName, noDuplicates);
+            return AddSpriteToCollection(texture, collection, shaderName, noDuplicates, disableTrimming);
         }
 
         /// <summary>
         /// Adds a sprite (from a resource) to a collection
         /// </summary>
         /// <returns>The spriteID of the defintion in the collection</returns>
-        public static int AddSpriteToCollection(Texture2D texture, tk2dSpriteCollectionData collection, string shaderName, bool noDuplicates = false)
+        public static int AddSpriteToCollection(Texture2D texture, tk2dSpriteCollectionData collection, string shaderName, bool noDuplicates = false, bool disableTrimming = false)
         {
             if (collection == null)
             {
@@ -147,28 +149,39 @@ namespace SpecialStuffPack
             }
             if (TextureTrimOffsets.TryGetValue(texture, out var offset))
             {
-                var definition = ConstructDefinition(texture, shaderName); //Generate definition
+                TextureTrimUntrimmedCenters.TryGetValue(texture, out var untrimmedCenter);
+                TextureTrimUntrimmedExtents.TryGetValue(texture, out var untrimmedExtents);
+                var definition = ConstructDefinition(texture, shaderName, untrimmedCenter, untrimmedExtents); //Generate definition
                 definition.AddOffset(offset);
-                definition.name = texture.name; //naming the definition is actually extremely important 
+                definition.name = texture.name; //naming the definition is actually extremely important
+                return AddSpriteToCollection(definition, collection);
+            }
+            else if(!disableTrimming)
+            {
+                Vector3 untrimmedCenter = new(texture.width / 16f / 2f, texture.height / 16f / 2f, 0f);
+                Vector3 untrimmedExtents = new(texture.width / 16f, texture.height / 16f, 0f);
+                var pixelOffset = texture.TrimTexture();
+                var definition = ConstructDefinition(texture, shaderName, untrimmedCenter, untrimmedExtents); //Generate definition
+                var unitOffset = pixelOffset.ToVector2() / 16f;
+                definition.AddOffset(unitOffset);
+                definition.name = texture.name; //naming the definition is actually extremely important
+                TextureTrimOffsets.Add(texture, unitOffset);
+                TextureTrimUntrimmedCenters.Add(texture, untrimmedCenter);
+                TextureTrimUntrimmedExtents.Add(texture, untrimmedExtents);
 
                 return AddSpriteToCollection(definition, collection);
             }
             else
             {
-                var pixelOffset = texture.TrimTexture();
-                var definition = ConstructDefinition(texture, shaderName); //Generate definition
-                var unitOffset = pixelOffset.ToVector2() / 16f;
-                definition.AddOffset(unitOffset);
-                definition.name = texture.name; //naming the definition is actually extremely important
-                TextureTrimOffsets.Add(texture, unitOffset);
-
+                var definition = ConstructDefinition(texture, shaderName);
+                definition.name = texture.name;
                 return AddSpriteToCollection(definition, collection);
             }
         }
 
         public static void TrimGunSprites(this Gun gun)
         {
-            List<KeyValuePair<tk2dSpriteCollectionData, int>> ids = new List<KeyValuePair<tk2dSpriteCollectionData, int>>();
+            List<KeyValuePair<tk2dSpriteCollectionData, int>> ids = new();
             gun.TryTrimGunAnimation(gun.shootAnimation, ids);
             gun.TryTrimGunAnimation(gun.reloadAnimation, ids);
             gun.TryTrimGunAnimation(gun.emptyReloadAnimation, ids);
@@ -253,8 +266,8 @@ namespace SpecialStuffPack
             def.position3 += new Vector3(xOffset, yOffset, 0);
             def.boundsDataCenter += new Vector3(xOffset, yOffset, 0);
             def.boundsDataExtents += new Vector3(xOffset, yOffset, 0);
-            def.untrimmedBoundsDataCenter += new Vector3(xOffset, yOffset, 0);
-            def.untrimmedBoundsDataExtents += new Vector3(xOffset, yOffset, 0);
+            //def.untrimmedBoundsDataCenter += new Vector3(xOffset, yOffset, 0);
+            //def.untrimmedBoundsDataExtents += new Vector3(xOffset, yOffset, 0);
             if (def.colliderVertices != null && def.colliderVertices.Length > 0 && changesCollider)
             {
                 def.colliderVertices[0] += new Vector3(xOffset, yOffset, 0);
@@ -540,11 +553,11 @@ namespace SpecialStuffPack
         /// Constructs a new tk2dSpriteDefinition with the given texture
         /// </summary>
         /// <returns>A new sprite definition with the given texture</returns>
-        public static tk2dSpriteDefinition ConstructDefinition(Texture2D texture, string shaderName)
+        public static tk2dSpriteDefinition ConstructDefinition(Texture2D texture, string shaderName, Vector3? overrideUntrimmedCenter = null, Vector3? overrideUntrimmedExtents = null)
         {
             RuntimeAtlasSegment ras = ETGMod.Assets.Packer.Pack(texture); //pack your resources beforehand or the outlines will turn out weird
 
-            Material material = new Material(ShaderCache.Acquire(shaderName));
+            Material material = new(ShaderCache.Acquire(shaderName));
             material.mainTexture = ras.texture;
             //material.mainTexture = texture;
 
@@ -593,8 +606,8 @@ namespace SpecialStuffPack
                 uvs = ras.uvs,
                 boundsDataCenter = new Vector3(w / 2f, h / 2f, 0f),
                 boundsDataExtents = new Vector3(w, h, 0f),
-                untrimmedBoundsDataCenter = new Vector3(w / 2f, h / 2f, 0f),
-                untrimmedBoundsDataExtents = new Vector3(w, h, 0f),
+                untrimmedBoundsDataCenter = overrideUntrimmedCenter ?? new Vector3(w / 2f, h / 2f, 0f),
+                untrimmedBoundsDataExtents = overrideUntrimmedExtents ?? new Vector3(w, h, 0f),
             };
 
             def.name = texture.name;

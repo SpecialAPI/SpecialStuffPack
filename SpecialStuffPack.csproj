@@ -41,6 +41,9 @@
     <Compile Include="APIs\ChallengeAPI\ChallengeBuilder.cs" />
     <Compile Include="APIs\ChallengeAPI\ChallengeTools.cs" />
     <Compile Include="APIs\ChallengeAPI\dfLanguageExtraStringHolder.cs" />
+    <Compile Include="APIs\CursorAPI\CursorMaker.cs" />
+    <Compile Include="APIs\CursorAPI\CursorTools.cs" />
+    <Compile Include="APIs\CursorAPI\UIRootProcessedFlag.cs" />
     <Compile Include="APIs\GungeonAPI\DungeonHandler.cs" />
     <Compile Include="APIs\GungeonAPI\DungeonHooks.cs" />
     <Compile Include="APIs\GungeonAPI\GungeonAPIMain.cs" />
@@ -132,6 +135,10 @@
     <Compile Include="BulletScripts\UltimateDragun\DraGunSweepFlameBreath3.cs" />
     <Compile Include="BulletScripts\WizardKnight\Sword\WizardKnightSwordSpin1.cs" />
     <Compile Include="BulletScripts\WizardKnight\Sword\WizardKnightSwordSpinSlash1.cs" />
+    <Compile Include="Characters\CharacterBuilder.cs" />
+    <Compile Include="Characters\CosmonautRework.cs" />
+    <Compile Include="Characters\LameyRework.cs" />
+    <Compile Include="Characters\NinjaRework.cs" />
     <Compile Include="Components\AdvancedProjectileModule.cs" />
     <Compile Include="Components\AsteroidProjectile.cs" />
     <Compile Include="Components\BadLuckAffectedChest.cs" />
@@ -143,8 +150,10 @@
     <Compile Include="Components\ChanceBasedDropItemOnKill.cs" />
     <Compile Include="Components\ChanceBasedExplodeOnEnemyHit.cs" />
     <Compile Include="Components\ChanceBasedSpawnTimedProjectileOnKill.cs" />
+    <Compile Include="Components\ChangeOrbitSettingsOnStealth.cs" />
     <Compile Include="Components\CharmJammedComponent.cs" />
     <Compile Include="Components\ChestChoiceComponent.cs" />
+    <Compile Include="Components\DefaultLootMods.cs" />
     <Compile Include="Components\DontLoseDamageOnPierce.cs" />
     <Compile Include="Components\DoubleChargeActive.cs" />
     <Compile Include="Components\FishingReward.cs" />
@@ -158,6 +167,7 @@
     <Compile Include="Components\LobbedProjectileMotion.cs" />
     <Compile Include="Components\LobberGun.cs" />
     <Compile Include="Components\LobbedProjectile.cs" />
+    <Compile Include="Components\MagnifyPlayerBullets.cs" />
     <Compile Include="Components\MiscSynergyProcessor.cs" />
     <Compile Include="Components\ModifiedMetalGearRatBehavior.cs" />
     <Compile Include="Components\OrbitProjectile.cs" />
@@ -196,6 +206,7 @@
     <Compile Include="Feedback\TrelloAPI.cs" />
     <Compile Include="Items\Actives\ActiveOverchargeItem.cs" />
     <Compile Include="Items\Actives\BananaJam.cs" />
+    <Compile Include="Items\Actives\DisguiseHat.cs" />
     <Compile Include="Items\Actives\EnergyDrink.cs" />
     <Compile Include="Items\Actives\HotSauce.cs" />
     <Compile Include="Items\Actives\MagicBag.cs" />
@@ -265,6 +276,7 @@
     <Compile Include="Items\Passives\Launcher.cs" />
     <Compile Include="Items\Passives\LeadFists.cs" />
     <Compile Include="Items\Passives\LegitCoupon.cs" />
+    <Compile Include="Items\Passives\MagnifyingGlass.cs" />
     <Compile Include="Items\Passives\MarkedCalendar.cs" />
     <Compile Include="Items\Passives\MirroredBullet.cs" />
     <Compile Include="Items\Passives\MirrorOfTruth.cs" />

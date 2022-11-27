@@ -164,7 +164,7 @@ namespace SpecialStuffPack.Items.Guns
 			string shortdesc = "Start a Cult";
 			string longdesc = "Gets stronger with every follower, charms the Jammed. Reload with a full clip to sacrifice the nearest follower for permanent strength.\n\nThis gun once belonged to the One Who Shoots, " +
 				"before he was banished by Kaliber.";
-			var gun = EasyGunInit(objectName, name, shortdesc, longdesc, $"{objectName}_idle_001", "red_gun_idle_001", $"gunsprites/{gunSpriteContainer.ToLower()}/", 250, 1f, new(22, 9), VoidMarshalObject.muzzleFlashEffects, "Kthulu", 
+			var gun = EasyGunInit(objectName, name, shortdesc, longdesc, $"{objectName}_idle_001", "red_gun_idle_001", $"gunsprites/{gunSpriteContainer.ToLowerInvariant()}/", 250, 1f, new(22, 9), VoidMarshalObject.muzzleFlashEffects, "Kthulu", 
 				PickupObject.ItemQuality.EXCLUDED, GunClass.CHARM, out var finish, null, $"spapi:the_red_gun+{synergyName.ToMTGId()}");
 			gun.RawSourceVolley.projectiles.Add(new()
 			{

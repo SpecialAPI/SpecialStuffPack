@@ -61,7 +61,7 @@ namespace SpecialStuffPack.GungeonAPI
         {
             for (int i = 0; i < dungeonPrefabNames.Length; i++)
             {
-                if (dungeonPrefabNames[i].ToLower().Contains(dungeonName.ToLower()))
+                if (dungeonPrefabNames[i].ToLowerInvariant().Contains(dungeonName.ToLowerInvariant()))
                     return i;
             }
             return -1;
@@ -95,12 +95,12 @@ namespace SpecialStuffPack.GungeonAPI
 
         public static PrototypeDungeonRoom GetRoomFromDungeon(string roomName, string floor)
         {
-            roomName = roomName.ToLower();
+            roomName = roomName.ToLowerInvariant();
             var rooms = GetRoomsFromRoomTables(floor);
             foreach (var room in rooms)
             {
                 Tools.Log(room.name, "roomnames.txt");
-                if (room.name.ToLower().Equals(roomName))
+                if (room.name.ToLowerInvariant().Equals(roomName))
                 {
                     return room;
                 }
@@ -113,7 +113,7 @@ namespace SpecialStuffPack.GungeonAPI
 
                 if(overrideRoom != null)
                     Tools.Log(overrideRoom.name, "roomnames.txt");
-                if (overrideRoom != null && overrideRoom.name.ToLower().Equals(roomName))
+                if (overrideRoom != null && overrideRoom.name.ToLowerInvariant().Equals(roomName))
                 {
                     return overrideRoom;
                 }
@@ -126,13 +126,13 @@ namespace SpecialStuffPack.GungeonAPI
 
         public static DungeonFlowNode GetNodeFromDungeon(string roomName, string floor)
         {
-            roomName = roomName.ToLower();
+            roomName = roomName.ToLowerInvariant();
             var nodes = OfficialFlows.GetAllFlowNodes(floor);
             if (nodes == null) return null;
             foreach (var node in nodes)
             {
                 var overrideRoom = node.overrideExactRoom;
-                if (overrideRoom != null && overrideRoom.name.ToLower().Equals(roomName))
+                if (overrideRoom != null && overrideRoom.name.ToLowerInvariant().Equals(roomName))
                 {
                     return node;
                 }

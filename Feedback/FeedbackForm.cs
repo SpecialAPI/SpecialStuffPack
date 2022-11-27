@@ -131,6 +131,8 @@ namespace SpecialStuffPack.Feedback
                                 (GUI.Children[5] as SButton).Text = "Bug Report";
                                 GUI.Visible = false;
                                 AkSoundEngine.PostEvent("EverhoodSave", GameManager.Instance.gameObject);
+                                ETGModGUI.UpdateTimeScale();
+                                ETGModGUI.UpdatePlayerState();
                             }
                             else
                             {
@@ -174,6 +176,8 @@ namespace SpecialStuffPack.Feedback
                             (GUI.Children[5] as SButton).Text = "Bug Report";
                             AkSoundEngine.PostEvent("EverhoodMenuConfirm", GameManager.Instance.gameObject);
                             GUI.Visible = false;
+                            ETGModGUI.UpdateTimeScale();
+                            ETGModGUI.UpdatePlayerState();
                         }
                     },
                     new SLabel() //8

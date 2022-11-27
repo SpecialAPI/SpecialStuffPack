@@ -9,5 +9,7 @@ namespace SpecialStuffPack.EnumExtensions
     public class PlayableCharactersE
     {
         public static PlayableCharacters SPCultist;
+        public static PlayableCharacters CustomCharacterExample;
+        public static PlayableCharacters Lamey;
     }
 }
