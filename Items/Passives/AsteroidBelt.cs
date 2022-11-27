@@ -56,6 +56,7 @@ namespace SpecialStuffPack.Items
                 overrideRangeIndicatorEffect = null,
                 rotateEffectToNormal = false
             };
+            modifier.IgnoreQueues = true;
             item.ReplacementProjectile = proj;
             item.AddToBlacksmithShop();
         }
