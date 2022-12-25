@@ -10,6 +10,8 @@ If you noticed a bug caused by this mod or have some feedback, you can now send 
 If you haven't installed BepInEx and/or Mod the Gungeon API, follow its installation guide (linked on Mod the Gungeon API's page: https://enter-the-gungeon.thunderstore.io/package/MtG_API/Mod_the_Gungeon_API/). After you've installed BepInEx, just unzip WMITF.zip into your BepInEx's `plugins` folder.
 
 # Changelog
+ * 1.3.2:
+   * Updated SoundAPI. You likely won't notice it but it should hopefully be less likely to crash now. Hopefully.
  * 1.3.1:
    * Fixed Red Blammolet being able to indoctrinate bosses.
    * Fixed the rat in punchout being unable to block.
