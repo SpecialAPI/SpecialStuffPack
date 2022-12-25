@@ -34,6 +34,10 @@ namespace SpecialStuffPack.Items.Passives
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
             base.DisableEffect(player);
             player.DecrementFlag<GemmedRound>();
             player.healthHaver.ModifyDamage -= Overpower;

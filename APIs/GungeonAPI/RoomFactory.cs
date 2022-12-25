@@ -47,10 +47,15 @@ namespace SpecialStuffPack.GungeonAPI
             return BuildFromBytes(ta.bytes, ta.name);
         }
 
-        public static void AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
-            string injectorName)
+        public static RoomData BuildFromTextAsset(string ta)
         {
-            ProceduralFlowModifierData injection = new ProceduralFlowModifierData()
+            return BuildFromTextAsset(AssetBundleManager.Load<TextAsset>(ta));
+        }
+
+        public static void AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
+            string injectorName, float chanceToSpawn = 1f)
+        {
+            ProceduralFlowModifierData injection = new()
             {
                 annotation = injectionAnnotation,
                 DEBUG_FORCE_SPAWN = false,
@@ -62,7 +67,7 @@ namespace SpecialStuffPack.GungeonAPI
                 RequiresMasteryToken = false,
                 chanceToLock = chanceToLock,
                 selectionWeight = 1,
-                chanceToSpawn = 1,
+                chanceToSpawn = 1f,
                 RequiredValidPlaceable = null,
                 prerequisites = prerequisites.ToArray(),
                 CanBeForcedSecret = true,
@@ -75,8 +80,8 @@ namespace SpecialStuffPack.GungeonAPI
             injector.PreventInjectionOfFailedPrerequisites = false;
             injector.IsNPCCell = false;
             injector.IgnoreUnmetPrerequisiteEntries = false;
-            injector.OnlyOne = false;
-            injector.ChanceToSpawnOne = 0.5f;
+            injector.OnlyOne = true;
+            injector.ChanceToSpawnOne = chanceToSpawn;
             injector.AttachedInjectionData = new List<SharedInjectionData>();
             injector.InjectionData = new List<ProceduralFlowModifierData>
             {
@@ -93,7 +98,7 @@ namespace SpecialStuffPack.GungeonAPI
         }
 
         public static void AddInjection(GenericRoomTable roomTable, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
-           string injectorName)
+           string injectorName, float chanceToSpawn = 1f)
         {
             ProceduralFlowModifierData injection = new ProceduralFlowModifierData()
             {
@@ -107,7 +112,7 @@ namespace SpecialStuffPack.GungeonAPI
                 RequiresMasteryToken = false,
                 chanceToLock = chanceToLock,
                 selectionWeight = 1,
-                chanceToSpawn = 1,
+                chanceToSpawn = chanceToSpawn,
                 RequiredValidPlaceable = null,
                 prerequisites = prerequisites.ToArray(),
                 CanBeForcedSecret = true,

@@ -60,6 +60,10 @@ namespace SpecialStuffPack.Items.Passives
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
             player.PostProcessProjectile -= RustifyBullet;
             player.OnUsedPlayerItem -= IronCoinSynergy;
             base.DisableEffect(player);

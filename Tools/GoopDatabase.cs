@@ -10,61 +10,24 @@ namespace SpecialStuffPack
     {
         public static void Init()
         {
-            GoopDefinition goopDefinition;
-            string text = "assets/data/goops/water goop.asset";
-            try
-            {
-                GameObject gameObject2 = LoadHelper.LoadAssetFromAnywhere(text) as GameObject;
-                goopDefinition = gameObject2.GetComponent<GoopDefinition>();
-            }
-            catch
-            {
-                goopDefinition = (LoadHelper.LoadAssetFromAnywhere(text) as GoopDefinition);
-            }
-            DefaultWaterGoop = goopDefinition;
-            GoopDefinition goopDefinition2;
-            text = "assets/data/goops/poison goop.asset";
-            try
-            {
-                GameObject gameObject2 = LoadHelper.LoadAssetFromAnywhere(text) as GameObject;
-                goopDefinition2 = gameObject2.GetComponent<GoopDefinition>();
-            }
-            catch
-            {
-                goopDefinition2 = (LoadHelper.LoadAssetFromAnywhere(text) as GoopDefinition);
-            }
-            goopDefinition2.name = text.Replace("assets/data/goops/", "").Replace(".asset", "");
-            DefaultPoisonGoop = goopDefinition2;
-            GoopDefinition goopDefinition3;
-            text = "assets/data/goops/napalmgoopquickignite.asset";
-            try
-            {
-                GameObject gameObject2 = LoadHelper.LoadAssetFromAnywhere(text) as GameObject;
-                goopDefinition3 = gameObject2.GetComponent<GoopDefinition>();
-            }
-            catch
-            {
-                goopDefinition3 = (LoadHelper.LoadAssetFromAnywhere(text) as GoopDefinition);
-            }
-            goopDefinition3.name = text.Replace("assets/data/goops/", "").Replace(".asset", "");
-            DefaultFireGoop = goopDefinition3;
-            PickupObject byId = PickupObjectDatabase.GetById(310);
-            GoopDefinition item;
-            if (byId == null)
-            {
-                item = null;
-            }
-            else
-            {
-                WingsItem component = byId.GetComponent<WingsItem>();
-                item = ((component != null) ? component.RollGoop : null);
-            }
-            DefaultCharmGoop = item;
-            DefaultCheeseGoop = (PickupObjectDatabase.GetById(626) as Gun).DefaultModule.projectiles[0].cheeseEffect.CheeseGoop;
-            DefaultBlobulonGoop = EnemyDatabase.GetOrLoadByGuid("0239c0680f9f467dbe5c4aab7dd1eca6").GetComponent<GoopDoer>().goopDefinition;
-            DefaultPoopulonGoop = EnemyDatabase.GetOrLoadByGuid("116d09c26e624bca8cca09fc69c714b3").GetComponent<GoopDoer>().goopDefinition;
-            DefaultGreenFireGoop = GetItemById<Gun>(698).DefaultModule.projectiles[0].GetComponent<GoopModifier>().goopDefinition;
-            DefaultWebGoop = EnemyDatabase.GetOrLoadByGuid("98ca70157c364750a60f5e0084f9d3e2").GetComponent<GoopDoer>().goopDefinition;
+            DefaultWaterGoop = LoadHelper.LoadAssetFromAnywhere("assets/data/goops/water goop.asset") as GoopDefinition;
+            DefaultPoisonGoop = LoadHelper.LoadAssetFromAnywhere("assets/data/goops/poison goop.asset") as GoopDefinition;
+            DefaultFireGoop = LoadHelper.LoadAssetFromAnywhere("assets/data/goops/napalmgoopquickignite.asset") as GoopDefinition;
+            DefaultCharmGoop = FairyWingsObject.RollGoop;
+            DefaultCheeseGoop = ElimentalerObject.GetProjectile().cheeseEffect.CheeseGoop;
+            DefaultBlobulonGoop = BlobulonEnemy.GetComponent<GoopDoer>().goopDefinition;
+            DefaultPoopulonGoop = PoopulonEnemy.GetComponent<GoopDoer>().goopDefinition;
+            DefaultGreenFireGoop = MaximizeSpellSynergyObject.GetProjectile().GetComponent<GoopModifier>().goopDefinition;
+            DefaultWebGoop = PhaserSpiderEnemy.GetComponent<GoopDoer>().goopDefinition;
+
+            LambIchor = CreateGoopBase("ichor");
+            LambIchor.AppliesDamageOverTime = true;
+            LambIchor.goopTexture = AssetBundleManager.Load<Texture2D>("ichor");
+            LambIchor.baseColor32 = Color.black;
+            LambIchor.fadeColor32 = Color.black;
+            LambIchor.overrideOpaqueness = 1f;
+            LambIchor.usesOverrideOpaqueness = true;
+            LambIchor.HealthModifierEffect = DefaultPoisonGoop.HealthModifierEffect;
         }
 
         public static GoopDefinition CreateGoopBase(string name)
@@ -102,5 +65,6 @@ namespace SpecialStuffPack
         public static GoopDefinition DefaultCheeseGoop;
         public static GoopDefinition DefaultGreenFireGoop;
         public static GoopDefinition DefaultWebGoop;
+        public static GoopDefinition LambIchor;
     }
 }

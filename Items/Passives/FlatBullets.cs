@@ -35,11 +35,15 @@ namespace SpecialStuffPack.Items.Passives
             obj.baseData.damage += Owner.PlayerHasActiveSynergy("Flatter Flat Bullets") ? FlatDamageSynergy : FlatDamage;
         }
 
-        public override void DisableEffect(PlayerController disablingPlayer)
+        public override void DisableEffect(PlayerController player)
         {
-            disablingPlayer.PostProcessProjectile -= PostProcessProjectile;
-            disablingPlayer.PostProcessBeam -= PostProcessBeam;
-            base.DisableEffect(disablingPlayer);
+            if (player == null)
+            {
+                return;
+            }
+            player.PostProcessProjectile -= PostProcessProjectile;
+            player.PostProcessBeam -= PostProcessBeam;
+            base.DisableEffect(player);
         }
 
         public float FlatDamage;

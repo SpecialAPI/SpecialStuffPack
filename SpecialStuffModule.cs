@@ -32,11 +32,13 @@ global using InControl;
 global using static SpecialStuffPack.ItemAPI.ItemBuilder;
 global using static SpecialStuffPack.ItemAPI.GunBuilder;
 global using static SpecialStuffPack.SynergyAPI.SynergyBuilder;
+global using ModifyMethod = StatModifier.ModifyMethod;
 using UnityEngine.Networking;
 using System.IO;
 using SpecialStuffPack.Feedback;
 using SpecialStuffPack.CursorAPI;
 using SpecialStuffPack.Characters;
+using SpecialStuffPack.Items.Pickups;
 
 namespace SpecialStuffPack
 {
@@ -115,7 +117,7 @@ namespace SpecialStuffPack
         {
             try
             {
-                stealthyPoof = SmokeBombObject.poofVfx;
+                InitStatics();
                 SoundManager.LoadBankFromModProject("SpecialStuffPack.SPECIAL_SFX.bnk");
 
                 //init apis
@@ -235,6 +237,13 @@ namespace SpecialStuffPack
                 WoodenDice.Init();
                 MagnifyingGlass.Init();
                 DisguiseHat.Init();
+                Bug.Init();
+                AlexandriaBook.Init();
+                BrokenCalculator.Init();
+                BrokenMask.Init();
+                TarotCards.Init();
+                LeaderDeck.Init();
+                Magnificus.Init();
                 //Evergun.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();

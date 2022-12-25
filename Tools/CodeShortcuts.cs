@@ -240,6 +240,32 @@ namespace SpecialStuffPack
             return self;
         }
 
+        public static bool ScaledRandom(this float self, float scale)
+        {
+            if(self <= 0f)
+            {
+                return false;
+            }
+            if(self >= 1f)
+            {
+                return true;
+            }
+            return Random.value < self.Scale(scale);
+        }
+
+        public static bool RandomChance(this float self)
+        {
+            if (self <= 0f)
+            {
+                return false;
+            }
+            if (self >= 1f)
+            {
+                return true;
+            }
+            return Random.value < self;
+        }
+
         public static void BreakStealth(PlayerController obj, string reason, Action<PlayerController> unstealthyActionDelegate, Action<PlayerController, ShopItemController> stolenDelegate)
         {
             obj.PlayEffectOnActor(CoolEffects.smokePoofVFX, Vector3.zero, false, true, false);
@@ -401,6 +427,15 @@ namespace SpecialStuffPack
             anim = go.AddComponent<tk2dSpriteAnimation>();
             anim.clips = new tk2dSpriteAnimationClip[0];
             return anim;
+        }
+
+        public static PlayerStatsExt Ext(this PlayerStats pstats)
+        {
+            if(pstats == null)
+            {
+                return null;
+            }
+            return pstats.GetOrAddComponent<PlayerStatsExt>();
         }
 
         public static tk2dSpriteAnimationClip AddClipWithExistingFrames(this tk2dSpriteAnimation library, string animationName, tk2dSpriteCollectionData collection, float fps = 15f,
@@ -1097,13 +1132,67 @@ namespace SpecialStuffPack
             }
         }
 
-        public static SpecialPlayerController SpecialPlayer(this PlayerController player)
+        public static PierceProjModifier GetOrAddPierce(this Projectile proj)
+        {
+            if (proj.GetComponent<PierceProjModifier>() != null)
+            {
+                return proj.GetComponent<PierceProjModifier>();
+            }
+            var pierce = proj.AddComponent<PierceProjModifier>();
+            pierce.penetration = 0;
+            return pierce;
+        }
+
+        public static T[] AddRangeToArray<T>(this T[] array, ICollection<T> range)
+        {
+            return CollectionExtensions.AddRangeToArray(array, range.ToArray());
+        }
+
+        public static T SetupDfSpriteFromTexture<T>(this GameObject obj, Texture2D texture, Shader shader) where T : dfSprite
+        {
+            T sprite = obj.GetOrAddComponent<T>();
+            dfAtlas atlas = obj.GetOrAddComponent<dfAtlas>();
+            atlas.Material = new(shader);
+            atlas.Material.mainTexture = texture;
+            atlas.Items.Clear();
+            dfAtlas.ItemInfo info = new()
+            {
+                border = new RectOffset(),
+                deleted = false,
+                name = "main_sprite",
+                region = new Rect(Vector2.zero, new Vector2(1, 1)),
+                rotated = false,
+                sizeInPixels = new Vector2(texture.width, texture.height),
+                texture = null,
+                textureGUID = "main_sprite"
+            };
+            atlas.AddItem(info);
+            sprite.Atlas = atlas;
+            sprite.SpriteName = "main_sprite";
+            sprite.zindex = 0;
+            return sprite;
+        }
+
+        public static Components.PlayerControllerExt Ext(this PlayerController player)
         {
             if(player == null)
             {
                 return null;
             }
-            return player.GetOrAddComponent<SpecialPlayerController>();
+            return player.GetOrAddComponent<Components.PlayerControllerExt>();
+        }
+
+        public static void RecalculateStats(this PlayerController play)
+        {
+            play.stats.RecalculateStats(play, false, false);
+        }
+
+        public static StatModifier AddOwnerlessModifier(this PlayerController player, PlayerStats.StatType stat, float amount, StatModifier.ModifyMethod modifyMethod = StatModifier.ModifyMethod.ADDITIVE)
+        {
+            var thingy = StatModifier.Create(stat, modifyMethod, amount);
+            player.ownerlessStatModifiers.Add(thingy);
+            player.RecalculateStats();
+            return thingy;
         }
 
         public static SpecialInput SpecialInput(this BraveInput input)
@@ -1120,6 +1209,30 @@ namespace SpecialStuffPack
             return new GenericFieldInfo<T>(type.GetField(name, flags));
         }
 
+        public static void InitStatics()
+        {
+            stealthyPoof = SmokeBombObject.poofVfx;
+            defaultPoison = IrradiatedLeadObject.HealthModifierEffect;
+            defaultFire = HotLeadObject.FireModifierEffect;
+            defaultFreeze = FrostBulletsObject.FreezeModifierEffect;
+            defaultCheese = ElimentalerObject.GetProjectile().cheeseEffect;
+            defaultCharm = CharmingRoundsObject.CharmModifierEffect;
+            permanentCharm = YellowChamberObject.CharmEffect;
+            defaultGreenFire = PitchPerfectSynergyObject.GetProjectile().fireEffect;
+            bombExplosionData = new();
+            bombExplosionData.CopyFrom(ExplosiveRoundsObject.ExplosionData);
+            bombExplosionData.preventPlayerForce = true;
+            bombExplosionData.damageRadius *= 1.25f;
+        }
+
         public static GameObject stealthyPoof;
+        public static GameActorHealthEffect defaultPoison;
+        public static GameActorFireEffect defaultFire;
+        public static GameActorFreezeEffect defaultFreeze;
+        public static GameActorCheeseEffect defaultCheese;
+        public static GameActorCharmEffect defaultCharm;
+        public static GameActorCharmEffect permanentCharm;
+        public static GameActorFireEffect defaultGreenFire;
+        public static ExplosionData bombExplosionData;
     }
 }

@@ -317,6 +317,11 @@ namespace SpecialStuffPack
             CreateSynergy("Gambling Addiction", new() { ItemIds["woodendice"], ChanceBulletsId });
             CreateSynergy("Midnight", new() { ItemIds["woodendice"], SixthChamberId });
             CreateSynergy("Recycling at its Finest", new() { ItemIds["rustyammobox"] }, new List<int>() { AmmoSynthesizerId, AmmoBeltId, UtilityBeltId, HipHolsterId });
+            CreateSynergy("Magnum Mox", new() { ItemIds["magnificus"], MagnumId });
+            CreateSynergy("The Goo Mage", new() { ItemIds["magnificus"] }, new() { PoisonVialId });
+            CreateSynergy("The Pike Mage", new() { ItemIds["magnificus"] }, new() { PitchforkId });
+            CreateSynergy("The Lonely Mage", new() { ItemIds["magnificus"] }, new() { RingOfEtherealFormId });
+            CreateSynergy("Wizard Mentor", new() { ItemIds["magnificus"] }, new() { ChaosBulletsId });
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);

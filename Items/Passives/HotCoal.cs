@@ -76,6 +76,10 @@ namespace SpecialStuffPack.Items
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
             base.DisableEffect(player);
             player.OnReceivedDamage -= IgnitePlayer;
             player.PostProcessProjectile -= AddGooper;

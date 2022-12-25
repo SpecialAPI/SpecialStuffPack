@@ -140,6 +140,7 @@
     <Compile Include="Characters\LameyRework.cs" />
     <Compile Include="Characters\NinjaRework.cs" />
     <Compile Include="Components\AdvancedProjectileModule.cs" />
+    <Compile Include="Components\AffectedByMox.cs" />
     <Compile Include="Components\AsteroidProjectile.cs" />
     <Compile Include="Components\BadLuckAffectedChest.cs" />
     <Compile Include="Components\BetterSquishyBounceWiggler.cs" />
@@ -170,15 +171,18 @@
     <Compile Include="Components\MagnifyPlayerBullets.cs" />
     <Compile Include="Components\MiscSynergyProcessor.cs" />
     <Compile Include="Components\ModifiedMetalGearRatBehavior.cs" />
+    <Compile Include="Components\MoxProjectile.cs" />
     <Compile Include="Components\OrbitProjectile.cs" />
     <Compile Include="Components\OutlineAdder.cs" />
     <Compile Include="Components\PistolWhipProjectile.cs" />
+    <Compile Include="Components\PlayerStatsExt.cs" />
     <Compile Include="Components\RocketLauncherProjectile.cs" />
     <Compile Include="Components\SerializedWeightedList.cs" />
     <Compile Include="Components\SetProjectileDestroyMode.cs" />
     <Compile Include="Components\ShowMultiplierOnHit.cs" />
     <Compile Include="Components\SpawnBulletScriptOnDestroy.cs" />
-    <Compile Include="Components\SpecialPlayerController.cs" />
+    <Compile Include="Components\PlayerControllerExt.cs" />
+    <Compile Include="Components\TarotCardRoomPlaceable.cs" />
     <Compile Include="Components\UltimateDragunIntroDoer.cs" />
     <Compile Include="Components\NoOutlineItem.cs" />
     <Compile Include="Components\UniqueOutlineItem.cs" />
@@ -198,6 +202,7 @@
     <Compile Include="EnumExtensions\EnumExtensionAttribute.cs" />
     <Compile Include="EnumExtensions\GungeonFlagsE.cs" />
     <Compile Include="EnumExtensions\MenuOpenedE.cs" />
+    <Compile Include="EnumExtensions\ModifyMethodE.cs" />
     <Compile Include="EnumExtensions\PlayableCharactersE.cs" />
     <Compile Include="Feedback\FeedbackCore.cs" />
     <Compile Include="Feedback\FeedbackForm.cs" />
@@ -206,6 +211,7 @@
     <Compile Include="Feedback\TrelloAPI.cs" />
     <Compile Include="Items\Actives\ActiveOverchargeItem.cs" />
     <Compile Include="Items\Actives\BananaJam.cs" />
+    <Compile Include="Items\Actives\Bug.cs" />
     <Compile Include="Items\Actives\DisguiseHat.cs" />
     <Compile Include="Items\Actives\EnergyDrink.cs" />
     <Compile Include="Items\Actives\HotSauce.cs" />
@@ -234,6 +240,7 @@
     <Compile Include="Items\Guns\SusShotgun.cs" />
     <Compile Include="Items\Guns\SynergyCompletionGun.cs" />
     <Compile Include="Items\Guns\WhipCream.cs" />
+    <Compile Include="Items\Passives\AlexandriaBook.cs" />
     <Compile Include="Items\Passives\AmethystItem.cs" />
     <Compile Include="Items\Passives\AmethystRound.cs" />
     <Compile Include="Items\Passives\AmmoFlower.cs" />
@@ -245,6 +252,7 @@
     <Compile Include="Items\Passives\BloodyScales.cs" />
     <Compile Include="Items\Passives\BossChest.cs" />
     <Compile Include="Items\Passives\BrokenCalculator.cs" />
+    <Compile Include="Items\Passives\BrokenMask.cs" />
     <Compile Include="Items\Passives\Butter.cs" />
     <Compile Include="Items\Passives\Calendar.cs" />
     <Compile Include="Items\Passives\Chaos.cs" />
@@ -274,6 +282,7 @@
     <Compile Include="Items\Passives\HotCoal.cs" />
     <Compile Include="Items\Passives\InfinityCrystal.cs" />
     <Compile Include="Items\Passives\Launcher.cs" />
+    <Compile Include="Items\Passives\LeaderDeck.cs" />
     <Compile Include="Items\Passives\LeadFists.cs" />
     <Compile Include="Items\Passives\LegitCoupon.cs" />
     <Compile Include="Items\Passives\MagnifyingGlass.cs" />
@@ -299,6 +308,7 @@
     <Compile Include="Items\Actives\UndyingTotem.cs" />
     <Compile Include="Items\Actives\Watermelon.cs" />
     <Compile Include="Items\Passives\WoodenDice.cs" />
+    <Compile Include="Items\Pickups\TarotCards.cs" />
     <Compile Include="LogRecorder.cs" />
     <Compile Include="ParadoxShrine.cs" />
     <Compile Include="Placeables\LilChest.cs" />
@@ -306,6 +316,7 @@
     <Compile Include="PlayMakerActions\ThievingRatGrabbyLilChest.cs" />
     <Compile Include="StatusEffects\RustStatusEffect.cs" />
     <Compile Include="Tools\AudioManager.cs" />
+    <Compile Include="Tools\CustomAmmoUtility.cs" />
     <Compile Include="Tools\PersistentCallToolbox.cs" />
     <Compile Include="Placeables\DiamondShrine.cs" />
     <Compile Include="Placeables\DoorPlaceable.cs" />

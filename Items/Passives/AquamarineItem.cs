@@ -34,6 +34,10 @@ namespace SpecialStuffPack.Items
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
             base.DisableEffect(player);
             player.healthHaver.damageTypeModifiers.Remove(m_electricImmunity);
             m_electricImmunity = null;

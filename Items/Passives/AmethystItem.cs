@@ -33,6 +33,10 @@ namespace SpecialStuffPack.Items
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
             base.DisableEffect(player);
             DecrementFlag(player, typeof(AmethystItem));
             ProjectileData.FixedFallbackDamageToEnemies /= 2;

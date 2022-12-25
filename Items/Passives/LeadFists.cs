@@ -24,6 +24,10 @@ namespace SpecialStuffPack.Items.Passives
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
             player.DecrementFlag<LeadFists>();
             base.DisableEffect(player);
         }
@@ -32,9 +36,12 @@ namespace SpecialStuffPack.Items.Passives
         [HarmonyPostfix]
         public static void HitOpponentAnyways(ref bool __result, PunchoutGameActor.State state)
         {
-            if(state is PunchoutGameActor.BlockState)
+            if (IsFlagSetAtAll(typeof(LeadFists)))
             {
-                __result = true;
+                if (state is PunchoutGameActor.BlockState)
+                {
+                    __result = true;
+                }
             }
         }
 

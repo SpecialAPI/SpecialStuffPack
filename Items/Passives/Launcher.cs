@@ -55,10 +55,14 @@ namespace SpecialStuffPack.Items.Passives
             }
         }
 
-        public override void DisableEffect(PlayerController disablingPlayer)
+        public override void DisableEffect(PlayerController player)
         {
-            disablingPlayer.PostProcessProjectile -= PostProcessProjectile;
-            base.DisableEffect(disablingPlayer);
+            if (player == null)
+            {
+                return;
+            }
+            player.PostProcessProjectile -= PostProcessProjectile;
+            base.DisableEffect(player);
         }
     }
 }

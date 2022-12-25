@@ -32,10 +32,10 @@ namespace SpecialStuffPack.Items
                 self.DropReward(isLeft, EmeraldId);
                 foreach(PlayerController p in GameManager.Instance.AllPlayers)
                 {
-                    if (p.SpecialPlayer().HasBeenKeyRobbed)
+                    if (p.Ext().HasBeenKeyRobbed)
                     {
                         self.DropReward(isLeft, GoldKey.GoldKeyId);
-                        p.SpecialPlayer().HasBeenKeyRobbed = false;
+                        p.Ext().HasBeenKeyRobbed = false;
                     }
                 }
             }

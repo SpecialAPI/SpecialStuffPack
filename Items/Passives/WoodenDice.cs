@@ -115,6 +115,10 @@ namespace SpecialStuffPack.Items.Passives
 
         public override void DisableEffect(PlayerController player)
         {
+            if(player == null)
+            {
+                return;
+            }
             player.PostProcessProjectile -= RerollDamage;
             player.OnNewFloorLoaded -= FloorRiggednessReroll;
             base.DisableEffect(player);

@@ -370,7 +370,7 @@ namespace SpecialStuffPack.Items
         public static void ChangeMetalGearRat(Action<MetalGearRatIntroDoer> orig, MetalGearRatIntroDoer self)
         {
             orig(self);
-            if (SpecialPlayerController.AnyoneHasBeenKeyRobbed() && self.GetComponent<ModifiedMetalGearRatBehavior>() == null)
+            if (Components.PlayerControllerExt.AnyoneHasBeenKeyRobbed() && self.GetComponent<ModifiedMetalGearRatBehavior>() == null)
             {
                 (self.behaviorSpeculator.AttackBehaviorGroup.AttackBehaviors.Find((AttackBehaviorGroup.AttackGroupItem d) => d.NickName == "Jump Pound").Behavior as ShootBehavior).BulletScript =
                            new CustomBulletScriptSelector(typeof(MetalGearRatJumpPound2));
@@ -603,7 +603,7 @@ namespace SpecialStuffPack.Items
                 if (p.HasPassiveItem(GoldKeyId))
                 {
                     p.RemovePassiveItem(GoldKeyId);
-                    p.SpecialPlayer().HasBeenKeyRobbed = true;
+                    p.Ext().HasBeenKeyRobbed = true;
                 }
             }
             Vector3 startPosition = copySprite.transform.position;

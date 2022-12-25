@@ -19,7 +19,7 @@ namespace SpecialStuffPack.Items.Guns
             {
                 gun.RawSourceVolley.projectiles.Add(new()
                 {
-                    projectiles = new() { ElephantGunObject.GetProjectile() },
+                    projectiles = new() { RegularShotgunObject.GetProjectile() },
                     angleVariance = 20f,
                     cooldownTime = 0.6f,
                     numberOfShotsInClip = 8,

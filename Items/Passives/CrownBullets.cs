@@ -57,6 +57,11 @@ namespace SpecialStuffPack.Items.Passives
 
         public override void DisableEffect(PlayerController player)
         {
+            if (player == null)
+            {
+                return;
+            }
+            player.PostProcessProjectile -= PostProcessProjectile;
             base.DisableEffect(player);
         }
 

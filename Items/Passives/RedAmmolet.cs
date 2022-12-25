@@ -24,21 +24,25 @@ namespace SpecialStuffPack.Items.Passives
         public override void DoCustomBlankEffect(SilencerInstance silencer, Vector2 blankCenter, PlayerController user)
         {
             var room = GameManager.Instance.Dungeon.data.GetAbsoluteRoomFromPosition(blankCenter.ToIntVector2(VectorConversions.Round));
-            if(room != null)
+            if (room != null)
             {
                 var enemies = room.GetActiveEnemiesUnreferenced(RoomHandler.ActiveEnemyType.All);
-                if(enemies != null && enemies.Count > 0)
+                if (enemies != null && enemies.Count > 0)
                 {
-                    var enemiesToCharm = Mathf.Clamp(enemies.Count / EnemiesPerCharm, 1, MaxCharmedEnemies);
-                    for(int i = 0; i < enemiesToCharm && enemies.Count > 0; i++)
+                    var validEnemies = enemies.FindAll(x => x.healthHaver != null && !x.healthHaver.IsBoss && x.IsNormalEnemy && !x.IsHarmlessEnemy);
+                    if (validEnemies.Count > 0)
                     {
-                        var enemy = enemies.RandomElement();
-                        if(enemy == null)
+                        var enemiesToCharm = Mathf.Clamp(validEnemies.Count / EnemiesPerCharm, 1, MaxCharmedEnemies);
+                        for (int i = 0; i < enemiesToCharm && validEnemies.Count > 0; i++)
                         {
-                            continue;
+                            var enemy = validEnemies.RandomElement();
+                            if (enemy == null)
+                            {
+                                continue;
+                            }
+                            CultCharmEffect.ConvertToIndoctrinate(enemy, true, 0.5f);
+                            validEnemies.Remove(enemy);
                         }
-                        CultCharmEffect.ConvertToIndoctrinate(enemy, true, 0.5f);
-                        enemies.Remove(enemy);
                     }
                 }
             }

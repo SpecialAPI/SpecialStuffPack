@@ -103,10 +103,14 @@ namespace SpecialStuffPack.Items.Passives
             base.Pickup(player);
         }
 
-        public override void DisableEffect(PlayerController disablingPlayer)
+        public override void DisableEffect(PlayerController player)
         {
-            DecrementFlag(disablingPlayer, GetType());
-            base.DisableEffect(disablingPlayer);
+            if (player == null)
+            {
+                return;
+            }
+            DecrementFlag(player, GetType());
+            base.DisableEffect(player);
         }
     }
 }

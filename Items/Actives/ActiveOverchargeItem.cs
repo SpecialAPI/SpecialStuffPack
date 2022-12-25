@@ -22,9 +22,13 @@ namespace SpecialStuffPack.Items
             base.Pickup(player);
         }
 
-        public override void DisableEffect(PlayerController disablingPlayer)
+        public override void DisableEffect(PlayerController player)
         {
-            base.DisableEffect(disablingPlayer);
+            if (player == null)
+            {
+                return;
+            }
+            base.DisableEffect(player);
         }
 
         public int MaxOverchargeAmount;

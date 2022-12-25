@@ -9,7 +9,7 @@ namespace SpecialStuffPack
 {
     public static class CoolEffects
     {
-        public static void DoFadeFlash(tk2dBaseSprite sprite, float flashTime = 0.5f, float destination = 2f, bool useInvariantTime = false)
+        public static void DoFadeFlash(this tk2dBaseSprite sprite, float flashTime = 0.5f, float destination = 2f, bool useInvariantTime = false)
         {
             GameObject fadeObject = new GameObject(sprite.name + "_fade");
             tk2dSprite fade = tk2dSprite.AddComponent(fadeObject, sprite.Collection, sprite.spriteId);

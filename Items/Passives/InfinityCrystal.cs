@@ -30,10 +30,14 @@ namespace SpecialStuffPack.Items.Passives
             volley.projectiles.ForEach(x => x.ammoCost = 0);
         }
 
-        public override void DisableEffect(PlayerController disablingPlayer)
+        public override void DisableEffect(PlayerController player)
         {
-            disablingPlayer.stats.AdditionalVolleyModifiers -= Neverending;
-            base.DisableEffect(disablingPlayer);
+            if (player == null)
+            {
+                return;
+            }
+            player.stats.AdditionalVolleyModifiers -= Neverending;
+            base.DisableEffect(player);
         }
     }
 }

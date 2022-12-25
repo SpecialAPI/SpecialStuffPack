@@ -58,10 +58,14 @@ namespace SpecialStuffPack.Items.Passives
             }
         }
 
-        public override void DisableEffect(PlayerController disablingPlayer)
+        public override void DisableEffect(PlayerController player)
         {
-            disablingPlayer.stats.AdditionalVolleyModifiers -= ModifyVolley;
-            base.DisableEffect(disablingPlayer);
+            if (player == null)
+            {
+                return;
+            }
+            player.stats.AdditionalVolleyModifiers -= ModifyVolley;
+            base.DisableEffect(player);
         }
     }
 }
