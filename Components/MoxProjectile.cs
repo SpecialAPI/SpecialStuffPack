@@ -94,11 +94,20 @@ namespace SpecialStuffPack.Components
                     }
                     break;
                 case MoxType.Magnum:
-                    ai.ApplyEffect(slowness);
-                    ai.ApplyEffect(burn);
+                    if (playerOwner.PlayerHasActiveSynergy(otherOtherSynergy))
+                    {
+                        ai.ApplyEffect(slowness);
+                    }
+                    if (playerOwner.PlayerHasActiveSynergy(otherSynergy))
+                    {
+                        ai.ApplyEffect(burn);
+                    }
                     if (ai.behaviorSpeculator != null)
                     {
-                        ai.behaviorSpeculator.Stun(0.1f, true);
+                        if (playerOwner.PlayerHasActiveSynergy(synergy))
+                        {
+                            ai.behaviorSpeculator.Stun(0.1f, true);
+                        }
                     }
                     break;
             }

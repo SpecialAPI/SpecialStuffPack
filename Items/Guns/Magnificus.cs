@@ -108,6 +108,70 @@ namespace SpecialStuffPack.Items.Guns
             blueMox.synergy = "The Lonely Mage";
             blueMox.synergyRadius = auraSynergy;
             blueMox.destroyTimeSynergy = destroyTimeSynergy;
+            /*var finalMagnum = EasyProjectileInit<Projectile>("MagnificusMoxProjectile_Magnum", "magnificus_mox_magnum_001", 2.5f, 23, 1000, 10f, false, false, false, null);
+            finalMagnum.baseData.damping = damp;
+            finalMagnum.GetOrAddComponent<BounceProjModifier>().numberOfBounces = 99999;
+            var magnumMox = finalBlue.AddComponent<MoxProjectile>();
+            magnumMox.auraRadius = aura;
+            magnumMox.type = MoxProjectile.MoxType.Magnum;
+            magnumMox.auraColor = new Color32(238, 54, 93, 255);
+            magnumMox.destroyTime = destroyTime;
+            magnumMox.synergy = "The Lonely Mage";
+            magnumMox.otherSynergy = "The Pike Mage";
+            magnumMox.otherOtherSynergy = "The Goo Mage";
+            magnumMox.synergyRadius = auraSynergy;
+            magnumMox.destroyTimeSynergy = destroyTimeSynergy;
+            magnumMox.slowness = new()
+            {
+                SpeedMultiplier = 0.2f,
+                CooldownMultiplier = 1.5f,
+                OverheadVFX = LoadHelper.LoadAssetFromAnywhere<GameObject>("VFX_Speed_Status"),
+                effectIdentifier = "effect",
+                AffectsEnemies = true,
+                AffectsPlayers = false,
+                OnlyAffectPlayerWhenGrounded = false,
+                AppliesDeathTint = true,
+                AppliesTint = true,
+                TintColor = new Color32(187, 220, 118, 255),
+                AppliesOutlineTint = false,
+                DeathTintColor = new Color32(187, 220, 118, 255),
+                duration = 0.1f,
+                maxStackedDuration = -1f,
+                OutlineTintColor = Color.black,
+                PlaysVFXOnActor = false,
+                resistanceType = EffectResistanceType.None,
+                stackMode = GameActorEffect.EffectStackingMode.Refresh,
+            };
+            magnumMox.burn = new()
+            {
+                flameBuffer = new(0.0625f, 0.3f),
+                flameFpsVariation = 0.5f,
+                flameMoveChance = 1f,
+                flameNumPerSquareUnit = 10,
+                FlameVfx = new()
+                {
+                    LoadHelper.LoadAssetFromAnywhere<GameObject>("VFX_Fire_Status_Body_001"),
+                    LoadHelper.LoadAssetFromAnywhere<GameObject>("VFX_Fire_Status_Body_002")
+                },
+                IsGreenFire = false,
+                DamagePerSecondToEnemies = 4f,
+                ignitesGoops = true,
+                AffectsEnemies = true,
+                AffectsPlayers = false,
+                AppliesDeathTint = true,
+                AppliesOutlineTint = false,
+                AppliesTint = true,
+                DeathTintColor = new(0.3882f, 0.3882f, 0.3882f),
+                duration = 0.1f,
+                effectIdentifier = "fire",
+                maxStackedDuration = -1f,
+                OutlineTintColor = Color.black,
+                OverheadVFX = null,
+                PlaysVFXOnActor = false,
+                resistanceType = EffectResistanceType.None,
+                stackMode = GameActorEffect.EffectStackingMode.Refresh,
+                TintColor = Color.red
+            };*/
             gun.Volley.projectiles.Add(new()
             {
                 numberOfShotsInClip = 6,
@@ -130,7 +194,8 @@ namespace SpecialStuffPack.Items.Guns
                                 finalBlue
                             },
                             numberOfShotsInClip = 1,
-                            cooldownTime = 0.15f
+                            cooldownTime = 0.15f,
+                            angleVariance = 5f
                         }
                     }
                 },
@@ -139,8 +204,75 @@ namespace SpecialStuffPack.Items.Guns
                 ammoType = GameUIAmmoType.AmmoType.CUSTOM,
                 customAmmoType = CustomAmmoUtility.AddCustomAmmoType("magnificus", "MagnificusAmmoType", "MagnificusAmmoTypeEmpty", "magnificus_projectile", "magnificus_projectile_empty"),
                 finalAmmoType = GameUIAmmoType.AmmoType.CUSTOM,
-                finalCustomAmmoType = CustomAmmoUtility.AddCustomAmmoType("magnificus_final", "MagnificusFinalAmmoType", "MagnificusFinalAmmoTypeEmpty", "magnificus_final", "magnificus_final_empty")
+                finalCustomAmmoType = CustomAmmoUtility.AddCustomAmmoType("magnificus_final", "MagnificusFinalAmmoType", "MagnificusFinalAmmoTypeEmpty", "magnificus_final", "magnificus_final_empty"),
+                angleVariance = 8f
             });
+            var replace = gun.AddComponent<AdvancedVolleyReplacementSynergyProcessor>();
+            replace.RequiredSynergy = "Magnum Mox";
+            replace.SynergyVolley = new()
+            {
+                projectiles = new()
+                {
+                    new()
+                    {
+                        numberOfShotsInClip = 6,
+                        numberOfFinalProjectiles = 1,
+                        projectiles = new()
+                        {
+                            card
+                        },
+                        finalVolley = new()
+                        {
+                            name = "Magnificus Final",
+                            projectiles = new()
+                            {
+                                new()
+                                {
+                                    projectiles = new()
+                                    {
+                                        finalGreen
+                                    },
+                                    numberOfShotsInClip = -1,
+                                    cooldownTime = 0.15f,
+                                    angleVariance = 5f,
+                                    angleFromAim = 30f
+                                },
+                                new()
+                                {
+                                    projectiles = new()
+                                    {
+                                        finalOrange
+                                    },
+                                    numberOfShotsInClip = -1,
+                                    cooldownTime = 0.15f,
+                                    angleVariance = 5f,
+                                    angleFromAim = 0f,
+                                    ammoCost = 0
+                                },
+                                new()
+                                {
+                                    projectiles = new()
+                                    {
+                                        finalBlue
+                                    },
+                                    numberOfShotsInClip = -1,
+                                    cooldownTime = 0.15f,
+                                    angleVariance = 5f,
+                                    angleFromAim = -30f,
+                                    ammoCost = 0
+                                }
+                            }
+                        },
+                        usesOptionalFinalProjectile = true,
+                        cooldownTime = 0.15f,
+                        ammoType = GameUIAmmoType.AmmoType.CUSTOM,
+                        customAmmoType = "magnificus",
+                        finalAmmoType = GameUIAmmoType.AmmoType.CUSTOM,
+                        finalCustomAmmoType = "magnificus_final",
+                        angleVariance = 8f,
+                    }
+                }
+            };
             finish();
         }
     }
