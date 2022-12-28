@@ -9,7 +9,7 @@ namespace SpecialStuffPack.Components
     {
         public void Start()
         {
-            projectile.OnHitEnemy += (x, x2, x3) =>
+            projectile.OnDestruction += (x) =>
             {
                 for(int i = 0; i < NumProjectilesToShoot; i++)
                 {
@@ -20,7 +20,7 @@ namespace SpecialStuffPack.Components
             };
         }
 
-        public int NumProjectilesToShoot => projectile.OwnerHasSynergy("Cacti Club II") ? 4 : 3;
+        public int NumProjectilesToShoot => projectile.OwnerHasSynergy("Cacti Launcher II") ? 13 : 10;
         public float DamageMultiplier => projectile.OwnerHasSynergy("Shoulders") ? 3f : 2f;
 
         public Projectile projectileToShoot;

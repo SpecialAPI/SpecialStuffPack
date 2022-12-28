@@ -176,6 +176,7 @@
     <Compile Include="Components\OutlineAdder.cs" />
     <Compile Include="Components\PistolWhipProjectile.cs" />
     <Compile Include="Components\PlayerStatsExt.cs" />
+    <Compile Include="Components\ProjectileSparks.cs" />
     <Compile Include="Components\RocketLauncherProjectile.cs" />
     <Compile Include="Components\SerializedWeightedList.cs" />
     <Compile Include="Components\SetProjectileDestroyMode.cs" />
