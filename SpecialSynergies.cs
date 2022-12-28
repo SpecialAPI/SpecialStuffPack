@@ -66,7 +66,7 @@ namespace SpecialStuffPack
             CreateSynergy("private static", new() { ItemIds["staticroll"] }, new() { GreyMauserId, ThePredatorId, SmokeBombId, BoxId, RingOfEtherealFormId });
             CreateSynergy("Infinite Mirror", new() { ItemIds["mirrorbullet"], ItemIds["truthmirror"] });
             CreateSynergy("Shoulders", new() { ItemIds["club"] }, new() { LichyTriggerFingerId, GunknightGauntletId, RobotsLeftHandId, MegahandId, FlameHandId, LaserSightId });
-            CreateSynergy("Cacti Club II", new() { ItemIds["club"] }, new() { Plus1BulletsId, AmuletOfThePitLordId, UtilityBeltId, DuctTapeId, CactusId, BroccoliId });
+            CreateSynergy("Cacti Launcher II", new() { ItemIds["club"] }, new() { Plus1BulletsId, AmuletOfThePitLordId, UtilityBeltId, DuctTapeId, CactusId, BroccoliId });
             CreateSynergy("Fully Unlocked", new() { ItemIds["bosschest"], ShelletonKeyId });
             CreateSynergy("while(true) { }", new() { ItemIds["nank"] }, new() { IceBombId, FrostGiantId, FrostBulletsId, FrostAmmoletId, Cold45Id, PolarisId, HeartOfIceId, IceCubeId, IceBreakerId, FreezeRayId });
             CreateSynergy("NullReferenceException", new() { ItemIds["nank"] }, new() { DragunfireId, FlameHandId, PitchforkId, DemonHeadId, PhoenixId, HotLeadId, RingOfFireResistanceId });
