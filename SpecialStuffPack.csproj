@@ -147,6 +147,7 @@
     <Compile Include="Components\ChestChoiceComponent.cs" />
     <Compile Include="Components\DontLoseDamageOnPierce.cs" />
     <Compile Include="Components\DoubleChargeActive.cs" />
+    <Compile Include="Components\ExcludeGunInBlessedMode.cs" />
     <Compile Include="Components\FishingReward.cs" />
     <Compile Include="Components\GamerComponent.cs" />
     <Compile Include="Components\GemDropper.cs" />

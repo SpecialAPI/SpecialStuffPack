@@ -7,9 +7,11 @@ Adds a lot of new content to the game, including 50+ items, new unlocks, synergi
 If you noticed a bug caused by this mod or have some feedback, you can now send it to me through the in-game bug reporting/feedback system. The best way to do that is through the new F8 menu. There you can enter the name, description and priority of your bug report/feedback, as well as specify if it's a bug report or feedback. You can also do that through the console, using the commands starting with `spapi feedback`. Actually using the command `spapi feedback` will show help on how to use the commands. **NOTE: Bug reports should only be about bugs you are ABSOLYTELY SURE are caused by this mod. Feedback can be any non-bug related feedback about the mod, including balancing, quality of life suggestions for the mod's content, etc.**
 
 # How to install
-If you haven't installed BepInEx and/or Mod the Gungeon API, follow its installation guide (linked on Mod the Gungeon API's page: https://enter-the-gungeon.thunderstore.io/package/MtG_API/Mod_the_Gungeon_API/). After you've installed BepInEx, just unzip WMITF.zip into your BepInEx's `plugins` folder.
+If you haven't installed BepInEx and/or Mod the Gungeon API, follow its installation guide (linked on Mod the Gungeon API's page: https://enter-the-gungeon.thunderstore.io/package/MtG_API/Mod_the_Gungeon_API/). After you've installed BepInEx, just unzip SpecialAPI-SpecialAPIs_Stuff-1.3.4.zip into your BepInEx's `plugins` folder.
 
 # Changelog
+ * 1.3.4:
+   * Fixed Lich's Old Gun being able to appear in Blessed Mode, softlocking the game.
  * 1.3.3:
    * Added Item Tips support.
  * 1.3.2:

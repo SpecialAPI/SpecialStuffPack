@@ -46,6 +46,7 @@ namespace SpecialStuffPack.Items.Guns
                 }
             };
 			gun.AddComponent<SynergyCompletionGun>();
+			gun.AddComponent<ExcludeGunInBlessedMode>();
             finish();
 			gun.SetupUnlockOnFlag(GungeonFlags.GUNSLINGER_PAST_KILLED, true);
 		}
