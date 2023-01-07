@@ -157,6 +157,7 @@
     <Compile Include="Components\DefaultLootMods.cs" />
     <Compile Include="Components\DontLoseDamageOnPierce.cs" />
     <Compile Include="Components\DoubleChargeActive.cs" />
+    <Compile Include="Components\ExcludeGunInBlessedMode.cs" />
     <Compile Include="Components\FishingReward.cs" />
     <Compile Include="Components\GamerComponent.cs" />
     <Compile Include="Components\GemDropper.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="Items\Guns\RedGun.cs" />
     <Compile Include="Items\Guns\Revolvever.cs" />
     <Compile Include="Items\Guns\Shredder.cs" />
+    <Compile Include="Items\Guns\SniperGun.cs" />
     <Compile Include="Items\Guns\SoulGun.cs" />
     <Compile Include="Items\Guns\SusShotgun.cs" />
     <Compile Include="Items\Guns\SynergyCompletionGun.cs" />
@@ -261,6 +263,7 @@
     <Compile Include="Items\Passives\CustomBlankModificationItem.cs" />
     <Compile Include="Items\Passives\DiamondItem.cs" />
     <Compile Include="Items\Passives\FlatBullets.cs" />
+    <Compile Include="Items\Passives\FossilFuel.cs" />
     <Compile Include="Items\Passives\FrailHeart.cs" />
     <Compile Include="Items\Actives\MarblesItem.cs" />
     <Compile Include="Items\Actives\ConsoleController.cs" />

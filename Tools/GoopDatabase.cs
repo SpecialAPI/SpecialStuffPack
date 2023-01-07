@@ -19,6 +19,7 @@ namespace SpecialStuffPack
             DefaultPoopulonGoop = PoopulonEnemy.GetComponent<GoopDoer>().goopDefinition;
             DefaultGreenFireGoop = MaximizeSpellSynergyObject.GetProjectile().GetComponent<GoopModifier>().goopDefinition;
             DefaultWebGoop = PhaserSpiderEnemy.GetComponent<GoopDoer>().goopDefinition;
+            DefaultOilGoop = LoadHelper.LoadAssetFromAnywhere<GameObject>("Purple Drum").GetComponent<KickableObject>().goopType;
 
             LambIchor = CreateGoopBase("ichor");
             LambIchor.AppliesDamageOverTime = true;
@@ -57,6 +58,7 @@ namespace SpecialStuffPack
         }
 
         public static GoopDefinition DefaultWaterGoop;
+        public static GoopDefinition DefaultOilGoop;
         public static GoopDefinition DefaultFireGoop;
         public static GoopDefinition DefaultPoisonGoop;
         public static GoopDefinition DefaultCharmGoop;

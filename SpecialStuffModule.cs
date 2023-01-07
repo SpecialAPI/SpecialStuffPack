@@ -48,7 +48,7 @@ namespace SpecialStuffPack
     {
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
-        public const string VERSION = "1.3.0";
+        public const string VERSION = "2.0.0";
         public static readonly Color LogColor = new Color32(50, 200, 50, 255);
         public static Texture2D spCultistBosscard;
         public static int EverhoodCursorId = -1;
@@ -244,6 +244,8 @@ namespace SpecialStuffPack
                 TarotCards.Init();
                 LeaderDeck.Init();
                 Magnificus.Init();
+                FossilFuel.Init();
+                SniperGun.Init();
                 //Evergun.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();

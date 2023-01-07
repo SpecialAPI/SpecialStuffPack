@@ -244,12 +244,12 @@ namespace SpecialStuffPack.ItemAPI
 
         public static T EasyProjectileInit<T>(string assetPath, string spritePath, float damage, float speed, float range, float knockback, bool shouldRotate, bool ignoreDamageCaps, bool pierceMinorBreakables, int? overrideSpriteId = null, 
             tk2dBaseSprite.Anchor anchor = tk2dBaseSprite.Anchor.MiddleCenter, int offsetX = 0, int offsetY = 0, int? overrideColliderPixelWidth = null, int? overrideColliderPixelHeight = null, int? overrideColliderOffsetX = null, 
-            int? overrideColliderOffsetY = null) where T : Projectile
+            int? overrideColliderOffsetY = null, tk2dSpriteCollectionData overrideSpriteCollection = null) where T : Projectile
         {
             T proj = SetupBasicProjectileComponents<T>(AssetBundleManager.Load<GameObject>(assetPath));
             if (overrideSpriteId != null)
             {
-                proj.GetComponentInChildren<tk2dBaseSprite>()?.SetSprite(ETGMod.Databases.Items.ProjectileCollection, overrideSpriteId.Value);
+                proj.GetComponentInChildren<tk2dBaseSprite>()?.SetSprite(overrideSpriteCollection ?? ETGMod.Databases.Items.ProjectileCollection, overrideSpriteId.Value);
             }
             else
             {
