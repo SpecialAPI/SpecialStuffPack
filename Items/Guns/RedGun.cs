@@ -253,7 +253,7 @@ namespace SpecialStuffPack.Items.Guns
 										break;
 									}
 								}
-								TextBoxManager.ShowThoughtBubble(sprite.WorldTopCenter + Vector2.up / 2f, lastCrownTarget.transform, -1f, $"+{CalculateDMGUpForCompanion(companionItem) * 100}%", true, false, "");
+								TextBoxManager.ShowThoughtBubble(sprite.WorldTopCenter + Vector2.up / 2f, lastCrownTarget.transform, -1f, $"+{CalculateDMGUpForCompanion(companionItem) * 100}% DMG", true, false, "");
 							}
 						}
 					}
