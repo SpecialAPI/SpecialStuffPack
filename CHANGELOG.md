@@ -1,0 +1,42 @@
+# 1.3.5:
+ * Fixed Ammo Flower breaking active reload effects.
+ * Made it more clear which stat is getting boosted from sacrificing a follower with the Red Gun.
+# 1.3.4
+ * Fixed Lich's Old Gun being able to appear in Blessed Mode, softlocking the game.
+# 1.3.3
+ * Added Item Tips support.
+# 1.3.2
+ * Updated SoundAPI. You likely won't notice it but it should hopefully be less likely to crash now. Hopefully.
+# 1.3.1
+ * Fixed Red Blammolet being able to indoctrinate bosses.
+ * Fixed the rat in punchout being unable to block.
+ * Asteroid Belt's explosions now ignore the explosion queue, meaning they will no longer be delayed.
+# 1.3.0
+ * Added an in-game bug reporting/feedback system that can be used through the new F8 menu or through commands.
+ * Added items: Rusty Ammo Box, Wooden Dice
+ * Added two new synergies.
+ * Fixed whips: now whips share enemy invulnerability time between all segments and new segments get their damage fully recalculated. No more big numbers with Alpha Bullets!
+ * Reworked Pistol Whip: damage increased from 6 to 6.5, bullet damage reduced from 10 to 5. Effect update: when a whip segment hits an enemy, it shoots a bullet in the direction it's facing -> when a whip segment hits an enemy, all whip segments shoot bullets in the direction they're facing.
+ * Save files used by this mod are no longer encrypted.
+# 1.2.0
+ * Added items: Heart Piece, Hot Sauce, Magic Bag, Banana Jam, Crown Bullets, Red Blammolet, Rusty Bullets and Lead Fists (unobtainable cheat item)
+ * Added guns: Suspicious Shotgun, The Red Gun and Shredder
+ * cacti club will be changed in the next update
+ * Added a lot of synergies
+ * Improved the code
+ * Nerfed emerald - now instead of granting full poison immunity it doubles the time required for poison to hurt the player.
+ * Completely reworked Convict's Shackles from a boring +2 armor item that's also a speed down (???) to a cool brotato reference.
+ * Added Little Chests - there's no actual way of spawning them other than the console for now, but they're there.
+ * Added a new status effect - Rust.
+ * Reworked the 50% OFF ON ALL IN-GAME PURCHASES! synergy. It's now called 25% OFF ON ALL IN-GAME PURCHASES!, the chance for microtransaction gun to be free is lowered to 25% but PAY 2 WIN now gets a 25% discount when having the synergy.
+ * Lock Plushie no longer drops keys when hitting harmless enemies like chickens.
+# 1.1.1
+ * Fixed singleplayer Cultist breaking boss intros when reaching the bosscard part.
+ * Fixed Guardian of Time resetting cleared rooms.
+ * Fixed Guardian of Time being able to unseal boss rooms.
+# 1.1.0
+ * Added Magic 8 Ball.
+ * Added guns: AK-SoundEngine, Ender Gun, Leather Whip, Pistol Whip, Whipped Cream and Lich's Old Gun.
+ * Added singleplayer Cultist.
+# 1.0.0
+ * Thunderstore release.
