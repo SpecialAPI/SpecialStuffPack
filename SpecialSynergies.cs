@@ -55,7 +55,7 @@ namespace SpecialStuffPack
             CreateSynergy("The zombies are coming", new() { ItemIds["gravediggershovel"] }, new() { ZombieBulletsId, Vertebraek47Id, SkullSpitterId });
             CreateSynergy("Armored Support", new() { ItemIds["frailheart"] }, new() { BionicLegId, LaserSightId, ShockRoundsId, NanomachinesId });
             CreateSynergy("I am YesEngine", new() { ItemIds["consolecontroller"] }, new() { GungineId, AlienEngineId });
-            CreateSynergy("Stone x2", new() { ItemIds["catapult"], SlingId });
+            CreateSynergy("Killing 1 Bird With 2 Stones", new() { ItemIds["catapult"], SlingId });
             CreateSynergy("Super Launch", new() { ItemIds["catapult"], ItemIds["launcher"] }, activeWhenGunsUnequipped: false, statModifiers: new()
             {
                 StatModifier.Create(PlayerStats.StatType.ProjectileSpeed, StatModifier.ModifyMethod.MULTIPLICATIVE, 3f),
@@ -322,6 +322,7 @@ namespace SpecialStuffPack
             CreateSynergy("The Pike Mage", new() { ItemIds["magnificus"] }, new() { PitchforkId });
             CreateSynergy("The Lonely Mage", new() { ItemIds["magnificus"] }, new() { RingOfEtherealFormId });
             CreateSynergy("Wizard Mentor", new() { ItemIds["magnificus"] }, new() { ChaosBulletsId });
+            CreateSynergy("Advanced, Feature-Rich Interactive", new() { ItemIds["soundengine"], ItemIds["ugly_gun"] });
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);
@@ -359,6 +360,7 @@ namespace SpecialStuffPack
             AddItemToSynergy(CustomSynergyType.MACHINE_PISTOL, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.LASER_THOMPSON, ItemIds["energydrink"]);
             AddItemToSynergy(CustomSynergyType.RECYCLING, ItemIds["rustyammobox"]);
+            AddItemToSynergy("#GARBAGE", ItemIds["soundengine"]);
 
             //add synergy components
             PickupObjectDatabase.GetById(476).AddComponent<MicrotransactionDiscountSynergyController>().SynergyToCheck = "25% OFF ON ALL IN-GAME PURCHASES!";

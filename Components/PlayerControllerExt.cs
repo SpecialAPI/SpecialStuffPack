@@ -50,11 +50,156 @@ namespace SpecialStuffPack.Components
             JankJankJankJankJank = 1f;
         }
 
+        [HarmonyPatch(typeof(SimpleFlagDisabler), nameof(SimpleFlagDisabler.Update))]
+        [HarmonyPostfix]
+        public static void EnableOnCCCRun(SimpleFlagDisabler __instance)
+        {
+            if (__instance.EnableOnGunGameMode && !GameManager.Instance.IsSelectingCharacter && GameManager.Instance.PrimaryPlayer != null && GameManager.Instance.PrimaryPlayer.HasExt() && GameManager.Instance.PrimaryPlayer.Ext().isCCCRun)
+            {
+                SpeculativeRigidbody component = __instance.GetComponent<SpeculativeRigidbody>();
+                if (!component.enabled)
+                {
+                    component.enabled = true;
+                    component.Reinitialize();
+                    __instance.GetComponent<MeshRenderer>().enabled = true;
+                }
+            }
+        }
+
+        [HarmonyPatch(typeof(Chest), nameof(Chest.Open))]
+        [HarmonyPrefix]
+        public static bool BreakChestAndYieldAbstraction(Chest __instance, PlayerController player)
+        {
+            if (player.Ext().isCCCRun)
+            {
+                if (__instance.majorBreakable != null)
+                {
+                    __instance.pickedUp = true;
+                    __instance.majorBreakable.Break(Vector2.zero);
+                    __instance.m_room.DeregisterInteractable(__instance);
+                    if (__instance.m_registeredIconRoom != null)
+                    {
+                        Minimap.Instance.DeregisterRoomIcon(__instance.m_registeredIconRoom, __instance.minimapIconInstance);
+                    }
+                    __instance.contents = new() { player.Ext().GetCCCAbstraction() };
+                    __instance.StartCoroutine(__instance.PresentItem());
+                    Instantiate(VFXDatabase.MiniBlank, __instance.sprite.WorldCenter, Quaternion.identity);
+                    Exploder.DoDistortionWave(__instance.sprite.WorldCenter, 2f, 0.2f, 4f, 0.2f);
+                    var ss = new GameObject("sound");
+                    ss.transform.position = __instance.transform.position;
+                    AkSoundEngine.PostEvent("Play_WPN_Life_Orb_Capture_01", ss);
+                }
+                else
+                {
+                    Exploder.DoDefaultExplosion(__instance.sprite.WorldCenter, Vector2.zero, null, true, CoreDamageTypes.None, false);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(Chest), nameof(Chest.OnBroken))]
+        [HarmonyPrefix]
+        public static bool GiveNothing(Chest __instance)
+        {
+            if (GameManager.HasInstance && GameManager.Instance.PrimaryPlayer != null && GameManager.Instance.PrimaryPlayer.Ext().isCCCRun)
+            {
+                __instance.pickedUp = true;
+                __instance.m_room.DeregisterInteractable(__instance);
+                if (__instance.m_registeredIconRoom != null)
+                {
+                    Minimap.Instance.DeregisterRoomIcon(__instance.m_registeredIconRoom, __instance.minimapIconInstance);
+                }
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(RewardPedestal), nameof(RewardPedestal.DetermineContents))]
+        [HarmonyPrefix]
+        public static bool DoNotGiveBossRewardInCCCMode(RewardPedestal __instance, PlayerController player)
+        {
+            if(__instance.contents == null && __instance.IsBossRewardPedestal && player != null && player.Ext().isCCCRun)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(RewardPedestal), nameof(RewardPedestal.RegisterChestOnMinimap))]
+        [HarmonyPrefix]
+        public static bool DoNotGiveBossRewardInCCCMode(RewardPedestal __instance)
+        {
+            if (__instance.contents == null && __instance.IsBossRewardPedestal && GameManager.HasInstance && GameManager.Instance.PrimaryPlayer != null && GameManager.Instance.PrimaryPlayer.Ext().isCCCRun)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        [HarmonyPatch(typeof(SpawnPickup), nameof(SpawnPickup.OnEnter))]
+        [HarmonyPrefix]
+        public static bool GiveAbstractionInstead(SpawnPickup __instance)
+        {
+            TalkDoerLite component = __instance.Owner.GetComponent<TalkDoerLite>();
+            PlayerController playerController = (!component.TalkingPlayer) ? GameManager.Instance.PrimaryPlayer : component.TalkingPlayer;
+            if (playerController != null && playerController.Ext().isCCCRun)
+            {
+                GameObject item = playerController.Ext().GetCCCAbstraction().gameObject;
+                if (__instance.spawnLocation == SpawnPickup.SpawnLocation.GiveToPlayer)
+                {
+                    LootEngine.TryGivePrefabToPlayer(item, playerController, false);
+                }
+                else if (__instance.spawnLocation == SpawnPickup.SpawnLocation.GiveToBothPlayers)
+                {
+                    LootEngine.TryGivePrefabToPlayer(item, GameManager.Instance.PrimaryPlayer, false);
+                    if (GameManager.Instance.CurrentGameType == GameManager.GameType.COOP_2_PLAYER)
+                    {
+                        LootEngine.TryGivePrefabToPlayer(item, GameManager.Instance.SecondaryPlayer, false);
+                    }
+                }
+                else
+                {
+                    Vector2 vector;
+                    if (__instance.spawnLocation == SpawnPickup.SpawnLocation.AtPlayer || __instance.spawnLocation == SpawnPickup.SpawnLocation.OffsetFromPlayer)
+                    {
+                        vector = playerController.specRigidbody.UnitCenter;
+                    }
+                    else if (__instance.spawnLocation == SpawnPickup.SpawnLocation.AtTalkDoer || __instance.spawnLocation == SpawnPickup.SpawnLocation.OffsetFromTalkDoer)
+                    {
+                        vector = ((!(component.specRigidbody != null)) ? component.sprite.WorldCenter : component.specRigidbody.UnitCenter);
+                    }
+                    else if (__instance.spawnLocation == SpawnPickup.SpawnLocation.RoomSpawnPoint)
+                    {
+                        vector = playerController.CurrentRoom.GetBestRewardLocation(IntVector2.One, RoomHandler.RewardLocationStyle.Original, false).ToVector2();
+                    }
+                    else
+                    {
+                        Debug.LogError("Tried to give an item to the player but no valid spawn location was selected.");
+                        vector = GameManager.Instance.PrimaryPlayer.CenterPosition;
+                    }
+                    if (__instance.spawnLocation == SpawnPickup.SpawnLocation.OffsetFromPlayer || __instance.spawnLocation == SpawnPickup.SpawnLocation.OffsetFromTalkDoer)
+                    {
+                        vector += __instance.spawnOffset;
+                    }
+                    LootEngine.SpawnItem(item, vector, Vector2.zero, 0f, true, false, false);
+                    LootEngine.DoDefaultItemPoof(vector, false, false);
+                }
+                __instance.Finish();
+                return false;
+            }
+            return true;
+        }
+
         public static float JankJankJankJankJank = 1f;
+
+        public void Awake()
+        {
+            player = GetComponent<PlayerController>();
+        }
 
         public void Start()
         {
-            player = GetComponent<PlayerController>();
             if(player != null)
             {
                 player.PostProcessProjectile += HandleDefaultEffects;
@@ -100,6 +245,28 @@ namespace SpecialStuffPack.Components
                     {
                         item.DidDamage(player, activeChargePerSecond * BraveTime.DeltaTime);
                     }
+                }
+            }
+            if (isCCCRun && wasLastInFoyer)
+            {
+                if (!GameManager.Instance.IsFoyer)
+                {
+                    wasLastInFoyer = false;
+                    player.CharacterUsesRandomGuns = false;
+                    GameStatsManager.Instance.rainbowRunToggled = false;
+                    player.RemoveAllPassiveItems();
+                    player.RemoveAllActiveItems();
+                    for (int i = 0; i < player.inventory.m_guns.Count; i++)
+                    {
+                        Gun gun = player.inventory.m_guns[i];
+                        if(gun.PickupObjectId != RustySidearmId && gun.PickupObjectId != MachinePistolId)
+                        {
+                            player.inventory.RemoveGunFromInventory(gun);
+                            Destroy(gun.gameObject);
+                            i--;
+                        }
+                    }
+                    player.inventory.GunLocked.ClearOverrides();
                 }
             }
         }
@@ -356,6 +523,76 @@ namespace SpecialStuffPack.Components
             return false;
         }
 
+        public PassiveItem GetCCCAbstraction()
+        {
+            var thingy = GetPassiveById(CCCAbstractions.IdOfTheFirstThing + cccAbId);
+            if(cccAbId < 6)
+            {
+                cccAbId++;
+            }
+            return thingy;
+        }
+
+        public void CCCSequenceNextFloor()
+        {
+            player.OnNewFloorLoaded += StartCCCSequence;
+        }
+
+        public void StartCCCSequence(PlayerController play)
+        {
+            player.OnNewFloorLoaded -= StartCCCSequence;
+            player.StartCoroutine(CCCSequence());
+        }
+
+        public IEnumerator CCCSequence()
+        {
+            while (!player.AcceptingAnyInput || Dungeon.IsGenerating || player.CurrentRoom == null)
+            {
+                yield return null;
+            }
+            var room = player.CurrentRoom;
+            room.SealRoom();
+            var unsealEvents = room.area.runtimePrototypeData.roomEvents.Where(x => x.condition == RoomEventTriggerCondition.ON_ENEMIES_CLEARED && x.action == RoomEventTriggerAction.UNSEAL_ROOM).ToList();
+            foreach (var roomEvent in unsealEvents)
+            {
+                room.area.runtimePrototypeData.roomEvents.Remove(roomEvent);
+            }
+            yield return new WaitForSeconds(1f);
+            var unseal = LootEngine.SpawnItem(Item["chamberchamberchamber"].gameObject, room.GetCenterCell().ToVector2(), Vector2.down, 0f, true, false, false).AddComponent<Unsealer>();
+            unseal.roomToUnseal = room;
+            unseal.addTheseBack = unsealEvents;
+            Instantiate(VFXDatabase.MiniBlank, room.GetCenterCell().ToVector2(), Quaternion.identity);
+            Exploder.DoDistortionWave(room.GetCenterCell().ToVector2(), 2f, 0.2f, 4f, 0.2f);
+            var ss = new GameObject("sound");
+            ss.transform.position = room.GetCenterCell().ToVector2();
+            AkSoundEngine.PostEvent("Play_WPN_kthulu_blast_01", ss);
+            Destroy(ss, 3f);
+            yield break;
+        }
+
+        public class Unsealer : MonoBehaviour
+        {
+            public void Awake()
+            {
+                GetComponent<PassiveItem>().OnPickedUp += UnsealRoomAndMore;
+            }
+
+            public void UnsealRoomAndMore(PlayerController play)
+            {
+                if (roomToUnseal != null)
+                {
+                    play.CurrentRoom.UnsealRoom();
+                    roomToUnseal.area?.runtimePrototypeData?.roomEvents?.AddRange(addTheseBack);
+                }
+                GetComponent<PassiveItem>().OnPickedUp -= UnsealRoomAndMore;
+                Destroy(this);
+            }
+
+            public RoomHandler roomToUnseal;
+            public IEnumerable<RoomEventDefinition> addTheseBack;
+        }
+
+        public bool wasLastInFoyer;
         public float poisonProjectileChance;
         public float lambCritChance;
         public PlayerController player;
@@ -373,6 +610,8 @@ namespace SpecialStuffPack.Components
         public float bulletChanceEffectScaleMultiplier = 1f;
         public float soulSnatcherDamageLeft = 1500f;
         public float giftFromBelowDamageLeft = 2000f;
+        public int cccAbId;
+        public bool isCCCRun;
         public StatModifier floorDamageModifier;
         public List<TarotCards.TarotCardType> tarotCards = new();
     }

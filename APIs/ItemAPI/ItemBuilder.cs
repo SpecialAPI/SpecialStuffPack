@@ -208,7 +208,7 @@ namespace SpecialStuffPack.ItemAPI
                 {
                     Game.Items.Add(idPool + ":" + name.ToMTGId(), item);
                 }
-                ETGMod.Databases.Items.AddSpecific(item);
+                ETGMod.Databases.Items.AddSpecific(false, item);
                 ItemIds.Add(notSpapiName.ToLowerInvariant(), item.PickupObjectId);
                 if(item is PassiveItem passive)
                 {

@@ -301,6 +301,94 @@ namespace SpecialStuffPack.ItemAPI
             return proj;
         }
 
+        public static GameObject EasyCasingSetup(string assetPath, string spriteName)
+        {
+            var go = AssetBundleManager.Load<GameObject>(assetPath);
+            var coll = EasyCollectionSetup("SpecialVFXCollection");
+            var id = SpriteBuilder.AddSpriteToCollection(spriteName, coll, "Brave/LitTk2dCustomFalloffTiltedCutoutFast");
+            tk2dSprite.AddComponent(go, coll, id);
+            var def = coll.spriteDefinitions[id];
+            def.ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter);
+            var deb = go.AddComponent<DebrisObject>();
+            deb.ACCURATE_DEBRIS_THRESHOLD = 0.25f;
+            deb.accurateDebris = false;
+            deb.additionalBounceEnglish = 0f;
+            deb.additionalHeightBoost = 0f;
+            deb.angularVelocity = 900f;
+            deb.angularVelocityVariance = 180f;
+            deb.animatePitFall = false;
+            deb.AssignedGoop = null;
+            deb.audioEventName = "Play_WPN_magnum_shells_01";
+            deb.bounceCount = 1;
+            deb.breakOnFallChance = 1f;
+            deb.breaksOnFall = true;
+            deb.canRotate = true;
+            deb.changesCollisionLayer = false;
+            deb.collisionStopsBullets = false;
+            deb.decayOnBounce = 0.5f;
+            deb.detachedParticleSystems = new();
+            deb.directionalAnimationData = new();
+            deb.doesDecay = false;
+            deb.DoesGoopOnRest = false;
+            deb.followupBehavior = DebrisObject.DebrisFollowupAction.None;
+            deb.followupIdentifier = "";
+            deb.ForceUpdateIfDisabled = false;
+            deb.GoopRadius = 1f;
+            deb.groundedCollisionLayer = CollisionLayer.LowObstacle;
+            deb.groupManager = null;
+            deb.inertialMass = 1f;
+            deb.IsCorpse = false;
+            deb.isFalling = false;
+            deb.isPitFalling = false;
+            deb.isStatic = false;
+            deb.killTranslationOnBounce = false;
+            deb.lifespanMax = 1f;
+            deb.lifespanMin = 1f;
+            deb.motionMultiplier = 1f;
+            deb.onGround = false;
+            deb.optionalBounceVFX = null;
+            deb.pitFallSplash = false;
+            deb.placementOptions = new();
+            deb.playAnimationOnTrigger = false;
+            deb.PreventAbsorption = false;
+            deb.PreventFallingInPits = false;
+            deb.removeSRBOnGrounded = false;
+            deb.shadowSprite = null;
+            deb.shouldUseSRBMotion = false;
+            deb.usesDirectionalFallAnimations = false;
+            deb.usesLifespan = false;
+            deb.Priority = EphemeralObject.EphemeralPriority.Ephemeral;
+            return go;
+        }
+
+        public static GameObject EasyMuzzleSetup(string assetPath, string animationPrefix, int fps, string shader, tk2dBaseSprite.Anchor anchor = tk2dBaseSprite.Anchor.MiddleLeft, List<IntVector2> manualOffsets = null, Action<Material> postprocessMaterial = null)
+        {
+            var go = AssetBundleManager.Load<GameObject>(assetPath);
+            var coll = EasyCollectionSetup("SpecialVFXCollection");
+            var anim = EasyAnimationSetup("SpecialVFXAnimation");
+            var clippy = anim.AddClip(animationPrefix, coll, fps, tk2dSpriteAnimationClip.WrapMode.Once, null, null, shader);
+            var id = clippy.frames[0].spriteId;
+            tk2dSprite.AddComponent(go, coll, id);
+            for (int i = 0; i < clippy.frames.Length; i++)
+            {
+                var frame = clippy.frames[i];
+                var def = frame.spriteCollection.spriteDefinitions[frame.spriteId];
+                def.ConstructOffsetsFromAnchor(anchor, null, false, true);
+                if (manualOffsets != null && manualOffsets.Count > i)
+                {
+                    def.AddOffset(manualOffsets[i].ToVector2() / 16f);
+                }
+                postprocessMaterial?.Invoke(def.material);
+                postprocessMaterial?.Invoke(def.materialInst);
+            }
+            var animator = go.AddComponent<tk2dSpriteAnimator>();
+            animator.Library = anim;
+            animator.DefaultClipId = anim.GetClipIdByName(clippy.name);
+            animator.playAutomatically = true;
+            go.AddComponent<SpriteAnimatorKiller>();
+            return go;
+        }
+
         public static Gun EasyGunInit(string assetPath, string gunName, string gunShortDesc, string gunLongDesc, string defaultSprite, string ammonomiconSprite, string gunSpriteContainer, int maxAmmo, float realoadTime, IntVector2 barrelOffset, 
             VFXPool muzzleflash, string gunSwitchGroup, PickupObject.ItemQuality quality, GunClass gunClass, out Action finish, int? ammonomiconPlacement = null, string overrideConsoleId = null, GameObject baseObject = null)
         {

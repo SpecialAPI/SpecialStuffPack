@@ -138,7 +138,7 @@ namespace SpecialStuffPack.Characters
             ETGMod.Databases.Strings.Core.Set($"#PLAYER_NICK_{PlayableCharactersE.Lamey.ToString().ToUpperInvariant()}", "detective");
 
             //add lamey to breach
-            lameyPlayer.AddToBreach("lameybreachflag", new(30.5f, 28.75f), new(), new(8, 1, 10, 4), new(7, 1, 12, 19), new(-1, 0), "lameyoverheadpanel", "The Detective", "lamey", 5, "lamey_items");
+            lameyPlayer.AddToBreach("lameybreachflag", new(30.5f, 28.75f), new(), new(8, 1, 10, 4), new(7, 1, 12, 19), new(-1, 0), "lameyoverheadpanel", "The Detective (WIP)", "lamey", 5, "lamey_items");
         }
     }
 }

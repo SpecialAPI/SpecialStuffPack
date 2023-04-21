@@ -138,6 +138,7 @@
     <Compile Include="Characters\CharacterBuilder.cs" />
     <Compile Include="Characters\CosmonautRework.cs" />
     <Compile Include="Characters\LameyRework.cs" />
+    <Compile Include="Characters\MrGiando.cs" />
     <Compile Include="Characters\NinjaRework.cs" />
     <Compile Include="Components\AdvancedProjectileModule.cs" />
     <Compile Include="Components\AffectedByMox.cs" />
@@ -229,7 +230,9 @@
     <Compile Include="Items\Guns\FireVolleyOnReload.cs" />
     <Compile Include="Items\Guns\FishingRodGun.cs" />
     <Compile Include="Items\Guns\Frogun.cs" />
+    <Compile Include="Items\Guns\GoldenShotgun.cs" />
     <Compile Include="Items\Guns\GunBehaviourFormeSynergyProcessor.cs" />
+    <Compile Include="Items\Guns\HDGun.cs" />
     <Compile Include="Items\Guns\HelloWorld.cs" />
     <Compile Include="Items\Guns\LeatherWhip.cs" />
     <Compile Include="Items\Guns\Magnificus.cs" />
@@ -242,6 +245,8 @@
     <Compile Include="Items\Guns\SoulGun.cs" />
     <Compile Include="Items\Guns\SusShotgun.cs" />
     <Compile Include="Items\Guns\SynergyCompletionGun.cs" />
+    <Compile Include="Items\Guns\UglyGun.cs" />
+    <Compile Include="Items\Guns\AlwaysUnpixelated.cs" />
     <Compile Include="Items\Guns\WhipCream.cs" />
     <Compile Include="Items\Passives\AlexandriaBook.cs" />
     <Compile Include="Items\Passives\AmethystItem.cs" />
@@ -258,6 +263,8 @@
     <Compile Include="Items\Passives\BrokenMask.cs" />
     <Compile Include="Items\Passives\Butter.cs" />
     <Compile Include="Items\Passives\Calendar.cs" />
+    <Compile Include="Items\Passives\CCCAbstractions.cs" />
+    <Compile Include="Items\Passives\ChamberChamberChamber.cs" />
     <Compile Include="Items\Passives\Chaos.cs" />
     <Compile Include="Items\Passives\CrownBullets.cs" />
     <Compile Include="Items\Passives\CustomBlankModificationItem.cs" />
@@ -315,6 +322,9 @@
     <Compile Include="Items\Pickups\TarotCards.cs" />
     <Compile Include="LogRecorder.cs" />
     <Compile Include="ParadoxShrine.cs" />
+    <Compile Include="Placeables\BreachShrinePlacer.cs" />
+    <Compile Include="Placeables\CCCChallenge.cs" />
+    <Compile Include="Placeables\FreeGunCrate.cs" />
     <Compile Include="Placeables\LilChest.cs" />
     <Compile Include="Placeables\LilChestPlacer.cs" />
     <Compile Include="PlayMakerActions\ThievingRatGrabbyLilChest.cs" />
@@ -340,7 +350,6 @@
     <Compile Include="Tools\Converter.cs" />
     <Compile Include="Tools\CoolEffects.cs" />
     <Compile Include="Tools\ExtraDelegates.cs" />
-    <Compile Include="Tools\ExtraPublicFields.cs" />
     <Compile Include="Tools\GenericFieldInfo.cs" />
     <Compile Include="Tools\GlobalEnemyGuids.cs" />
     <Compile Include="Tools\GlobalItemIds.cs" />
@@ -357,6 +366,7 @@
     <Compile Include="Items\Actives\WishingOrb.cs" />
     <Compile Include="Tools\UnityEventHandler.cs" />
     <Compile Include="Feedback\TrelloCardResponse.cs" />
+    <Compile Include="Tools\VFXDatabase.cs" />
     <Compile Include="WindowsWindowNamer.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -392,7 +402,7 @@
       <HintPath>packages\BepInEx.BaseLib.5.4.21\lib\net35\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="ModTheGungeonAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\EtG.ModTheGungeonAPI.1.5.5\lib\net35\ModTheGungeonAPI.dll</HintPath>
+      <HintPath>packages\EtG.ModTheGungeonAPI.1.6.1\lib\net35\ModTheGungeonAPI.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>

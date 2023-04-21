@@ -40,7 +40,7 @@ namespace SpecialStuffPack.Behaviors.WizardKnight.Sword
             if (m_sword != null && m_sword.Owner != null && m_sword.Owner.behaviorSpeculator != null && m_sword.Owner.behaviorSpeculator.AttackBehaviorGroup != null && m_sword.Owner.behaviorSpeculator.AttackBehaviorGroup.CurrentBehavior != null &&
                 m_sword.Owner.behaviorSpeculator.AttackBehaviorGroup.CurrentBehavior is SequentialAttackBehaviorGroup) 
             {
-                AttackBehaviorBase behav = (m_sword.Owner.behaviorSpeculator.AttackBehaviorGroup.CurrentBehavior as SequentialAttackBehaviorGroup).CurrentBehavior();
+                AttackBehaviorBase behav = (m_sword.Owner.behaviorSpeculator.AttackBehaviorGroup.CurrentBehavior as SequentialAttackBehaviorGroup).currentBehavior;
                 if(behav != null && behav is WizardKnightChangeStateBehavior)
                 {
                     WizardKnightChangeStateBehavior stateBehav = behav as WizardKnightChangeStateBehavior;

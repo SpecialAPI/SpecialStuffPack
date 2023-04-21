@@ -10,6 +10,7 @@ namespace SpecialStuffPack.EnumExtensions
     {
         public static PlayableCharacters SPCultist;
         public static PlayableCharacters CustomCharacterExample;
+        public static PlayableCharacters CustomCharacterGiando;
         public static PlayableCharacters Lamey;
     }
 }

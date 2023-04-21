@@ -1173,6 +1173,52 @@ namespace SpecialStuffPack
             return sprite;
         }
 
+        public static T NC<T>(this T yes) where T : Object
+        {
+            if(yes == null)
+            {
+                return null;
+            }
+            return yes;
+        }
+
+        public static void DropReward(this PunchoutAIActor self, bool isLeft, int exactItemId)
+        {
+            self.StartCoroutine(self.DropRewardCR(isLeft, exactItemId));
+        }
+
+        public static IEnumerator DropRewardCR(this PunchoutAIActor self, bool isLeft, int exactItemId)
+        {
+            if (exactItemId >= 0)
+            {
+                self.DroppedRewardIds.Add(exactItemId);
+                while (self.state is PunchoutAIActor.ThrowAmmoState)
+                {
+                    yield return null;
+                }
+                GameObject droppedItem = SpawnManager.SpawnVFX(self.DroppedItemPrefab, self.transform.position + new Vector3(-0.25f, 2.5f), Quaternion.identity);
+                tk2dSprite droppedItemSprite = droppedItem.GetComponent<tk2dSprite>();
+                tk2dSprite rewardSprite = PickupObjectDatabase.GetById(exactItemId).GetComponent<tk2dSprite>();
+                droppedItemSprite.SetSprite(rewardSprite.Collection, rewardSprite.spriteId);
+                droppedItem.GetComponent<PunchoutDroppedItem>().Init(isLeft);
+            }
+            yield break;
+        }
+
+        public static tk2dSprite AddSprite(this GameObject go, string path, string coll, string shader = "tk2d/CutoutVertexColorTintableTilted")
+        {
+            return tk2dSprite.AddComponent(go, EasyCollectionSetup(coll), SpriteBuilder.AddSpriteToCollection(path, EasyCollectionSetup(coll), shader));
+        }
+
+        public static bool HasExt(this PlayerController player)
+        {
+            if (player == null)
+            {
+                return false;
+            }
+            return player.GetComponent<Components.PlayerControllerExt>();
+        }
+
         public static Components.PlayerControllerExt Ext(this PlayerController player)
         {
             if(player == null)

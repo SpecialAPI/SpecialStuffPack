@@ -50,7 +50,7 @@ namespace SpecialStuffPack.Characters
             string bosscardSpriteContainer, int bosscardFps, string minimapPrefabName, string minimapSpriteName, string statsName, Dictionary<PlayerStats.StatType, float> defaultStats, float startingHealth,
             int startingArmor, int baseBlanksPerFloor,
             int maxItemsHeld, List<int> startingItems, List<int> altGuns, int startingMoney, int startingKeys, bool armorInsteadOfHealth, string animationPrefix, string primaryHandSprite, string secondaryHandSprite, 
-            bool animationsHaveHands, bool armorlessAnimations, string voice) where T : PlayerController
+            bool animationsHaveHands, bool armorlessAnimations, string voice, string footstepsound = "Play_FS", string dodgerollstartsound = "", string dodgerolllandsound = "") where T : PlayerController
         {
             if (!spriteContainer.StartsWith("assets/"))
             {
@@ -81,7 +81,7 @@ namespace SpecialStuffPack.Characters
             player.stats = AssetBundleManager.Load<GameObject>(statsName, null, null).GetOrAddComponent<PlayerStats>();
             if(defaultStats != null)
             {
-                var highest = Mathf.Max(defaultStats.Keys.Select(x => (int)x).Max(), (int)PlayerStats.StatType.MoneyMultiplierFromEnemies);
+                var highest = Mathf.Max(defaultStats.Keys.Count > 0 ? defaultStats.Keys.Select(x => (int)x).Max() : -1, (int)PlayerStats.StatType.MoneyMultiplierFromEnemies);
                 player.stats.BaseStatValues = new();
                 for(int i = 0; i < highest + 1; i++)
                 {
@@ -392,18 +392,18 @@ namespace SpecialStuffPack.Characters
             };
             Dictionary<string, string[]> altAnimationNames = new()
             {
-                { "run_down",                   new string[] { "run_front" } },
-                { "run_up",                     new string[] { "run_back" } },
-                { "run_right_bw",               new string[] { "run_back_right" } },
-                { "run_right",                  new string[] { "run_right_front" } },
-                { "idle",                       new string[] { "idle_right_front" } },
-                { "idle_bw",                    new string[] { "idle_back_right" } },
+                { "run_down",                   new string[] { "run_front", "move_front" } },
+                { "run_up",                     new string[] { "run_back", "move_back" } },
+                { "run_right_bw",               new string[] { "run_back_right", "move_back_right" } },
+                { "run_right",                  new string[] { "run_right_front", "move_right" } },
+                { "idle",                       new string[] { "idle_right_front", "idle_front_right" } },
+                { "idle_bw",                    new string[] { "idle_back_right", "idle_bw_right" } },
                 { "idle_backward",              new string[] { "idle_back" } },
                 { "idle_forward",               new string[] { "idle_front" } },
                 { "dodge",                      new string[] { "dodge_front" } },
                 { "dodge_bw",                   new string[] { "dodge_back" } },
                 { "dodge_left",                 new string[] { "dodge_front_right" } },
-                { "dodge_left_bw",              new string[] { "dodge_back_right" } },
+                { "dodge_left_bw",              new string[] { "dodge_back_right", "dodge_bw_right" } },
                 { "spinfall",                   new string[] { "spin" } },
                 { "tablekick_right",            new string[] { "tablekick_front_right" } },
                 { "tablekick_up",               new string[] { "tablekick_back_right" } },

@@ -32,7 +32,7 @@ namespace SpecialStuffPack.Items
             }
             if(m_currentRatShop != null && m_currentRatShop.GetComponent<BaseShopController>() != null)
             {
-                List<ShopItemController> items = m_currentRatShop.GetComponent<BaseShopController>().ItemControllers();
+                List<ShopItemController> items = m_currentRatShop.GetComponent<BaseShopController>().m_itemControllers;
                 if(items != null)
                 {
                     foreach(ShopItemController item in items)
@@ -52,7 +52,7 @@ namespace SpecialStuffPack.Items
         {
             if(m_currentRatShop != null && !player.PlayerHasActiveSynergy("Fufufufufu"))
             {
-                if (item.BaseParentShop() == m_currentRatShop.GetComponent<BaseShopController>())
+                if (item.m_baseParentShop == m_currentRatShop.GetComponent<BaseShopController>())
                 {
                     player.RemoveActiveItem(PickupObjectId);
                 }
@@ -89,7 +89,7 @@ namespace SpecialStuffPack.Items
             user.OnNewFloorLoaded -= SpawnShop;
             if (m_currentRatShop != null && m_currentRatShop.GetComponent<BaseShopController>() != null)
             {
-                List<ShopItemController> items = m_currentRatShop.GetComponent<BaseShopController>().ItemControllers();
+                List<ShopItemController> items = m_currentRatShop.GetComponent<BaseShopController>().m_itemControllers;
                 if (items != null)
                 {
                     foreach (ShopItemController item in items)

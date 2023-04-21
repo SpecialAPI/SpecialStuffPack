@@ -31,7 +31,7 @@ namespace SpecialStuffPack.Items.Passives
         {
             if (PickedUp && Owner != null)
             {
-                if (Owner.CurrentGun != null)
+                if (Owner.CurrentGun != null && !Owner.CurrentGun.IsReloading)
                 {
                     var currentGun = Owner.CurrentGun;
                     var allProjectiles = currentGun.GetProjectileModules();

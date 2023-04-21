@@ -1,4 +1,5 @@
-﻿global using SpecialStuffPack.Components;
+﻿global using SpecialStuffPack.Tools;
+global using SpecialStuffPack.Components;
 global using SpecialStuffPack.GungeonAPI;
 global using SpecialStuffPack.ItemAPI;
 global using SpecialStuffPack.Items;
@@ -39,6 +40,7 @@ using SpecialStuffPack.Feedback;
 using SpecialStuffPack.CursorAPI;
 using SpecialStuffPack.Characters;
 using SpecialStuffPack.Items.Pickups;
+using System.Diagnostics;
 
 namespace SpecialStuffPack
 {
@@ -49,7 +51,8 @@ namespace SpecialStuffPack
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
         public const string VERSION = "2.0.0";
-        public static readonly Color LogColor = new Color32(50, 200, 50, 255);
+        public const string LOG_VERSION = $"{VERSION}b-1";
+        public static readonly Color LogColor = new Color32(217, 57, 106, 255);
         public static Texture2D spCultistBosscard;
         public static int EverhoodCursorId = -1;
 
@@ -117,6 +120,10 @@ namespace SpecialStuffPack
         {
             try
             {
+                ETGModConsole.Log($"{NAME} {LOG_VERSION} started loading.").Foreground = LogColor;
+
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
                 InitStatics();
                 SoundManager.LoadBankFromModProject("SpecialStuffPack.SPECIAL_SFX.bnk");
 
@@ -125,6 +132,7 @@ namespace SpecialStuffPack
                 InitSynergyBuilder();
                 GungeonAPIMain.Init();
                 GoopDatabase.Init();
+                VFXDatabase.Init();
 
                 GetItemById<HealPlayerItem>(412).healingAmount = 1f;
                 GetItemById(326).AddComponent<SPCultistBandana>();
@@ -246,6 +254,11 @@ namespace SpecialStuffPack
                 Magnificus.Init();
                 FossilFuel.Init();
                 SniperGun.Init();
+                ChamberChamberChamber.Init();
+                CCCAbstractions.Init();
+                GoldenShotgun.Init();
+                UglyGun.Init();
+                HDGun.Init();
                 //Evergun.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();
@@ -289,8 +302,9 @@ namespace SpecialStuffPack
                     }, 99999, 99, false, "guide", "guide_hand_001", "guide_hand_001", true, false, "bug");
 
                 LameyRework.Init();
-                NinjaRework.Init();
-                CosmonautRework.Init();
+                //NinjaRework.Init();
+                MrGiando.Init();
+                //CosmonautRework.Init();
 
                 //init enemies
                 SpecialEnemies.AddAdvancedDragunAmmonomiconEntry();
@@ -302,6 +316,7 @@ namespace SpecialStuffPack
                 SpecialPlaceables.InitDiamondShrine();
                 SpecialPlaceables.InitSomethingSpecialPlaceable();
                 //SpecialPlaceables.InitDoor(); //bye bye stupid door
+                CCCChallenge.Init();
 
                 //add other stuff
                 EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();
@@ -340,8 +355,12 @@ namespace SpecialStuffPack
                 TCultistHandler.Init();
                 SpecialOptions.Setup();
                 SpecialInput.Setup();
+
                 //WindowsWindowNamer.RenameWindow();
-                ETGModConsole.Log($"{NAME} loaded successfully.").Foreground = LogColor;
+
+                stopwatch.Stop();
+                ETGModConsole.Log($"{NAME} {LOG_VERSION} loaded successfully.").Foreground = LogColor;
+                ETGModConsole.Log($"{NAME} took {stopwatch.Elapsed} to load").Foreground = LogColor;
                 ETGModConsole.Log($"Use the feedback form in the F8 menu to send feedback and report bugs.").Foreground = LogColor;
                 ETGModConsole.Log($"You can also use the command \"{globalPrefix} feedback\".").Foreground = LogColor;
             }
@@ -363,17 +382,6 @@ namespace SpecialStuffPack
                     }
                 }
             }
-        }
-
-        public static IEnumerator Play(float[] pitch)
-        {
-            foreach(var f in pitch)
-            {
-                AkSoundEngine.SetRTPCValue("Pitch_Metronome", f);
-                AkSoundEngine.PostEvent("Play_OBJ_metronome_jingle_01", GameManager.Instance.PrimaryPlayer.gameObject);
-                yield return new WaitForSecondsRealtime(0.75f);
-            }
-            yield break;
         }
 
         public static void FixBadDodgerollCode(Action<RoomHandler> orig, RoomHandler room)
@@ -400,34 +408,6 @@ namespace SpecialStuffPack
                     self.ItemCountLabel.IsVisible = true;
                     self.ItemCountLabel.Text = GetActiveItemUICount(current).Value.ToString();
                 }
-            }
-        }
-
-        public void SpawnItem(string[] args)
-        {
-            if(args.Length < 1)
-            {
-                ETGModConsole.Log("Item not given!");
-                return;
-            }
-            if (!Game.Items.ContainsID(args[0]))
-            {
-                ETGModConsole.Log("Invalid item " + args[0] + "!");
-                return;
-            }
-            if (!GameManager.Instance.PrimaryPlayer)
-            {
-                ETGModConsole.Log("Player doesn't exist!");
-                return;
-            }
-            int numToSpawn = 1;
-            if(args.Length > 1)
-            {
-                int.TryParse(args[1], out numToSpawn);
-            }
-            for(int i = 0; i < numToSpawn; i++)
-            {
-                LootEngine.SpawnItem(Game.Items[args[0]].gameObject, GameManager.Instance.PrimaryPlayer.CenterPosition, Vector2.down, 0f, true, false, false);
             }
         }
 
@@ -464,7 +444,7 @@ namespace SpecialStuffPack
             for(int i = 0; i < numToSpawn; i++)
             {
                 GameObject item = Instantiate(Game.Items[args[0]].gameObject, GameManager.Instance.PrimaryPlayer.CenterPosition, Quaternion.identity);
-                typeof(PlayerItem).GetMethod("DoEffect", BindingFlags.NonPublic | BindingFlags.Instance).Invoke(item.GetComponent<PlayerItem>(), new object[] { GameManager.Instance.PrimaryPlayer });
+                item.GetComponent<PlayerItem>().DoEffect(GameManager.Instance.PrimaryPlayer);
                 Destroy(item);
             }
         }
