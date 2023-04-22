@@ -267,7 +267,7 @@ namespace SpecialStuffPack.GungeonAPI
 
         public static void AddRoomToSewerGratePool(RoomData data)
         {
-            StaticReferences.sewerGrateTable.InjectionData[0].roomTable.includedRooms.elements.Add(new()
+            StaticReferences.sewerGrateCollection.elements.Add(new()
             {
                 additionalPrerequisites = new DungeonPrerequisite[0],
                 limitedCopies = false,

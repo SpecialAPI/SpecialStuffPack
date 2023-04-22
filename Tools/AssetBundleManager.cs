@@ -15,7 +15,9 @@ namespace SpecialStuffPack
         {
             using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpecialStuffPack.specialeverything"))
             {
-                specialeverything = AssetBundle.LoadFromStream(s);
+                byte[] b = new byte[s.Length];
+                s.Read(b, 0, b.Length);
+                specialeverything = AssetBundle.LoadFromMemory(b);
             }
             using (Stream s = Assembly.GetExecutingAssembly().GetManifestResourceStream("SpecialStuffPack.specialeverything.objinfo"))
             {

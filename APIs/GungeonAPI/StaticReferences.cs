@@ -12,6 +12,7 @@ namespace SpecialStuffPack.GungeonAPI
         public static Dictionary<string, GenericRoomTable> RoomTables;
         public static SharedInjectionData subShopTable;
         public static SharedInjectionData sewerGrateTable;
+        public static WeightedRoomCollection sewerGrateCollection;
         public static Dictionary<string, string> roomTableMap = new Dictionary<string, string>()
         {
             { "castle", "Castle_RoomTable" },
@@ -100,36 +101,55 @@ namespace SpecialStuffPack.GungeonAPI
                     Tools.PrintException(e);
                 }
             }
-
             subShopTable = AssetBundles["shared_auto_001"].LoadAsset<SharedInjectionData>("_global injected subshop table");
             sewerGrateTable = DungeonDatabase.GetOrLoadByName("base_castle").PatternSettings.flows[0].sharedInjectionData[1];
             var injection = sewerGrateTable.InjectionData[0];
-            if(injection.roomTable == null)
+            LoadHelper.objectsBackup["GungeonSewersExit"] = injection.exactRoom.placedObjects[0].nonenemyBehaviour.gameObject;
+            var existingInjection = sewerGrateTable.InjectionData.Find(x => x != null && sewerGrateTable.InjectionData.IndexOf(x) > 0 && x.annotation == injection.annotation);
+            if(existingInjection != null)
             {
-                injection.roomTable = ScriptableObject.CreateInstance<GenericRoomTable>();
-                injection.roomTable.includedRoomTables = new();
-                injection.roomTable.includedRooms = new()
-                {
-                    elements = new()
-                };
-                if(injection.exactRoom != null)
-                {
-                    injection.roomTable.includedRooms.elements.Add(
-                        new()
-                        {
-                            additionalPrerequisites = new DungeonPrerequisite[0],
-                            limitedCopies = false,
-                            maxCopies = -1,
-                            room = injection.exactRoom,
-                            weight = 1f
-                        });
-                    injection.exactRoom = null;
-                    injection.roomTable.name = "SewerGrate_RoomTable";
-                }
+                sewerGrateCollection = existingInjection.roomTable.includedRooms;
             }
-            if (injection.roomTable.includedRooms != null && injection.roomTable.includedRooms.elements != null && injection.roomTable.includedRooms.elements.Count > 0)
+            else
             {
-                LoadHelper.objectsBackup["GungeonSewersExit"] = injection.roomTable.includedRooms.elements[0].room.placedObjects[0].nonenemyBehaviour.gameObject;
+                sewerGrateTable.InjectionData.Add(new()
+                {
+                    annotation = injection.annotation,
+                    CanBeForcedSecret = injection.CanBeForcedSecret,
+                    chanceToLock = injection.chanceToLock,
+                    chanceToSpawn = injection.chanceToSpawn,
+                    DEBUG_FORCE_SPAWN = injection.DEBUG_FORCE_SPAWN,
+                    exactRoom = null,
+                    exactSecondaryRoom = injection.exactSecondaryRoom,
+                    framedCombatNodes = injection.framedCombatNodes,
+                    IsWarpWing = injection.IsWarpWing,
+                    OncePerRun = injection.OncePerRun,
+                    placementRules = injection.placementRules,
+                    prerequisites = injection.prerequisites.ToArray(),
+                    RandomNodeChildMinDistanceFromEntrance = injection.RandomNodeChildMinDistanceFromEntrance,
+                    RequiredValidPlaceable = injection.RequiredValidPlaceable,
+                    RequiresMasteryToken = injection.RequiresMasteryToken,
+                    roomTable = new()
+                    {
+                        includedRooms = sewerGrateCollection = new()
+                        {
+                            elements = new()
+                            {
+                                new()
+                                {
+                                    additionalPrerequisites = new DungeonPrerequisite[0],
+                                    limitedCopies = false,
+                                    maxCopies = -1,
+                                    room = injection.exactRoom,
+                                    weight = 1f
+                                }
+                            }
+                        },
+                        includedRoomTables = new(),
+                        name = "SewerGrate_RoomTable"
+                    }
+                });
+                injection.prerequisites = injection.prerequisites.AddToArray(new SpecialDungeonPrerequisite() { specialPrerequisiteType = SpecialDungeonPrerequisite.SpecialPrerequisiteType.ALWAYS_FALSE });
             }
 
             //foreach(var data in subShopTable.InjectionData)

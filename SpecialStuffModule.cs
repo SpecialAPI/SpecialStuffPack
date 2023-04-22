@@ -43,7 +43,7 @@ namespace SpecialStuffPack
     {
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
-        public const string VERSION = "1.3.4";
+        public const string VERSION = "1.3.6";
         public static readonly Color LogColor = new Color32(50, 200, 50, 255);
         public static Texture2D spCultistBosscard;
 
@@ -83,10 +83,6 @@ namespace SpecialStuffPack
 
             //saveapi setup
             SaveAPIManager.Setup("spapistuff");
-        }
-
-        public void Start()
-        {
             ETGModMainBehaviour.WaitForGameManagerStart(GMStart);
         }
 

@@ -260,55 +260,26 @@ namespace SpecialStuffPack.SaveAPI
                 }
                 GameManager.Instance.platformInterface.Start();
             }
-            FieldInfo frifleHuntFlagsInfo = typeof(GameStatsManager).GetField("s_frifleHuntFlags", BindingFlags.NonPublic | BindingFlags.Static);
-            FieldInfo pastFlagsFlagsInfo = typeof(GameStatsManager).GetField("s_pastFlags", BindingFlags.NonPublic | BindingFlags.Static);
-            FieldInfo npcFoyerFlagsInfo = typeof(GameStatsManager).GetField("s_npcFoyerFlags", BindingFlags.NonPublic | BindingFlags.Static);
-            if (pastFlagsFlagsInfo.GetValue(null) == null)
+            var huntQuests = new List<GungeonFlags>
             {
-                List<GungeonFlags> s_pastFlags = new List<GungeonFlags>();
-                s_pastFlags.Add(GungeonFlags.BOSSKILLED_ROGUE_PAST);
-                s_pastFlags.Add(GungeonFlags.BOSSKILLED_CONVICT_PAST);
-                s_pastFlags.Add(GungeonFlags.BOSSKILLED_SOLDIER_PAST);
-                s_pastFlags.Add(GungeonFlags.BOSSKILLED_GUIDE_PAST);
-                pastFlagsFlagsInfo.SetValue(null, s_pastFlags);
-            }
-            if (npcFoyerFlagsInfo.GetValue(null) == null)
-            {
-                List<GungeonFlags> s_npcFoyerFlags = new List<GungeonFlags>();
-                s_npcFoyerFlags.Add(GungeonFlags.META_SHOP_ACTIVE_IN_FOYER);
-                s_npcFoyerFlags.Add(GungeonFlags.GUNSLING_KING_ACTIVE_IN_FOYER);
-                s_npcFoyerFlags.Add(GungeonFlags.SORCERESS_ACTIVE_IN_FOYER);
-                s_npcFoyerFlags.Add(GungeonFlags.LOST_ADVENTURER_ACTIVE_IN_FOYER);
-                s_npcFoyerFlags.Add(GungeonFlags.TUTORIAL_TALKED_AFTER_RIVAL_KILLED);
-                s_npcFoyerFlags.Add(GungeonFlags.SHOP_TRUCK_ACTIVE);
-                s_npcFoyerFlags.Add(GungeonFlags.SHERPA_ACTIVE_IN_ELEVATOR_ROOM);
-                s_npcFoyerFlags.Add(GungeonFlags.WINCHESTER_MET_PREVIOUSLY);
-                s_npcFoyerFlags.Add(GungeonFlags.LEDGEGOBLIN_ACTIVE_IN_FOYER);
-                s_npcFoyerFlags.Add(GungeonFlags.FRIFLE_ACTIVE_IN_FOYER);
-                npcFoyerFlagsInfo.SetValue(null, s_npcFoyerFlags);
-            }
-            if (frifleHuntFlagsInfo.GetValue(null) == null)
-            {
-                List<GungeonFlags> s_frifleHuntFlags = new List<GungeonFlags>();
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_01_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_02_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_03_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_04_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_05_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_06_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_07_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_08_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_09_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_10_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_11_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_12_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_13_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_MONSTERHUNT_14_COMPLETE);
-                s_frifleHuntFlags.Add(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE);
-                frifleHuntFlagsInfo.SetValue(null, s_frifleHuntFlags);
-            }
+                GungeonFlags.FRIFLE_MONSTERHUNT_01_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_02_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_03_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_04_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_05_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_06_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_07_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_08_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_09_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_10_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_11_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_12_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_13_COMPLETE,
+                GungeonFlags.FRIFLE_MONSTERHUNT_14_COMPLETE,
+                GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE
+            };
             MonsterHuntQuest lastUncompletedQuest = null;
-            bool cachedFlagValue = GameStatsManager.Instance.GetFlag(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE);
+            bool cachedFlagValue = false;
             foreach (MonsterHuntQuest quest in HuntData.OrderedQuests)
             {
                 if (quest != null && !quest.IsReallyCompleted())
@@ -318,6 +289,7 @@ namespace SpecialStuffPack.SaveAPI
             }
             if (lastUncompletedQuest != null)
             {
+                cachedFlagValue = GameStatsManager.Instance.GetFlag(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE);
                 GameStatsManager.Instance.SetFlag(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE, false);
             }
             if (SaveAPIManager.IsFirstLoad)
@@ -355,11 +327,10 @@ namespace SpecialStuffPack.SaveAPI
             if (lastUncompletedQuest == null && !GameStatsManager.Instance.GetFlag(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE))
             {
                 cachedFlagValue = true;
-                List<GungeonFlags> frifleHuntFlags = (List<GungeonFlags>)frifleHuntFlagsInfo.GetValue(null);
-                if (frifleHuntFlags != null)
+                if (huntQuests != null)
                 {
                     int num = 0;
-                    for (int i = 0; i < frifleHuntFlags.Count; i++)
+                    for (int i = 0; i < huntQuests.Count; i++)
                     {
                         num++;
                     }
@@ -372,7 +343,10 @@ namespace SpecialStuffPack.SaveAPI
                     }
                 }
             }
-            GameStatsManager.Instance.SetFlag(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE, cachedFlagValue);
+            if (cachedFlagValue)
+            {
+                GameStatsManager.Instance.m_flags.Add(GungeonFlags.FRIFLE_CORE_HUNTS_COMPLETE);
+            }
         }
 
         /// <summary>

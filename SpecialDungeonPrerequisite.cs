@@ -18,6 +18,14 @@ namespace SpecialStuffPack
             {
                 return AnyoneHasActiveSynergy(synergyToCheck) == shouldHaveSynergy;
             }
+            else if(specialPrerequisiteType == SpecialPrerequisiteType.ALWAYS_TRUE)
+            {
+                return true;
+            }
+            else if (specialPrerequisiteType == SpecialPrerequisiteType.ALWAYS_FALSE)
+            {
+                return false;
+            }
             return base.CheckConditionsFulfilled();
         }
 
@@ -30,7 +38,9 @@ namespace SpecialStuffPack
         {
             NONE,
             ITEM_FLAG,
-            SYNERGY
+            SYNERGY,
+            ALWAYS_TRUE,
+            ALWAYS_FALSE
         }
     }
 }

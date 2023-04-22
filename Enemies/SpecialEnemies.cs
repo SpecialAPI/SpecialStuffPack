@@ -262,7 +262,7 @@ namespace SpecialStuffPack.Enemies
             track.prerequisites = new DungeonPrerequisite[0];
             track.UsesPurpleNotifications = false;
             EncounterDatabase.Instance.Entries.Add(new EncounterDatabaseEntry(track) { path = "enemies/lockghost", myGuid = "lock_ghost", unityGuid = "lock_ghost" });
-            EnemyDatabase.Instance.Entries.Add(new EnemyDatabaseEntry
+            EnemyDatabase.Instance.Entries.Add(new AdvancedEnemyDatabaseEntry
             {
                 difficulty = DungeonPlaceableBehaviour.PlaceableDifficulty.HARD,
                 encounterGuid = "lock_ghost",
