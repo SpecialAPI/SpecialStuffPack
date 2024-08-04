@@ -12,6 +12,7 @@ namespace SpecialStuffPack.GungeonAPI
         public static Dictionary<string, GenericRoomTable> RoomTables;
         public static SharedInjectionData subShopTable;
         public static SharedInjectionData sewerGrateTable;
+        public static WeightedRoomCollection sewerGrateCollection;
         public static Dictionary<string, string> roomTableMap = new Dictionary<string, string>()
         {
             { "castle", "Castle_RoomTable" },
@@ -102,35 +103,6 @@ namespace SpecialStuffPack.GungeonAPI
             }
 
             subShopTable = AssetBundles["shared_auto_001"].LoadAsset<SharedInjectionData>("_global injected subshop table");
-            sewerGrateTable = DungeonDatabase.GetOrLoadByName("base_castle").PatternSettings.flows[0].sharedInjectionData[1];
-            var injection = sewerGrateTable.InjectionData[0];
-            if(injection.roomTable == null)
-            {
-                injection.roomTable = ScriptableObject.CreateInstance<GenericRoomTable>();
-                injection.roomTable.includedRoomTables = new();
-                injection.roomTable.includedRooms = new()
-                {
-                    elements = new()
-                };
-                if(injection.exactRoom != null)
-                {
-                    injection.roomTable.includedRooms.elements.Add(
-                        new()
-                        {
-                            additionalPrerequisites = new DungeonPrerequisite[0],
-                            limitedCopies = false,
-                            maxCopies = -1,
-                            room = injection.exactRoom,
-                            weight = 1f
-                        });
-                    injection.exactRoom = null;
-                    injection.roomTable.name = "SewerGrate_RoomTable";
-                }
-            }
-            if (injection.roomTable.includedRooms != null && injection.roomTable.includedRooms.elements != null && injection.roomTable.includedRooms.elements.Count > 0)
-            {
-                LoadHelper.objectsBackup["GungeonSewersExit"] = injection.roomTable.includedRooms.elements[0].room.placedObjects[0].nonenemyBehaviour.gameObject;
-            }
 
             //foreach(var data in subShopTable.InjectionData)
             //{

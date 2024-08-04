@@ -5,8 +5,15 @@ using System.Text;
 
 namespace SpecialStuffPack.StatusEffects
 {
-    public class RustStatusEffect : GameActorEffect
+    public class RustStatusEffect : GameActorSpeedEffect
     {
+        public RustStatusEffect()
+        {
+            SpeedMultiplier = 1f;
+            CooldownMultiplier = 1f;
+            effectIdentifier = "SPAPI_rust";
+        }
+
         public override void OnEffectApplied(GameActor actor, RuntimeGameActorEffectData effectData, float partialAmount = 1)
         {
             if(actor is AIActor aiactor)
@@ -15,7 +22,7 @@ namespace SpecialStuffPack.StatusEffects
                 {
                     aiactor.healthHaver.ModifyDamage += ApplyDamageMultipliers;
                 }
-                aiactor.LocalTimeScale *= speedMultiplier;
+                aiactor.LocalTimeScale *= realSpeedMultiplier;
                 if (!string.IsNullOrEmpty(onApplyEvent))
                 {
                     AkSoundEngine.PostEvent(onApplyEvent, aiactor.gameObject);
@@ -66,7 +73,7 @@ namespace SpecialStuffPack.StatusEffects
                 {
                     aiactor.healthHaver.ModifyDamage -= ApplyDamageMultipliers;
                 }
-                aiactor.LocalTimeScale /= speedMultiplier;
+                aiactor.LocalTimeScale /= realSpeedMultiplier;
                 if(effectData.vfxObjects != null)
                 {
                     foreach(var tup in effectData.vfxObjects)
@@ -86,7 +93,7 @@ namespace SpecialStuffPack.StatusEffects
         }
 
         public float damageMultiplier = 1f;
-        public float speedMultiplier = 1f;
+        public float realSpeedMultiplier = 1f;
         public float auraRadius;
         public string onApplyEvent;
         public Color auraColor;

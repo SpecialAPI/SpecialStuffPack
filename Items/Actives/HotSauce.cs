@@ -38,7 +38,7 @@ namespace SpecialStuffPack.Items.Actives
             {
                 proj.statusEffectsToApply.Add(fireModifier);
                 proj.baseData.damage *= 1 + Mathf.Clamp01(LastOwner.CurrentFireMeterValue);
-                proj.AdjustPlayerProjectileTint(tint, 1, 0f);
+                proj.AdjustPlayerProjectileTint(Color.red.WithAlpha(Mathf.Clamp01(LastOwner.CurrentFireMeterValue)), 1, 0f);
             }
         }
 
@@ -62,6 +62,13 @@ namespace SpecialStuffPack.Items.Actives
             else
             {
                 user.IsOnFire = true;
+            }
+            if (user.PlayerHasActiveSynergy("Extra Spicy Sauce"))
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    DeadlyDeadlyGoopManager.GetGoopManagerForGoopType(GoopDatabase.DefaultFireGoop).TimedAddGoopLine(user.sprite.WorldBottomCenter, user.sprite.WorldBottomCenter + BraveMathCollege.DegreesToVector(user.GetAimDirection() + Random.Range(-25f, 25f), Random.Range(5f, 9f)), 1f, 0.5f);
+                }
             }
             FireVFX.SpawnAtPosition(user.sprite.WorldBottomCenter, 90f, null, null, null, null, false, null, null, false);
         }

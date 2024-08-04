@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
-using SpecialStuffPack.SaveAPI;
 
 namespace SpecialStuffPack.Items
 {
@@ -24,7 +23,6 @@ namespace SpecialStuffPack.Items
             item.armorlessDamageNegateChanceSynergy = 0.1f;
             item.AddToBlacksmithShop();
             item.AddToOldRedShop();
-            item.SetupUnlockOnCustomCharacterSpecificFlag("BeatBossrush", PlayableCharacters.Soldier);
         }
 
         public override void Pickup(PlayerController player)

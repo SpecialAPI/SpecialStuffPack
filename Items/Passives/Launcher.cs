@@ -20,39 +20,18 @@ namespace SpecialStuffPack.Items.Passives
 
         public override void Pickup(PlayerController player)
         {
-            if (!BraveInput.GetInstanceForPlayer(player.PlayerIDX).IsKeyboardAndMouse(true) && !m_pickedUpThisRun)
-            {
-                var consoleController = PickupObjectDatabase.GetById(ItemIds["consolecontroller"]);
-                GameUIRoot.Instance.notificationController.DoCustomNotification("CONTROLLER USER DETECTED", "giving compensation", consoleController.sprite.Collection, consoleController.sprite.spriteId,
-                    UINotificationController.NotificationColor.SILVER, false, false);
-                GameUIRoot.Instance.notificationController.DoCustomNotification("(this item doesnt work on controller)", "", consoleController.sprite.Collection, consoleController.sprite.spriteId,
-                    UINotificationController.NotificationColor.SILVER, true, true);
-                LootEngine.SpawnItem(consoleController.gameObject, player.CenterPosition, Vector2.down, 0f, false, true, false);
-            }
             base.Pickup(player);
             player.PostProcessProjectile += PostProcessProjectile;
         }
 
         public void PostProcessProjectile(Projectile proj, float f)
         {
-            if (proj.GetType() == typeof(Projectile))
+            if(proj is LobbedProjectile || proj.GetComponent<LobbedProjectileMotion>() != null)
             {
-                proj.baseData.range = 999999f;
-                proj.baseData.damping = 0f;
-                proj.baseData.force = 0f;
-                if (proj.baseData.UsesCustomAccelerationCurve)
-                {
-                    proj.baseData.speed *= proj.baseData.AccelerationCurve.Evaluate(1f);
-                    proj.baseData.AccelerationCurve = null;
-                    proj.baseData.UsesCustomAccelerationCurve = false;
-                }
-                LobbedProjectileMotion motion = proj.GetOrAddComponent<LobbedProjectileMotion>();
-                motion.initialSpeed = 23f;
-                motion.speedCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, -10f));
-                motion.flySpeedMultiplier = 1f;
-                motion.destinationOffset = new Vector2(0f, 0.6875f);
-                motion.SetDestination(Owner.CenterPosition + Owner.GetRelativeAim());
+                return;
             }
+            LobbedProjectileMotion motion = proj.GetOrAddComponent<LobbedProjectileMotion>();
+            proj.baseData.force *= 0.3f;
         }
 
         public override void DisableEffect(PlayerController player)

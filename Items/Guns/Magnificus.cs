@@ -207,8 +207,8 @@ namespace SpecialStuffPack.Items.Guns
                 finalCustomAmmoType = CustomAmmoUtility.AddCustomAmmoType("magnificus_final", "MagnificusFinalAmmoType", "MagnificusFinalAmmoTypeEmpty", "magnificus_final", "magnificus_final_empty"),
                 angleVariance = 8f
             });
-            var replace = gun.AddComponent<AdvancedVolleyReplacementSynergyProcessor>();
-            replace.RequiredSynergy = "Magnum Mox";
+            var replace = gun.AddComponent<VolleyReplacementSynergyProcessor>();
+            replace.RequiredSynergy = ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "MagnumMox");
             replace.SynergyVolley = new()
             {
                 projectiles = new()

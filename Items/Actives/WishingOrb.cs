@@ -1,5 +1,4 @@
 ﻿using SpecialStuffPack.ItemAPI;
-using SpecialStuffPack.SaveAPI;
 using SpecialStuffPack.SynergyAPI;
 using System;
 using System.Collections.Generic;
@@ -129,7 +128,7 @@ namespace SpecialStuffPack.Items
             {
                 if(g.PickupObjectId == StarGunId)
                 {
-                    SaveTools.Add(ref g.currentGunStatModifiers, StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.05f));
+                    g.currentGunStatModifiers = g.currentGunStatModifiers.AddToArray(StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.05f));
                 }
             }
             user.stats.RecalculateStats(user, false, false);

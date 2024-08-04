@@ -52,29 +52,33 @@ namespace SpecialStuffPack.GungeonAPI
             return BuildFromTextAsset(AssetBundleManager.Load<TextAsset>(ta));
         }
 
-        public static void AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
+        public static ProceduralFlowModifierData AddInjection(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
             string injectorName, float chanceToSpawn = 1f)
         {
-            ProceduralFlowModifierData injection = new()
-            {
-                annotation = injectionAnnotation,
-                DEBUG_FORCE_SPAWN = false,
-                OncePerRun = false,
-                placementRules = new List<ProceduralFlowModifierData.FlowModifierPlacementType>(placementRules),
-                roomTable = null,
-                exactRoom = protoroom,
-                IsWarpWing = false,
-                RequiresMasteryToken = false,
-                chanceToLock = chanceToLock,
-                selectionWeight = 1,
-                chanceToSpawn = 1f,
-                RequiredValidPlaceable = null,
-                prerequisites = prerequisites.ToArray(),
-                CanBeForcedSecret = true,
-                RandomNodeChildMinDistanceFromEntrance = 0,
-                exactSecondaryRoom = null,
-                framedCombatNodes = 0,
-            };
+            return AddInjection<ProceduralFlowModifierData>(protoroom, injectionAnnotation, placementRules, chanceToLock, prerequisites, injectorName, chanceToSpawn);
+        }
+
+        public static T AddInjection<T>(PrototypeDungeonRoom protoroom, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
+            string injectorName, float chanceToSpawn = 1f) where T : ProceduralFlowModifierData
+        {
+            T injection = (T)Activator.CreateInstance(typeof(T));
+            injection.annotation = injectionAnnotation;
+            injection.DEBUG_FORCE_SPAWN = false;
+            injection.OncePerRun = false;
+            injection.placementRules = new List<ProceduralFlowModifierData.FlowModifierPlacementType>(placementRules);
+            injection.roomTable = null;
+            injection.exactRoom = protoroom;
+            injection.IsWarpWing = false;
+            injection.RequiresMasteryToken = false;
+            injection.chanceToLock = chanceToLock;
+            injection.selectionWeight = 1;
+            injection.chanceToSpawn = 1f;
+            injection.RequiredValidPlaceable = null;
+            injection.prerequisites = prerequisites.ToArray();
+            injection.CanBeForcedSecret = true;
+            injection.RandomNodeChildMinDistanceFromEntrance = 0;
+            injection.exactSecondaryRoom = null;
+            injection.framedCombatNodes = 0;
             SharedInjectionData injector = ScriptableObject.CreateInstance<SharedInjectionData>();
             injector.UseInvalidWeightAsNoInjection = true;
             injector.PreventInjectionOfFailedPrerequisites = false;
@@ -95,6 +99,7 @@ namespace SpecialStuffPack.GungeonAPI
             }
             baseInjection.AttachedInjectionData.Add(injector);
             BaseInjection = baseInjection;
+            return injection;
         }
 
         public static void AddInjection(GenericRoomTable roomTable, string injectionAnnotation, List<ProceduralFlowModifierData.FlowModifierPlacementType> placementRules, float chanceToLock, List<DungeonPrerequisite> prerequisites,
@@ -272,7 +277,7 @@ namespace SpecialStuffPack.GungeonAPI
 
         public static void AddRoomToSewerGratePool(RoomData data)
         {
-            StaticReferences.sewerGrateTable.InjectionData[0].roomTable.includedRooms.elements.Add(new()
+            StaticReferences.sewerGrateCollection.elements.Add(new()
             {
                 additionalPrerequisites = new DungeonPrerequisite[0],
                 limitedCopies = false,

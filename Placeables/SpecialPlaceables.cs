@@ -147,7 +147,7 @@ namespace SpecialStuffPack.Placeables
                     requiredTileset = GlobalDungeonData.ValidTilesets.FORGEGEON } }, "The Door Injection");
         }
 
-        public static void InitSomethingSpecialPlaceable()
+        /*public static void InitSomethingSpecialPlaceable()
         {
             GameObject somethingSpecial = AssetBundleManager.Load<GameObject>("placeables/somethingspecialplaceable");
             tk2dSpriteCollectionData foyerColl = Resources.FindObjectsOfTypeAll<tk2dSpriteCollectionData>().ToList().Find((tk2dSpriteCollectionData c) => c.spriteCollectionName == "Foyer_Collection");
@@ -207,6 +207,6 @@ namespace SpecialStuffPack.Placeables
             //PrototypeDungeonRoom room = DungeonDatabase.GetOrLoadByName("base_bullethell").PatternSettings.flows[0].FirstNode.overrideExactRoom;
             //RoomFactory.AddPlaceableToRoom(room, new Vector2(10f, 10f), "somethingspecialplaceable");
             //SpecialAssets.assets.Add(room);
-        }
+        }*/
     }
 }

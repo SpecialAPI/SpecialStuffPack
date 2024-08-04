@@ -45,7 +45,14 @@ namespace SpecialStuffPack.Items.Guns
             reloadFire.switchGroup = "DesertEagle";
             reloadFire.sfx = "Play_WPN_Gun_Shot_01";
             reloadFire.shootOffset = new(15f / 16f, 3 / 16f);
-            gun.AddTransformGunSynergyProcessor(reloadFire.synergy = "When the shotgun is sus!", InitSynergy(), false, -1);
+
+            var transform = gun.AddComponent<TransformGunSynergyProcessor>();
+
+            transform.SynergyToCheck = ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "WhenTheShotgunIsSus");
+            transform.SynergyGunId = InitSynergy();
+            transform.NonSynergyGunId = gun.PickupObjectId;
+
+            reloadFire.synergy = "When the shotgun is sus!";
         }
 
         public static int InitSynergy()

@@ -23,37 +23,54 @@ namespace SpecialStuffPack.Items
         public override void DoEffect(PlayerController user)
         {
             base.DoEffect(user);
-            bool synergyActive = user.PlayerHasActiveSynergy("I am YesEngine");
             Projectile proj = this.ThrowActive(user, false);
-            if(proj != null && synergyActive)
+            if(proj != null)
             {
-                PierceProjModifier pierce = proj.GetOrAddComponent<PierceProjModifier>();
-                pierce.penetratesBreakables = true;
-                pierce.penetration += 10;
-                BounceProjModifier bounce = proj.GetOrAddComponent<BounceProjModifier>();
-                bounce.numberOfBounces += 5;
-                HomingModifier home = proj.GetOrAddComponent<HomingModifier>();
-                home.HomingRadius += 10;
-                home.AngularVelocity += 420;
-                proj.OnBecameDebrisGrounded += HandleReturnLikeBoomerang;
-                proj.baseData.damage *= 2f;
-                proj.baseData.speed *= 1.5f;
-                proj.AppliesFire = true;
-                proj.FireApplyChance = 1f;
-                proj.fireEffect = fire;
-                proj.AppliesPoison = true;
-                proj.PoisonApplyChance = 1f;
-                proj.healthEffect = poison;
-                proj.AppliesFreeze = true;
-                proj.freezeEffect = freeze;
-                proj.FreezeApplyChance = 1f;
-                proj.AppliesStun = true;
-                proj.StunApplyChance = 1f;
-                proj.AppliedStunDuration = 5f;
+                if (user.PlayerHasActiveSynergy("I am YesEngine"))
+                {
+                    PierceProjModifier pierce = proj.GetOrAddComponent<PierceProjModifier>();
+                    pierce.penetratesBreakables = true;
+                    pierce.penetration += 10;
+                    BounceProjModifier bounce = proj.GetOrAddComponent<BounceProjModifier>();
+                    bounce.numberOfBounces += 5;
+                    HomingModifier home = proj.GetOrAddComponent<HomingModifier>();
+                    home.HomingRadius += 10;
+                    home.AngularVelocity += 420;
+                    proj.OnBecameDebrisGrounded += HandleReturnLikeBoomerang;
+                    proj.baseData.damage *= 2f;
+                    proj.baseData.speed *= 1.5f;
+                    proj.AppliesFire = true;
+                    proj.FireApplyChance = 1f;
+                    proj.fireEffect = fire;
+                    proj.AppliesPoison = true;
+                    proj.PoisonApplyChance = 1f;
+                    proj.healthEffect = poison;
+                    proj.AppliesFreeze = true;
+                    proj.freezeEffect = freeze;
+                    proj.FreezeApplyChance = 1f;
+                    proj.AppliesStun = true;
+                    proj.StunApplyChance = 1f;
+                    proj.AppliedStunDuration = 5f;
+                }
+                if(user.PlayerHasActiveSynergy("A Modder's Worst Nightmare"))
+                {
+                    proj.OnHitEnemy += TheHorrors;
+                }
             }
         }
 
-        private void HandleReturnLikeBoomerang(DebrisObject obj)
+        public void TheHorrors(Projectile proj, SpeculativeRigidbody rb, bool b)
+        {
+            if(rb != null && rb.aiActor != null && rb.behaviorSpeculator != null)
+            {
+                rb.behaviorSpeculator.FleePlayerData = new()
+                {
+                    Player = proj.PlayerOwner()
+                };
+            }
+        }
+
+        public void HandleReturnLikeBoomerang(DebrisObject obj)
         {
             obj.OnGrounded -= HandleReturnLikeBoomerang;
             PickupMover pickupMover = obj.gameObject.AddComponent<PickupMover>();

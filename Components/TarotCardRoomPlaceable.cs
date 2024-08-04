@@ -11,7 +11,6 @@ namespace SpecialStuffPack.Components
         public void Start()
         {
             SpriteOutlineManager.AddOutlineToSprite(sprite, Color.black, 0.1f, 0f, SpriteOutlineManager.OutlineType.NORMAL);
-            card = TarotCards.GetTarotCardForPlayer(GameManager.Instance.PrimaryPlayer);
         }
 
         public float GetDistanceToPoint(Vector2 point)
@@ -38,6 +37,7 @@ namespace SpecialStuffPack.Components
             {
                 return;
             }
+            MaybeAssignTarot();
             SpriteOutlineManager.RemoveOutlineFromSprite(sprite, false);
             SpriteOutlineManager.AddOutlineToSprite(sprite, Color.white, 0.1f, 0f, SpriteOutlineManager.OutlineType.NORMAL);
             sprite.UpdateZDepth();
@@ -67,6 +67,7 @@ namespace SpecialStuffPack.Components
             {
                 RoomHandler.unassignedInteractableObjects.Remove(this);
             }
+            MaybeAssignTarot();
             SpriteOutlineManager.RemoveOutlineFromSprite(sprite, true);
             TextBoxManager.ClearTextBoxImmediate(transform);
             LootEngine.GivePrefabToPlayer(card.gameObject, interactor);
@@ -90,9 +91,24 @@ namespace SpecialStuffPack.Components
             return string.Empty;
         }
 
+        public void MaybeAssignTarot()
+        {
+            if(card == null)
+            {
+                card = TarotCards.GetTarotCardForPlayer();
+                TarotCards.seenTarotCards.Add(card.type);
+            }
+        }
+
         public void ConfigureOnPlacement(RoomHandler room)
         {
             this.room = room;
+            room.Entered += RegisterSeen;
+        }
+
+        public void RegisterSeen(PlayerController p)
+        {
+            MaybeAssignTarot();
         }
 
         public RoomHandler room;

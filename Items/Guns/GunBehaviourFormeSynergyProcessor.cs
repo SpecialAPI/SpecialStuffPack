@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alexandria.ItemAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -117,6 +118,6 @@ namespace SpecialStuffPack.Items.Guns
 		public AdvancedGunFormeData[] Formes;
 		protected int CurrentForme;
 		public AdvancedGunFormeData CurrentFormeData => Formes[CurrentForme];
-		public string CurrentFormeSynergy => CurrentFormeData.RequiredSynergy;
+		public string CurrentFormeSynergy => CurrentFormeData.RequiredSynergyString;
 	}
 }

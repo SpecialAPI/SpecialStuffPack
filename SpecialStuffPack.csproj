@@ -58,34 +58,8 @@
     <Compile Include="APIs\GungeonAPI\Tools.cs" />
     <Compile Include="APIs\ItemAPI\GunBuilder.cs" />
     <Compile Include="APIs\ItemAPI\ItemBuilder.cs" />
-    <Compile Include="APIs\SaveAPI\AdvancedGameStats.cs" />
-    <Compile Include="APIs\SaveAPI\AdvancedGameStatsManager.cs" />
-    <Compile Include="APIs\SaveAPI\AdvancedMidGameSaveData.cs" />
-    <Compile Include="APIs\SaveAPI\BreachShopTool.cs" />
     <Compile Include="APIs\SaveAPI\CustomDungeonPrerequisite.cs" />
-    <Compile Include="APIs\SaveAPI\CustomHuntQuest.cs" />
-    <Compile Include="APIs\SaveAPI\CustomHuntQuests.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\CustomCharacterSpecificGungeonFlags.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\CustomDungeonFlags.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\CustomTrackedMaximums.cs" />
-    <Compile Include="APIs\SaveAPI\Enums\CustomTrackedStats.cs" />
-    <Compile Include="APIs\SaveAPI\JammedEnemyState.cs" />
     <Compile Include="APIs\SaveAPI\SaveAPIManager.cs" />
-    <Compile Include="APIs\SaveAPI\SaveTools.cs" />
-    <Compile Include="APIs\SaveAPI\SpecialAIActor.cs" />
-    <Compile Include="APIs\SaveAPI\SpecialPickupObject.cs" />
-    <Compile Include="APIs\SoundAPI\CustomSwitchData.cs" />
-    <Compile Include="APIs\SoundAPI\SoundManager.cs" />
-    <Compile Include="APIs\SoundAPI\StopEventType.cs" />
-    <Compile Include="APIs\SoundAPI\SwitchedEvent.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedCompanionSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedDualWieldSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedGunFormeData.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedGunFormeSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedHoveringGunSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedInfiniteAmmoSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedTransformGunSynergyProcessor.cs" />
-    <Compile Include="APIs\SynergyAPI\AdvancedVolleyReplacementSynergyProcessor.cs" />
     <Compile Include="APIs\SynergyAPI\SynergyBuilder.cs" />
     <Compile Include="Behaviors\AdvancedRatMetalGear\SpawnAndPoisonifyReinforcementsBehavior.cs" />
     <Compile Include="Behaviors\Ninja\NinjaTeleportBehavior.cs" />
@@ -137,17 +111,20 @@
     <Compile Include="BulletScripts\WizardKnight\Sword\WizardKnightSwordSpinSlash1.cs" />
     <Compile Include="Characters\CharacterBuilder.cs" />
     <Compile Include="Characters\CosmonautRework.cs" />
-    <Compile Include="Characters\LameyRework.cs" />
     <Compile Include="Characters\MrGiando.cs" />
     <Compile Include="Characters\NinjaRework.cs" />
     <Compile Include="Components\AdvancedProjectileModule.cs" />
     <Compile Include="Components\AffectedByMox.cs" />
+    <Compile Include="Components\AIActorExt.cs" />
+    <Compile Include="Components\ApplyDivineProtection.cs" />
     <Compile Include="Components\AsteroidProjectile.cs" />
     <Compile Include="Components\BadLuckAffectedChest.cs" />
     <Compile Include="Components\BetterSquishyBounceWiggler.cs" />
     <Compile Include="Components\BinaryGunMarkedBehaviour.cs" />
     <Compile Include="Components\BinaryGunProjectile.cs" />
+    <Compile Include="Components\BloodyHandProjectile.cs" />
     <Compile Include="Components\BounceResetsDistance.cs" />
+    <Compile Include="Components\BulletShootingGunProjectile.cs" />
     <Compile Include="Components\CactiClubProjectile.cs" />
     <Compile Include="Components\ChanceBasedDropItemOnKill.cs" />
     <Compile Include="Components\ChanceBasedExplodeOnEnemyHit.cs" />
@@ -160,9 +137,12 @@
     <Compile Include="Components\DoubleChargeActive.cs" />
     <Compile Include="Components\ExcludeGunInBlessedMode.cs" />
     <Compile Include="Components\FishingReward.cs" />
+    <Compile Include="Components\FrogWandProjectile.cs" />
     <Compile Include="Components\GamerComponent.cs" />
     <Compile Include="Components\GemDropper.cs" />
-    <Compile Include="Components\HookProjectile.cs" />
+    <Compile Include="Components\GemifiedEnemy.cs" />
+    <Compile Include="Components\HealthHaverExt.cs" />
+    <Compile Include="Components\Immortal.cs" />
     <Compile Include="Components\IndoctrinateFollowerInteractable.cs" />
     <Compile Include="Components\IndoctrinateJammedEnemies.cs" />
     <Compile Include="Components\BetterCompanions.cs" />
@@ -178,7 +158,10 @@
     <Compile Include="Components\OutlineAdder.cs" />
     <Compile Include="Components\PistolWhipProjectile.cs" />
     <Compile Include="Components\PlayerStatsExt.cs" />
+    <Compile Include="Components\ProjectileExt.cs" />
     <Compile Include="Components\ProjectileSparks.cs" />
+    <Compile Include="Components\RequiresHealthToShoot.cs" />
+    <Compile Include="Components\RicochetProjectile.cs" />
     <Compile Include="Components\RocketLauncherProjectile.cs" />
     <Compile Include="Components\SerializedWeightedList.cs" />
     <Compile Include="Components\SetProjectileDestroyMode.cs" />
@@ -188,6 +171,9 @@
     <Compile Include="Components\TarotCardRoomPlaceable.cs" />
     <Compile Include="Components\UltimateDragunIntroDoer.cs" />
     <Compile Include="Components\NoOutlineItem.cs" />
+    <Compile Include="Components\UncatchableProjectile.cs" />
+    <Compile Include="Components\UndoGun.cs" />
+    <Compile Include="Components\UndoProjectile.cs" />
     <Compile Include="Components\UniqueOutlineItem.cs" />
     <Compile Include="Components\WhipProjectile.cs" />
     <Compile Include="Components\WizardKnightController.cs" />
@@ -201,17 +187,13 @@
     <Compile Include="Enemies\LockGhostController.cs" />
     <Compile Include="Enemies\PoofOnDeath.cs" />
     <Compile Include="Enemies\SpecialEnemies.cs" />
+    <Compile Include="EnumExtensions\CoreDamageTypesE.cs" />
     <Compile Include="EnumExtensions\EffectResistanceTypeE.cs" />
     <Compile Include="EnumExtensions\EnumExtensionAttribute.cs" />
     <Compile Include="EnumExtensions\GungeonFlagsE.cs" />
     <Compile Include="EnumExtensions\MenuOpenedE.cs" />
     <Compile Include="EnumExtensions\ModifyMethodE.cs" />
     <Compile Include="EnumExtensions\PlayableCharactersE.cs" />
-    <Compile Include="Feedback\FeedbackCore.cs" />
-    <Compile Include="Feedback\FeedbackForm.cs" />
-    <Compile Include="Feedback\FeedbackType.cs" />
-    <Compile Include="Feedback\Label.cs" />
-    <Compile Include="Feedback\TrelloAPI.cs" />
     <Compile Include="Items\Actives\ActiveOverchargeItem.cs" />
     <Compile Include="Items\Actives\BananaJam.cs" />
     <Compile Include="Items\Actives\Bug.cs" />
@@ -220,27 +202,37 @@
     <Compile Include="Items\Actives\HotSauce.cs" />
     <Compile Include="Items\Actives\MagicBag.cs" />
     <Compile Include="Items\Actives\RiftKey.cs" />
+    <Compile Include="Items\Guns\Ak312.cs" />
+    <Compile Include="Items\Guns\AkEpsilon.cs" />
     <Compile Include="Items\Guns\AkNAN.cs" />
     <Compile Include="Items\Guns\AkPI.cs" />
     <Compile Include="Items\Guns\AkSoundEngine.cs" />
+    <Compile Include="Items\Guns\BellRinger.cs" />
+    <Compile Include="Items\Guns\BulletShootingGun.cs" />
     <Compile Include="Items\Guns\CactiClub.cs" />
     <Compile Include="Items\Guns\CultCharmEffect.cs" />
     <Compile Include="Items\Guns\EnderGun.cs" />
     <Compile Include="Items\Guns\Evergun.cs" />
     <Compile Include="Items\Guns\FireVolleyOnReload.cs" />
-    <Compile Include="Items\Guns\FishingRodGun.cs" />
     <Compile Include="Items\Guns\Frogun.cs" />
+    <Compile Include="Items\Guns\FrogWand.cs" />
     <Compile Include="Items\Guns\GoldenShotgun.cs" />
     <Compile Include="Items\Guns\GunBehaviourFormeSynergyProcessor.cs" />
     <Compile Include="Items\Guns\HDGun.cs" />
     <Compile Include="Items\Guns\HelloWorld.cs" />
+    <Compile Include="Items\Guns\HyperDarkBlaster.cs" />
     <Compile Include="Items\Guns\LeatherWhip.cs" />
     <Compile Include="Items\Guns\Magnificus.cs" />
     <Compile Include="Items\Guns\NoShootyShootyGun.cs" />
     <Compile Include="Items\Guns\PistolWhip.cs" />
+    <Compile Include="Items\Guns\RandomOwnedProjectiles.cs" />
     <Compile Include="Items\Guns\RedGun.cs" />
+    <Compile Include="Items\Guns\ReverseAK.cs" />
     <Compile Include="Items\Guns\Revolvever.cs" />
+    <Compile Include="Items\Guns\RifleAK.cs" />
+    <Compile Include="Items\Guns\Sepulchrifle.cs" />
     <Compile Include="Items\Guns\Shredder.cs" />
+    <Compile Include="Items\Guns\Slingshot.cs" />
     <Compile Include="Items\Guns\SniperGun.cs" />
     <Compile Include="Items\Guns\SoulGun.cs" />
     <Compile Include="Items\Guns\SusShotgun.cs" />
@@ -250,13 +242,15 @@
     <Compile Include="Items\Guns\WhipCream.cs" />
     <Compile Include="Items\Passives\AlexandriaBook.cs" />
     <Compile Include="Items\Passives\AmethystItem.cs" />
-    <Compile Include="Items\Passives\AmethystRound.cs" />
     <Compile Include="Items\Passives\AmmoFlower.cs" />
+    <Compile Include="Items\Passives\Anvil.cs" />
     <Compile Include="Items\Passives\AquamarineItem.cs" />
     <Compile Include="Items\Passives\AsteroidBelt.cs" />
     <Compile Include="Items\Passives\BadLuckClover.cs" />
     <Compile Include="Items\Guns\BinaryGun.cs" />
+    <Compile Include="Items\Passives\Bait.cs" />
     <Compile Include="Items\Passives\BalancingPole.cs" />
+    <Compile Include="Items\Passives\BloodyHand.cs" />
     <Compile Include="Items\Passives\BloodyScales.cs" />
     <Compile Include="Items\Passives\BossChest.cs" />
     <Compile Include="Items\Passives\BrokenCalculator.cs" />
@@ -265,6 +259,7 @@
     <Compile Include="Items\Passives\Calendar.cs" />
     <Compile Include="Items\Passives\CCCAbstractions.cs" />
     <Compile Include="Items\Passives\ChamberChamberChamber.cs" />
+    <Compile Include="Items\Passives\ChamberOfMirrors.cs" />
     <Compile Include="Items\Passives\Chaos.cs" />
     <Compile Include="Items\Passives\CrownBullets.cs" />
     <Compile Include="Items\Passives\CustomBlankModificationItem.cs" />
@@ -283,7 +278,7 @@
     <Compile Include="Items\Passives\FusedAmmolet.cs" />
     <Compile Include="Items\Actives\GlassBell.cs" />
     <Compile Include="Items\Passives\GemmedRound.cs" />
-    <Compile Include="Items\Passives\GoldenBullets.cs" />
+    <Compile Include="Items\Passives\GlassBullets.cs" />
     <Compile Include="Items\Passives\GoldKey.cs" />
     <Compile Include="Items\Actives\GravediggerShovel.cs" />
     <Compile Include="Items\Actives\GreenCandle.cs" />
@@ -302,6 +297,10 @@
     <Compile Include="Items\Passives\MirrorOfTruth.cs" />
     <Compile Include="Items\Passives\OpalItem.cs" />
     <Compile Include="Items\Actives\OrbOfKnowledge.cs" />
+    <Compile Include="Items\Passives\PandorasBox.cs" />
+    <Compile Include="Items\Passives\PowerfulBullets.cs" />
+    <Compile Include="Items\Passives\PowerTriangle.cs" />
+    <Compile Include="Items\Passives\RaggedBullets.cs" />
     <Compile Include="Items\Passives\RedAmmolet.cs" />
     <Compile Include="Items\Passives\RoundBullets.cs" />
     <Compile Include="Items\Passives\OtherworldlyAssistance.cs" />
@@ -312,12 +311,14 @@
     <Compile Include="Items\Passives\RubyItem.cs" />
     <Compile Include="Items\Passives\RustyAmmoBox.cs" />
     <Compile Include="Items\Passives\RustyBullets.cs" />
+    <Compile Include="Items\Passives\SecondHeart.cs" />
     <Compile Include="Items\Passives\ShacklesItem.cs" />
     <Compile Include="Items\Guns\ShootingStar.cs" />
     <Compile Include="Items\Passives\StaticRoll.cs" />
     <Compile Include="Items\Passives\SubscribeButton.cs" />
     <Compile Include="Items\Actives\UndyingTotem.cs" />
     <Compile Include="Items\Actives\Watermelon.cs" />
+    <Compile Include="Items\Passives\Trepanation.cs" />
     <Compile Include="Items\Passives\WoodenDice.cs" />
     <Compile Include="Items\Pickups\TarotCards.cs" />
     <Compile Include="LogRecorder.cs" />
@@ -328,9 +329,16 @@
     <Compile Include="Placeables\LilChest.cs" />
     <Compile Include="Placeables\LilChestPlacer.cs" />
     <Compile Include="PlayMakerActions\ThievingRatGrabbyLilChest.cs" />
+    <Compile Include="StatusEffects\DivineProtectionStatusEffect.cs" />
+    <Compile Include="StatusEffects\FrailStatusEffect.cs" />
+    <Compile Include="StatusEffects\LinkedStatusEffect.cs" />
+    <Compile Include="StatusEffects\RupturedStatusEffect.cs" />
     <Compile Include="StatusEffects\RustStatusEffect.cs" />
+    <Compile Include="StatusEffects\ScarStatusEffect.cs" />
     <Compile Include="Tools\AudioManager.cs" />
+    <Compile Include="Tools\ConstantRepeatingFlowModifier.cs" />
     <Compile Include="Tools\CustomAmmoUtility.cs" />
+    <Compile Include="Tools\ItemFlagBasedRepeatingFlowModifier.cs" />
     <Compile Include="Tools\PersistentCallToolbox.cs" />
     <Compile Include="Placeables\DiamondShrine.cs" />
     <Compile Include="Placeables\DoorPlaceable.cs" />
@@ -358,6 +366,7 @@
     <Compile Include="Tools\ListTools.cs" />
     <Compile Include="Tools\LoadHelper.cs" />
     <Compile Include="Tools\MoreLogging.cs" />
+    <Compile Include="Tools\RepeatingFlowModifier.cs" />
     <Compile Include="Tools\SpecialAssets.cs" />
     <Compile Include="Tools\SpriteBuilder.cs" />
     <Compile Include="SpecialStuffModule.cs" />
@@ -365,7 +374,6 @@
     <Compile Include="Items\Actives\WoodenToken.cs" />
     <Compile Include="Items\Actives\WishingOrb.cs" />
     <Compile Include="Tools\UnityEventHandler.cs" />
-    <Compile Include="Feedback\TrelloCardResponse.cs" />
     <Compile Include="Tools\VFXDatabase.cs" />
     <Compile Include="WindowsWindowNamer.cs" />
   </ItemGroup>
@@ -392,6 +400,9 @@
     <Reference Include="0Harmony, Version=2.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\HarmonyX.2.7.0\lib\net35\0Harmony.dll</HintPath>
     </Reference>
+    <Reference Include="Alexandria, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>packages\EtG.Alexandria.0.4.1\lib\net35\Alexandria.dll</HintPath>
+    </Reference>
     <Reference Include="Assembly-CSharp, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>packages\EtG.GameLibs.2.1.9.1\lib\net35\Assembly-CSharp.dll</HintPath>
     </Reference>
@@ -402,7 +413,7 @@
       <HintPath>packages\BepInEx.BaseLib.5.4.21\lib\net35\BepInEx.dll</HintPath>
     </Reference>
     <Reference Include="ModTheGungeonAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>packages\EtG.ModTheGungeonAPI.1.6.1\lib\net35\ModTheGungeonAPI.dll</HintPath>
+      <HintPath>packages\EtG.ModTheGungeonAPI.1.7.6\lib\net35\ModTheGungeonAPI.dll</HintPath>
     </Reference>
     <Reference Include="Mono.Cecil, Version=0.10.4.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>packages\Mono.Cecil.0.10.4\lib\net35\Mono.Cecil.dll</HintPath>
@@ -592,6 +603,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GITIGNORE\TrelloToken.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="packages\BepInEx.Core.5.4.21\build\BepInEx.Core.targets" Condition="Exists('packages\BepInEx.Core.5.4.21\build\BepInEx.Core.targets')" />

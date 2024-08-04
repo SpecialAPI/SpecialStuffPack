@@ -14,7 +14,6 @@ namespace SpecialStuffPack.Items.Passives
             string longdesc = "A weird looking plushie that almost looks alive.";
             var item = EasyItemInit<Plushie>("items/plushie", "sprites/plushie_idle_001", name, shortdesc, longdesc, ItemQuality.S);
             item.AddToFlyntShop();
-            item.SetupUnlockOnCustomFlag("LockUnlocked", true);
         }
 
         public override void Pickup(PlayerController player)

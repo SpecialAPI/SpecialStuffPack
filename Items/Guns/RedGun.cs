@@ -145,13 +145,13 @@ namespace SpecialStuffPack.Items.Guns
 				{ redgun.GodlySynergy, InitForm("redgodly_gun", "RedGunGodly", redgun.GodlySynergy) }
 			};
 			var formes = formesD.ToList();
-			redgun.Formes = new AdvancedGunFormeData[formes.Count];
+			redgun.Formes = new Alexandria.ItemAPI.AdvancedGunFormeData[formesD.Count];
 			for(int i = 0; i < formes.Count; i++)
             {
 				redgun.Formes[i] = new()
 				{
 					FormeID = formes[i].Value,
-					RequiredSynergy = formes[i].Key,
+					RequiredSynergyString = formes[i].Key,
 					RequiresSynergy = !string.IsNullOrEmpty(formes[i].Key)
 				};
             }

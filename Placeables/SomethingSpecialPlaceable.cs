@@ -1,4 +1,4 @@
-﻿using System;
+﻿/*using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -217,7 +217,7 @@ namespace SpecialStuffPack.Placeables
                     {
 						continue;
                     }
-					if (Vector2.Distance(sprite.WorldBottomCenter, rend.transform.position/* + rend.bounds.min + rend.bounds.extents*/) > i + 0.25f)
+					if (Vector2.Distance(sprite.WorldBottomCenter, rend.transform.position + rend.bounds.min + rend.bounds.extents) > i + 0.25f)
 					{
 						continue;
                     }
@@ -371,3 +371,4 @@ namespace SpecialStuffPack.Placeables
 		private bool m_hasDiamond;
 	}
 }
+*/

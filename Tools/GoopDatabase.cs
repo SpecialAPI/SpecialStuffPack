@@ -29,6 +29,15 @@ namespace SpecialStuffPack
             LambIchor.overrideOpaqueness = 1f;
             LambIchor.usesOverrideOpaqueness = true;
             LambIchor.HealthModifierEffect = DefaultPoisonGoop.HealthModifierEffect;
+
+            LambIchorWhite = CreateGoopBase("white ichor");
+            LambIchorWhite.AppliesCharm = true;
+            LambIchorWhite.goopTexture = AssetBundleManager.Load<Texture2D>("ichor");
+            LambIchorWhite.baseColor32 = Color.white;
+            LambIchorWhite.fadeColor32 = Color.white;
+            LambIchorWhite.overrideOpaqueness = 1f;
+            LambIchorWhite.usesOverrideOpaqueness = true;
+            LambIchorWhite.CharmModifierEffect = DefaultCharmGoop.CharmModifierEffect;
         }
 
         public static GoopDefinition CreateGoopBase(string name)
@@ -68,5 +77,6 @@ namespace SpecialStuffPack
         public static GoopDefinition DefaultGreenFireGoop;
         public static GoopDefinition DefaultWebGoop;
         public static GoopDefinition LambIchor;
+        public static GoopDefinition LambIchorWhite;
     }
 }

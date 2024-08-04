@@ -9,5 +9,6 @@ namespace SpecialStuffPack.EnumExtensions
     public class ModifyMethodE
     {
         public static ModifyMethod TrueMultiplicative;
+        public static ModifyMethod Exponent;
     }
 }

@@ -23,6 +23,18 @@ namespace SpecialStuffPack.Items
             light.LightColor = new Color(0.5f, 0f, 1f);
             light.LightIntensity = 4.25f;
             light.LightRadius = 5.4375f;
+            item.SynergySlow = new()
+            {
+                DoesCirclePass = false,
+                DoesSepia = true,
+                audioEvent = "Play_OBJ_time_bell_01",
+                EffectRadius = 100f,
+                UpdatesForNewEnemies = true,
+                RadialSlowInTime = 0f,
+                RadialSlowHoldTime = 1f,
+                RadialSlowOutTime = 0.5f,
+                RadialSlowTimeModifier = 0.25f
+            };
         }
 
         public override void Pickup(PlayerController player)
@@ -46,6 +58,10 @@ namespace SpecialStuffPack.Items
             base.DoEffect(user);
             if(user.CurrentRoom != null)
             {
+                if (user.PlayerHasActiveSynergy("It Guards Time!"))
+                {
+                    SynergySlow.DoRadialSlow(user.CenterPosition, user.CurrentRoom);
+                }
                 if (user.CurrentRoom.GetNearestInteractable(user.CenterPosition, 1f, user) != null && user.CurrentRoom.GetNearestInteractable(user.CenterPosition, 1f, user) is DungeonDoorController && 
                     (user.CurrentRoom.GetNearestInteractable(user.CenterPosition, 1f, user) as DungeonDoorController).isLocked)
                 {
@@ -108,5 +124,6 @@ namespace SpecialStuffPack.Items
         }
 
         private static RoomHandler roomToReset;
+        public RadialSlowInterface SynergySlow;
     }
 }

@@ -25,10 +25,12 @@ namespace SpecialStuffPack.Items.Guns
                 numberOfShotsInClip = 1,
                 angleVariance = 0f
             });
-            var volley = gun.AddComponent<AdvancedVolleyReplacementSynergyProcessor>();
-            volley.RequiredSynergy =
-                gun.AddComponent<NoShootyShootyGun>().enableShootyShootySynergy =
-                gun.AddComponent<AdvancedInfiniteAmmoSynergyProcessor>().RequiredSynergy = "Gun and Bullets";
+
+            var volley = gun.AddComponent<VolleyReplacementSynergyProcessor>();
+
+			gun.AddComponent<NoShootyShootyGun>().enableShootyShootySynergy = "Gun and Bullets";
+
+            volley.RequiredSynergy = gun.AddComponent<InfiniteAmmoSynergyProcessor>().RequiredSynergy = ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "GunAndBullets");
             volley.SynergyVolley = new()
             {
                 projectiles = new()
@@ -48,7 +50,6 @@ namespace SpecialStuffPack.Items.Guns
 			gun.AddComponent<SynergyCompletionGun>();
 			gun.AddComponent<ExcludeGunInBlessedMode>();
 			finish();
-			gun.SetupUnlockOnFlag(GungeonFlags.GUNSLINGER_PAST_KILLED, true);
 		}
 
         [HarmonyPatch(typeof(AdvancedSynergyEntry), nameof(AdvancedSynergyEntry.SynergyIsAvailable))]

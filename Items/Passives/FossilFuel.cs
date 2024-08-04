@@ -11,7 +11,7 @@ namespace SpecialStuffPack.Items.Passives
         {
             string name = "Fossil Fuel";
             string shortdesc = "Carbon Footprint Up";
-            string longdesc = "Projectiles leave oil, reloading ignites nearby oil.\n\nHitting two birds with one stone: killing both your enemies AND the environment!";
+            string longdesc = "Projectiles leave oil, reloading ignites nearby oil.\n\nKilling two birds with one stone: killing both your enemies AND the environment!";
             var item = EasyItemInit<FossilFuel>("fossilfuel", "fossil_fuel_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.goop = GoopDatabase.DefaultOilGoop;
             item.fireVFX = PhoenixObject.muzzleFlashEffects;

@@ -3,7 +3,6 @@ global using SpecialStuffPack.Components;
 global using SpecialStuffPack.GungeonAPI;
 global using SpecialStuffPack.ItemAPI;
 global using SpecialStuffPack.Items;
-global using SpecialStuffPack.SaveAPI;
 global using SpecialStuffPack.SynergyAPI;
 global using System;
 global using System.Collections.Generic;
@@ -17,7 +16,6 @@ global using UnityEngine;
 global using SpecialStuffPack.Placeables;
 global using SpecialStuffPack.Enemies;
 global using Dungeonator;
-global using SpecialStuffPack.SoundAPI;
 global using SpecialStuffPack.Controls;
 global using Random = UnityEngine.Random;
 global using Object = UnityEngine.Object;
@@ -30,28 +28,34 @@ global using SpecialStuffPack.EnumExtensions;
 global using HutongGames.PlayMaker;
 global using HutongGames.PlayMaker.Actions;
 global using InControl;
+global using System.Reflection.Emit;
+//global using Mono.Cecil.Cil;
+global using SpecialStuffPack.StatusEffects; 
 global using static SpecialStuffPack.ItemAPI.ItemBuilder;
 global using static SpecialStuffPack.ItemAPI.GunBuilder;
 global using static SpecialStuffPack.SynergyAPI.SynergyBuilder;
 global using ModifyMethod = StatModifier.ModifyMethod;
 using UnityEngine.Networking;
 using System.IO;
-using SpecialStuffPack.Feedback;
 using SpecialStuffPack.CursorAPI;
 using SpecialStuffPack.Characters;
 using SpecialStuffPack.Items.Pickups;
 using System.Diagnostics;
+using Alexandria.SoundAPI;
+using SpecialStuffPack.SaveAPI;
 
 namespace SpecialStuffPack
 {
     [BepInPlugin(GUID, NAME, VERSION)]
+    [BepInDependency(ETGModMainBehaviour.GUID)]
+    [BepInDependency(Alexandria.Alexandria.GUID)]
     [HarmonyPatch]
     public class SpecialStuffModule : BaseUnityPlugin
     {
         public const string GUID = "spapi.etg.specialstuffpack";
         public const string NAME = "SpecialAPI's Stuff";
         public const string VERSION = "2.0.0";
-        public const string LOG_VERSION = $"{VERSION}b-1";
+        public const string LOG_VERSION = $"{VERSION}";
         public static readonly Color LogColor = new Color32(217, 57, 106, 255);
         public static Texture2D spCultistBosscard;
         public static int EverhoodCursorId = -1;
@@ -104,15 +108,10 @@ namespace SpecialStuffPack
             new Harmony(GUID).PatchAll();
             //asset bundle setup
             AssetBundleManager.LoadBundle();
-            SoundManager.Init();
             spCultistBosscard = AssetBundleManager.Load<Texture2D>("cultist_bosscard");
+            SaveAPIManager.Setup();
 
             //saveapi setup
-            SaveAPIManager.Setup("spapistuff");
-        }
-
-        public void Start()
-        {
             ETGModMainBehaviour.WaitForGameManagerStart(GMStart);
         }
 
@@ -125,7 +124,7 @@ namespace SpecialStuffPack
                 var stopwatch = new Stopwatch();
                 stopwatch.Start();
                 InitStatics();
-                SoundManager.LoadBankFromModProject("SpecialStuffPack.SPECIAL_SFX.bnk");
+                SoundManager.LoadSoundbanksFromAssembly();
 
                 //init apis
                 InitItemBuilder();
@@ -133,6 +132,8 @@ namespace SpecialStuffPack
                 GungeonAPIMain.Init();
                 GoopDatabase.Init();
                 VFXDatabase.Init();
+
+                var vfxcoll = EasyCollectionSetup("SpecialVFXCollection");
 
                 GetItemById<HealPlayerItem>(412).healingAmount = 1f;
                 GetItemById(326).AddComponent<SPCultistBandana>();
@@ -164,6 +165,15 @@ namespace SpecialStuffPack
                 interactable.yesKey = SetString("#INDOCTRINATE_YES", "<Indoctrinate follower <Lose %AMMO ammo>>");
                 interactable.yesHealthKey = SetString("#INDOCTRINATE_YESHEALTH", "<Indoctrinate follower <Lose %HEART_SYMBOL>>");
                 interactable.noKey = SetString("#INDOCTRINATE_NO", "<Walk away>");
+
+                tk2dSprite.AddComponent(LinkedStatusEffect.LinkVFX = AssetBundleManager.Load<GameObject>("LinkedVFX"), vfxcoll, AddSpriteToCollection("linked_001", vfxcoll)).CurrentSprite.ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter);
+                tk2dSprite.AddComponent(DivineProtectionStatusEffect.DivineVFX = AssetBundleManager.Load<GameObject>("DivineProtectionVFX"), vfxcoll, AddSpriteToCollection("divine_protection_001", vfxcoll)).CurrentSprite.ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter);
+                tk2dSprite.AddComponent(RupturedStatusEffect.RupturedVFX = AssetBundleManager.Load<GameObject>("RupturedVFX"), vfxcoll, AddSpriteToCollection("ruptured_001", vfxcoll)).CurrentSprite.ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter);
+                tk2dSprite.AddComponent(FrailStatusEffect.FrailVFX = AssetBundleManager.Load<GameObject>("FrailVFX"), vfxcoll, AddSpriteToCollection("frail_001", vfxcoll)).CurrentSprite.ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter);
+                tk2dSprite.AddComponent(ScarStatusEffect.ScarVFX = AssetBundleManager.Load<GameObject>("ScarVFX"), vfxcoll, AddSpriteToCollection("scar_001", vfxcoll)).CurrentSprite.ConstructOffsetsFromAnchor(tk2dBaseSprite.Anchor.MiddleCenter);
+
+                SoundManager.AddCustomSwitchData("WPN_Guns", "SPAPI_Silent", "Play_WPN_Gun_Shot_01");
+                SoundManager.AddCustomSwitchData("WPN_Guns", "SPAPI_Silent", "Play_WPN_Gun_Reload_01");
 
                 //init items
                 WoodenToken.Init();
@@ -243,8 +253,6 @@ namespace SpecialStuffPack
                 RustyBullets.Init();
                 RustyAmmoBox.Init();
                 WoodenDice.Init();
-                MagnifyingGlass.Init();
-                DisguiseHat.Init();
                 Bug.Init();
                 AlexandriaBook.Init();
                 BrokenCalculator.Init();
@@ -254,20 +262,45 @@ namespace SpecialStuffPack
                 Magnificus.Init();
                 FossilFuel.Init();
                 SniperGun.Init();
-                ChamberChamberChamber.Init();
-                CCCAbstractions.Init();
+                //ChamberChamberChamber.Init();
+                //CCCAbstractions.Init();
                 GoldenShotgun.Init();
                 UglyGun.Init();
                 HDGun.Init();
+                ReverseAK.Init();
+                AkEpsilon.Init();
+                RifleAK.Init();
+                //MetaGun.Init();
+                BloodyHand.Init();
+                PowerTriangle.Init();
+                SecondHeart.Init();
+                PandorasBox.Init();
+                PowerfulBullets.Init();
+                BulletShootingGun.Init();
+                FrogWand.Init();
+                Slingshot.Init();
+                Ak312.Init();
+                Bait.Init();
+                GlassBullets.Init();
+                ChamberOfMirrors.Init();
+                RaggedBullets.Init();
+                Trepanation.Init();
+                BellRinger.Init();
+                Anvil.Init();
+                HyperDarkBlaster.Init();
+                Sepulchrifle.Init();
                 //Evergun.Init();
                 //SoulGun.Init();
                 //PastsRewardItem.Init();
                 //ForceOfTwilight.Init();
 
                 CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("Mouse"));
+                CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("GenericCursor"));
                 EverhoodCursorId = CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("EverhoodHand"));
                 CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("SuperliminalCursor"));
                 CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("SuperliminalSmiley"));
+                CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("WillYouSnailLevelEditorCursor"));
+                CursorMaker.BuildCursor(AssetBundleManager.Load<Texture2D>("BabaCursor"));
 
                 Item["boxofstuff"].associatedItemChanceMods = Item.Where(x => x.Value != null && x.Value.quality >= PickupObject.ItemQuality.D && x.Value.quality <= PickupObject.ItemQuality.S).Select(x => new LootModData
                 {
@@ -275,36 +308,13 @@ namespace SpecialStuffPack
                     DropRateMultiplier = 1.25f
                 }).ToArray();
 
-                LilChest.SetupChests();
+                //LilChest.SetupChests();
 
                 //init synergies
                 SpecialSynergies.Init();
 
                 //init characters
-                CharacterBuilder.BuildCharacter<PlayerController>("PlayerExample", "example", "PlayerExampleCollection", "PlayerExampleAnimation", "playersprites/example/sprites/", PlayableCharactersE.CustomCharacterExample,
-                    new(5, 0, 14, 4), new(7, 5, 8, 10),
-                    "player_example_portrait", "playersprites/example/bosscard/", 10, "PlayerExampleMinimapIcon", "example_minimap_001", "PlayerExampleStats", new()
-                    {
-                        { PlayerStats.StatType.Health, 10f },
-                        { PlayerStats.StatType.Damage, 100000f }
-                    }, 5f, 10, 10, 5, new()
-                    {
-                        GuntherId,
-                        CaseyId,
-                        MakeshiftCannonId,
-                        YariLauncherId,
-                        CloneId,
-                        GundromedaStrainId,
-                        BlankBulletsId
-                    }, new()
-                    {
-                        KlobbeId
-                    }, 99999, 99, false, "guide", "guide_hand_001", "guide_hand_001", true, false, "bug");
-
-                LameyRework.Init();
-                //NinjaRework.Init();
-                MrGiando.Init();
-                //CosmonautRework.Init();
+                //MrGiando.Init();
 
                 //init enemies
                 SpecialEnemies.AddAdvancedDragunAmmonomiconEntry();
@@ -314,9 +324,9 @@ namespace SpecialStuffPack
                 //init placeables
                 SpecialPlaceables.InitLockUnlockPedestal();
                 SpecialPlaceables.InitDiamondShrine();
-                SpecialPlaceables.InitSomethingSpecialPlaceable();
+                //SpecialPlaceables.InitSomethingSpecialPlaceable();
                 //SpecialPlaceables.InitDoor(); //bye bye stupid door
-                CCCChallenge.Init();
+                //CCCChallenge.Init();
 
                 //add other stuff
                 EnemyDatabase.GetOrLoadByGuid("465da2bb086a4a88a803f79fe3a27677").AddComponent<DragunDeathChecks>();
@@ -329,13 +339,13 @@ namespace SpecialStuffPack
                  );
 
                 //add sewer grate rooms
-                foreach (var asset in AssetBundleManager.specialeverything.GetAllAssetNames())
+                /*foreach (var asset in AssetBundleManager.specialeverything.GetAllAssetNames())
                 {
                     if (asset.ToLowerInvariant().StartsWith("assets/rooms/sewerentrance"))
                     {
                         //RoomFactory.AddRoomToSewerGratePool(RoomFactory.BuildFromTextAsset(AssetBundleManager.Load<TextAsset>(asset)));
                     }
-                }
+                }*/
 
                 //new Hook(typeof(Gun).GetMethod("HandleSpecificEndGunShoot", BindingFlags.NonPublic | BindingFlags.Instance), typeof(SpecialStuffModule).GetMethod("HandleChargeBurst"));
 
@@ -345,12 +355,9 @@ namespace SpecialStuffPack
 
                 group.AddUnit("use_active", UseItem, ETGModConsole.GiveAutocompletionSettings);
                 ETGModConsole.CommandDescriptions.Add($"{globalPrefix} use_active", "Uses the given active item once. If a second argument is given, it specifies how many times the item should be used.");
+
                 group.AddUnit("showhitboxes", x => ETGModConsole.SwitchValue(x.FirstOrDefault(), ref showHitboxes, "Show Hitboxes"));
                 ETGModConsole.CommandDescriptions.Add($"{globalPrefix} showhitboxes", "Toggles Hitbox display.");
-                group.AddUnit("decrypt_save", x => { SaveManager.GameSave.encrypted = false; GameStatsManager.Save(); });
-                ETGModConsole.CommandDescriptions.Add($"{globalPrefix} decrypt_save", "Temporarily decrypts the current save file for debug purposes.");
-
-                gameObject.AddComponent<FeedbackCore>();
 
                 TCultistHandler.Init();
                 SpecialOptions.Setup();

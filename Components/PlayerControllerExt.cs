@@ -14,40 +14,193 @@ namespace SpecialStuffPack.Components
         [HarmonyPrefix]
         public static void FervoursHarvest(PlayerController Owner, ref float damageDone)
         {
-            damageDone *= Owner.Ext().activeChargeMultiplier;
+            damageDone *= Owner.stats.Ext().GetStatValue("ActiveChargeMultiplier");
+        }
+
+        [HarmonyPatch(typeof(RewardManager), nameof(RewardManager.GetMultiplierForItem))]
+        [HarmonyPostfix]
+        public static void HandleCollectorActiveBonuses(ref float __result, PickupObject prefab, PlayerController player, bool completesSynergy)
+        {
+            if (prefab is PlayerItem)
+            {
+                if (player.Ext().tarotCards.Contains(TarotCards.TarotCardType.TheCollector))
+                {
+                    __result *= Mathf.Pow(player.PlayerHasActiveSynergy("A Better Fate") ? 3f : 2f, player.Ext().TarotCardCount(TarotCards.TarotCardType.TheCollector));
+                }
+            }
         }
 
         [HarmonyPatch(typeof(PlayerItem), nameof(PlayerItem.ApplyCooldown))]
         [HarmonyPostfix]
         public static void DivineCurse(PlayerItem __instance, PlayerController user)
         {
-            __instance.remainingDamageCooldown *= user.Ext().cooldownMultiplier;
-            __instance.remainingTimeCooldown *= user.Ext().cooldownMultiplier;
+            __instance.remainingDamageCooldown *= user.stats.Ext().GetStatValue("CooldownMultiplier");
+            __instance.remainingTimeCooldown *= user.stats.Ext().GetStatValue("CooldownMultiplier");
             if(__instance.remainingRoomCooldown > 0)
             {
-                __instance.remainingRoomCooldown = Mathf.Max(1, Mathf.RoundToInt(__instance.remainingRoomCooldown * user.Ext().cooldownMultiplier));
+                __instance.remainingRoomCooldown = Mathf.Max(1, Mathf.RoundToInt(__instance.remainingRoomCooldown * user.stats.Ext().GetStatValue("CooldownMultiplier")));
             }
         }
 
         [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.DoPostProcessProjectile))]
-        [HarmonyPrefix]
-        public static void SetJank(PlayerController __instance)
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> ModifyScale (IEnumerable<CodeInstruction> instructions)
         {
-            JankJankJankJankJank = __instance.Ext().bulletChanceEffectScaleMultiplier;
+            foreach (var instruction in instructions)
+            {
+                yield return instruction;
+                if (instruction.opcode == OpCodes.Div)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldfld, stats);
+                    yield return new CodeInstruction(OpCodes.Call, PlayerStatsExt.statsext);
+                    yield return new CodeInstruction(OpCodes.Ldstr, "BulletChanceMultiplier");
+                    yield return new CodeInstruction(OpCodes.Call, svalue);
+                    yield return new CodeInstruction(OpCodes.Mul);
+                }
+            }
+            yield break;
         }
 
-        [HarmonyPatch(typeof(ProjectileModule), nameof(ProjectileModule.GetEstimatedShotsPerSecond))]
-        [HarmonyPostfix]
-        public static void ApplyEffectMultiplier(ref float __result)
+        [HarmonyPatch(typeof(Gun), nameof(Gun.ShootSingleProjectile))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SSP1(IEnumerable<CodeInstruction> instructions)
         {
-            __result /= JankJankJankJankJank;
+            var playerstatsloadcount = 0;
+            foreach (var instruction in instructions)
+            {
+                if (instruction.LoadsField(stats))
+                {
+                    playerstatsloadcount++;
+                    if(playerstatsloadcount == 2)
+                    {
+                        yield return new CodeInstruction(OpCodes.Ldarg_0);
+                        yield return new CodeInstruction(OpCodes.Ldloc_S, 10);
+                        yield return new CodeInstruction(OpCodes.Ldloc_0);
+                        yield return new CodeInstruction(OpCodes.Call, moddmggun);
+                    }
+                }
+                yield return instruction;
+                if (instruction.opcode == OpCodes.Stloc_S && instruction.operand is LocalBuilder loca && loca.LocalType == typeof(Projectile) && loca.LocalIndex == 10)
+                {
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 10);
+                    yield return new CodeInstruction(OpCodes.Call, pext);
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Stfld, sourcegun);
+                }
+            }
+            yield break;
         }
 
-        [HarmonyPatch(typeof(PlayerController), nameof(PlayerController.DoPostProcessProjectile))]
-        [HarmonyPostfix]
-        public static void ResetJank()
+        [HarmonyPatch(typeof(SummonTigerModifier), nameof(SummonTigerModifier.ShootSingleProjectile))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SSP2(IEnumerable<CodeInstruction> instructions)
         {
-            JankJankJankJankJank = 1f;
+            foreach (var instruction in instructions)
+            {
+                if (instruction.LoadsField(stats))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Call, getcompproj);
+                    yield return new CodeInstruction(OpCodes.Call, pext);
+                    yield return new CodeInstruction(OpCodes.Ldfld, sourcegun);
+                    yield return new CodeInstruction(OpCodes.Ldloc_1);
+                    yield return new CodeInstruction(OpCodes.Ldloc_1);
+                    yield return new CodeInstruction(OpCodes.Call, projowner);
+                    yield return new CodeInstruction(OpCodes.Isinst, typeof(PlayerController));
+                    yield return new CodeInstruction(OpCodes.Call, moddmggun);
+                }
+                yield return instruction;
+            }
+            yield break;
+        }
+
+        [HarmonyPatch(typeof(FireVolleyOnRollItem), nameof(FireVolleyOnRollItem.ShootSingleProjectile))]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> SSP3(IEnumerable<CodeInstruction> instructions)
+        {
+            foreach (var instruction in instructions)
+            {
+                if (instruction.LoadsField(stats))
+                {
+                    yield return new CodeInstruction(OpCodes.Ldarg_0);
+                    yield return new CodeInstruction(OpCodes.Ldloc_S, 6);
+                    yield return new CodeInstruction(OpCodes.Ldloc_0);
+                    yield return new CodeInstruction(OpCodes.Call, moddmgrollitem);
+                }
+                yield return instruction;
+            }
+            yield break;
+        }
+
+        [HarmonyPatch(typeof(ShopItemController), nameof(ShopItemController.ModifiedPrice), MethodType.Getter)]
+        [HarmonyTranspiler]
+        public static IEnumerable<CodeInstruction> PriceMods(IEnumerable<CodeInstruction> instructions)
+        {
+            var rtiloadcount = 0;
+            foreach (var instruction in instructions)
+            {
+                if (instruction.Calls(rti))
+                {
+                    rtiloadcount++;
+                    if (rtiloadcount == 2)
+                    {
+                        yield return new CodeInstruction(OpCodes.Ldarg_0);
+                        yield return new CodeInstruction(OpCodes.Call, pricemult);
+                        yield return new CodeInstruction(OpCodes.Mul);
+                    }
+                }
+                yield return instruction;
+            }
+            yield break;
+        }
+
+        public static FieldInfo stats = AccessTools.Field(typeof(PlayerController), nameof(PlayerController.stats));
+        public static FieldInfo sourcegun = AccessTools.Field(typeof(ProjectileExt), nameof(ProjectileExt.DefiniteSourceGun));
+        public static MethodInfo svalue = AccessTools.Method(typeof(PlayerStatsExt), nameof(PlayerStatsExt.GetStatValue));
+        public static MethodInfo pext = AccessTools.Method(typeof(CodeShortcuts), nameof(CodeShortcuts.Ext), new Type[] { typeof(Projectile) });
+        public static MethodInfo getcompproj = AccessTools.Method(typeof(Component), nameof(Component.GetComponent), new Type[] { }, new Type[] { typeof(Projectile) });
+        public static MethodInfo moddmggun = AccessTools.Method(typeof(PlayerControllerExt), nameof(PlayerControllerExt.ModProjectileDamageGun));
+        public static MethodInfo moddmgrollitem = AccessTools.Method(typeof(PlayerControllerExt), nameof(PlayerControllerExt.ModProjectileDamageRollItem));
+        public static MethodInfo rti = AccessTools.Method(typeof(Mathf), nameof(Mathf.RoundToInt));
+        public static MethodInfo pricemult = AccessTools.Method(typeof(PlayerControllerExt), nameof(GetPriceMultForItemAllPlayers));
+        public static MethodInfo projowner = AccessTools.PropertyGetter(typeof(Projectile), nameof(Projectile.Owner));
+
+        public static void ModProjectileDamage(float m, Projectile proj, PlayerController play)
+        {
+            proj.baseData.damage += play.stats.Ext().GetStatValue("UnscaledFlatDamage");
+            proj.baseData.damage += play.stats.Ext().GetStatValue("FlatDamage") * m;
+        }
+
+        public static void ModProjectileDamageGun(Gun g, Projectile proj, PlayerController player)
+        {
+            float m = 1f;
+            if (g != null && g.DefaultModule != null)
+            {
+                float num = 0f;
+                if (g.Volley != null)
+                {
+                    List<ProjectileModule> projectiles = g.Volley.projectiles;
+                    for (int i = 0; i < projectiles.Count; i++)
+                    {
+                        num += projectiles[i].GetEstimatedShotsPerSecond(g.reloadTime);
+                    }
+                }
+                else if (g.DefaultModule != null)
+                {
+                    num += g.DefaultModule.GetEstimatedShotsPerSecond(g.reloadTime);
+                }
+                if (num > 0f)
+                {
+                    m = 3.5f / num;
+                }
+            }
+            ModProjectileDamage(m, proj, player);
+        }
+
+        public static void ModProjectileDamageRollItem(FireVolleyOnRollItem i, Projectile proj, PlayerController player)
+        {
+            ModProjectileDamage(3.5f * Mathf.Max(i.FireCooldown, player.rollStats.GetModifiedTime(player)), proj, player);
         }
 
         [HarmonyPatch(typeof(SimpleFlagDisabler), nameof(SimpleFlagDisabler.Update))]
@@ -191,7 +344,26 @@ namespace SpecialStuffPack.Components
             return true;
         }
 
-        public static float JankJankJankJankJank = 1f;
+        [HarmonyPatch(typeof(RoomHandler), nameof(RoomHandler.OnEntered))]
+        [HarmonyPrefix]
+        public static void RememberVisibility(RoomHandler __instance, ref RoomHandler.VisibilityStatus __state)
+        {
+            __state = __instance.visibility;
+        }
+
+        [HarmonyPatch(typeof(RoomHandler), nameof(RoomHandler.OnEntered))]
+        [HarmonyPostfix]
+        public static void ProcessEventEnter(RoomHandler __instance, RoomHandler.VisibilityStatus __state, PlayerController p)
+        {
+            p.Ext().OnEnteredRoom?.Invoke(p, __instance, __state);
+        }
+
+        [HarmonyPatch(typeof(RoomHandler), nameof(RoomHandler.OnExited))]
+        [HarmonyPostfix]
+        public static void ProcessEventExit(RoomHandler __instance, PlayerController p)
+        {
+            p.Ext().OnExitedRoom?.Invoke(p, __instance);
+        }
 
         public void Awake()
         {
@@ -218,9 +390,40 @@ namespace SpecialStuffPack.Components
             }
         }
 
+        public float GetPriceMultForItem(ShopItemController controller)
+        {
+            if(ModifyPriceMult != null)
+            {
+                var m = 1f;
+                foreach(var invoke in ModifyPriceMult.GetInvocationList())
+                {
+                    m *= (float)invoke.DynamicInvoke(player, controller);
+                }
+                return m;
+            }
+            return 1f;
+        }
+
+        public static float GetPriceMultForItemAllPlayers(ShopItemController controller)
+        {
+            if(GameManager.HasInstance && GameManager.Instance.AllPlayers != null)
+            {
+                var m = 1f;
+                foreach(var p in GameManager.Instance.AllPlayers)
+                {
+                    if(p != null)
+                    {
+                        m *= p.Ext().GetPriceMultForItem(controller);
+                    }
+                }
+                return m;
+            }
+            return 1f;
+        }
+
         public void DamageOnActive(PlayerController player, PlayerItem item)
         {
-            if (((roomDamageOnActiveDamageCharge > 0f && item.damageCooldown > 0f) || (roomDamageOnActiveRoomCharge > 0f && item.roomCooldown > 0)) && player.CurrentRoom != null && player.CurrentRoom.GetActiveEnemies(RoomHandler.ActiveEnemyType.All) != null)
+            if (tarotCards.Contains(TarotCards.TarotCardType.Ambrosia) && (item.damageCooldown > 0f || item.roomCooldown > 0) && player.CurrentRoom != null && player.CurrentRoom.GetActiveEnemies(RoomHandler.ActiveEnemyType.All) != null)
             {
                 var unreferenced = player.CurrentRoom.GetActiveEnemiesUnreferenced(RoomHandler.ActiveEnemyType.All);
                 foreach (var enemy in unreferenced)
@@ -229,7 +432,8 @@ namespace SpecialStuffPack.Components
                     {
                         continue;
                     }
-                    enemy.healthHaver.ApplyDamage(roomDamageOnActiveDamageCharge * item.damageCooldown + roomDamageOnActiveRoomCharge * item.roomCooldown, Vector2.zero, "An Active Item", CoreDamageTypes.None, 
+                    var synergyActive = player.PlayerHasActiveSynergy("A Better Fate");
+                    enemy.healthHaver.ApplyDamage(TarotCardCount(TarotCards.TarotCardType.Ambrosia) * (synergyActive ? 0.2f : 0.15f) * item.damageCooldown + TarotCardCount(TarotCards.TarotCardType.Ambrosia) * (synergyActive ? 7.5f : 5f) * item.roomCooldown, Vector2.zero, "An Active Item", CoreDamageTypes.None, 
                         DamageCategory.Unstoppable, true, null, true);
                 }
             }
@@ -237,13 +441,13 @@ namespace SpecialStuffPack.Components
 
         public void Update()
         {
-            if (activeChargePerSecond > 0f && player.IsInCombat && player.activeItems != null)
+            if (player.stats.Ext().GetStatValue("ActiveChargePerSecond") > 0f && player.IsInCombat && player.activeItems != null)
             {
                 foreach (var item in player.activeItems)
                 {
                     if (item != null)
                     {
-                        item.DidDamage(player, activeChargePerSecond * BraveTime.DeltaTime);
+                        item.DidDamage(player, player.stats.Ext().GetStatValue("ActiveChargePerSecond") * BraveTime.DeltaTime);
                     }
                 }
             }
@@ -279,9 +483,13 @@ namespace SpecialStuffPack.Components
                 {
                     if(item != null)
                     {
-                        item.DidDamage(player, activeChargeOnRoomEnter);
+                        item.DidDamage(player, player.stats.Ext().GetStatValue("ActiveChargeOnRoomEnter"));
                     }
                 }
+            }
+            if (tarotCards.Contains(TarotCards.TarotCardType.GodlyMoment))
+            {
+                player.TriggerStuffedStarInvulnerability(Mathf.Sqrt(TarotCardCount(TarotCards.TarotCardType.GodlyMoment)) * (player.PlayerHasActiveSynergy("A Better Fate") ? 3f : 2f));
             }
         }
 
@@ -290,36 +498,56 @@ namespace SpecialStuffPack.Components
             if(tarotCards.Contains(TarotCards.TarotCardType.BurningDead) && fatal && hh.specRigidbody != null)
             {
                 Exploder.Explode(hh.specRigidbody.UnitCenter, bombExplosionData, Vector2.zero, null, false, CoreDamageTypes.None, false);
+                var count = TarotCardCount(TarotCards.TarotCardType.BurningDead);
+                if(player.PlayerHasActiveSynergy("A Better Fate"))
+                {
+                    count *= 2;
+                }
+                if(count > 1)
+                {
+                    for (int i = 0; i < count - 1; i++)
+                    {
+                        Exploder.Explode(hh.specRigidbody.UnitCenter + Random.insideUnitCircle * Random.Range(0.5f, 1.5f), bombExplosionData, Vector2.zero, null, false, CoreDamageTypes.None, false);
+                    }
+                }
             }
             if (tarotCards.Contains(TarotCards.TarotCardType.NaturesBoon) && fatal && hh.specRigidbody != null)
             {
-                OwnedShootProjectile(BarrelObject.GetProjectile(), hh.specRigidbody.UnitCenter, Random.insideUnitCircle.ToAngle(), player).specRigidbody.RegisterTemporaryCollisionException(hh.specRigidbody, 
-                    1f, null);
-            }
-            if (tarotCards.Contains(TarotCards.TarotCardType.NeptunesCurse) && fatal && hh.specRigidbody != null)
-            {
-                for(int i = 0; i < 2; i++)
+                for (int i = 0; i < (player.PlayerHasActiveSynergy("A Better Fate") ? 1 : 2) * TarotCardCount(TarotCards.TarotCardType.NaturesBoon); i++)
                 {
                     OwnedShootProjectile(MahogunyObject.Volley.projectiles[1].projectiles[0], hh.specRigidbody.UnitCenter, Random.insideUnitCircle.ToAngle(), player).specRigidbody.RegisterTemporaryCollisionException(hh.specRigidbody,
                         1f, null);
                 }
+                if(player.PlayerHasActiveSynergy("A Better Fate"))
+                {
+                    OwnedShootProjectile(MahogunyObject.Volley.projectiles[0].projectiles[0], hh.specRigidbody.UnitCenter, Random.insideUnitCircle.ToAngle(), player).specRigidbody.RegisterTemporaryCollisionException(hh.specRigidbody,
+                        1f, null);
+                }
+            }
+            if (tarotCards.Contains(TarotCards.TarotCardType.NeptunesCurse) && fatal && hh.specRigidbody != null)
+            {
+                for (int i = 0; i < TarotCardCount(TarotCards.TarotCardType.NeptunesCurse); i++)
+                {
+                    OwnedShootProjectile(player.PlayerHasActiveSynergy("A Better Fate") ? LikeShootingFishSynergyObject.DefaultModule.finalProjectile : BarrelObject.GetProjectile(), hh.specRigidbody.UnitCenter, Random.insideUnitCircle.ToAngle(), player).specRigidbody.RegisterTemporaryCollisionException(hh.specRigidbody,
+                    1f, null);
+                }
             }
             if (tarotCards.Contains(TarotCards.TarotCardType.SoulSnatcher))
             {
-                soulSnatcherDamageLeft -= dmg;
+                soulSnatcherDamageLeft -= dmg * TarotCardCount(TarotCards.TarotCardType.SoulSnatcher) * (player.PlayerHasActiveSynergy("A Better Fate") ? 1.5f : 1f);
                 if(soulSnatcherDamageLeft <= 0)
                 {
                     soulSnatcherDamageLeft = 1500;
-                    player.healthHaver.ApplyHealing(0.5f);
+                    LootEngine.GivePrefabToPlayer(HalfHeartObject.gameObject, player);
                 }
             }
             if (tarotCards.Contains(TarotCards.TarotCardType.GiftFromBelow))
             {
-                giftFromBelowDamageLeft -= dmg;
+                giftFromBelowDamageLeft -= dmg * TarotCardCount(TarotCards.TarotCardType.GiftFromBelow) * (player.PlayerHasActiveSynergy("A Better Fate") ? 1.5f : 1f);
                 if (giftFromBelowDamageLeft <= 0)
                 {
                     giftFromBelowDamageLeft = 2000;
-                    player.healthHaver.Armor += 1;
+                    LootEngine.GivePrefabToPlayer(ArmorObject.gameObject, player);
                 }
             }
         }
@@ -329,10 +557,22 @@ namespace SpecialStuffPack.Components
             if (tarotCards.Contains(TarotCards.TarotCardType.Bomb))
             {
                 Exploder.Explode(play.CenterPosition, bombExplosionData, Vector2.zero, null, false, CoreDamageTypes.None, false);
+                var count = TarotCardCount(TarotCards.TarotCardType.Bomb);
+                if(play.PlayerHasActiveSynergy("A Better Fate"))
+                {
+                    count *= 2;
+                }
+                if (count > 1)
+                {
+                    for (int i = 0; i < count - 1; i++)
+                    {
+                        Exploder.Explode(play.CenterPosition + Random.insideUnitCircle * Random.Range(0.5f, 1.5f), bombExplosionData, Vector2.zero, null, false, CoreDamageTypes.None, false);
+                    }
+                }
             }
             if (tarotCards.Contains(TarotCards.TarotCardType.IchorLingered))
             {
-                DeadlyDeadlyGoopManager.GetGoopManagerForGoopType(GoopDatabase.LambIchor).TimedAddGoopCircle(play.specRigidbody.UnitBottomCenter, 3.5f, 0.5f, false);
+                DeadlyDeadlyGoopManager.GetGoopManagerForGoopType(play.PlayerHasActiveSynergy("A Better Fate") ? GoopDatabase.LambIchorWhite : GoopDatabase.LambIchor).TimedAddGoopCircle(play.specRigidbody.UnitBottomCenter, 3.5f * TarotCardCount(TarotCards.TarotCardType.IchorLingered), 0.5f, false);
             }
         }
 
@@ -344,7 +584,7 @@ namespace SpecialStuffPack.Components
             }
             if (tarotCards.Contains(TarotCards.TarotCardType.FortunesBlessing))
             {
-                args.ModifiedHealing *= 2f;
+                args.ModifiedHealing *= (player.PlayerHasActiveSynergy("A Better Fate") ? 1.5f : 1f) + TarotCardCount(TarotCards.TarotCardType.FortunesBlessing);
             }
         }
 
@@ -354,7 +594,24 @@ namespace SpecialStuffPack.Components
             {
                 return;
             }
-            if (tarotCards.Contains(TarotCards.TarotCardType.ShieldOfFaith) && 0.1f.RandomChance())
+            if (tarotCards.Contains(TarotCards.TarotCardType.Intangible) && !player.IsInCombat)
+            {
+                var intangibleCount = TarotCardCount(TarotCards.TarotCardType.Intangible);
+                if(!player.PlayerHasActiveSynergy("A Better Fate"))
+                {
+                    intangibleCount -= 1;
+                }
+                if (intangibleCount > 0 && DiminishingReturnsChance(intangibleCount, 1f, 1f).RandomChance())
+                {
+                    args.ModifiedDamage = 0f;
+                }
+                return;
+            }
+            if (tarotCards.Contains(TarotCards.TarotCardType.ShieldOfFaith) && 
+                DiminishingReturnsChance(TarotCardCount(TarotCards.TarotCardType.ShieldOfFaith), 
+                    player.PlayerHasActiveSynergy("A Better Fate") ? 0.125f : 0.25f,
+                    player.PlayerHasActiveSynergy("A Better Fate") ? 0.986f : 0.926f)
+                .RandomChance())
             {
                 args.ModifiedDamage = 0f;
             }
@@ -372,7 +629,7 @@ namespace SpecialStuffPack.Components
                     {
                         continue;
                     }
-                    enemy.healthHaver.ApplyDamage(100f, Vector2.zero, "died because of death", CoreDamageTypes.None, DamageCategory.Unstoppable, true, null, true);
+                    enemy.healthHaver.ApplyDamage((player.PlayerHasActiveSynergy("A Better Fate") ? 150f : 100f) * TarotCardCount(TarotCards.TarotCardType.DeathsDoor), Vector2.zero, "died because of death", CoreDamageTypes.None, DamageCategory.Unstoppable, true, null, true);
                 }
             }
             if (player.activeItems != null)
@@ -381,13 +638,34 @@ namespace SpecialStuffPack.Components
                 {
                     if (item != null)
                     {
-                        item.DidDamage(player, activeChargeOnDamage);
+                        item.DidDamage(player, player.stats.Ext().GetStatValue("ActiveChargeOnDamage"));
                     }
                 }
             }
             if (tarotCards.Contains(TarotCards.TarotCardType.IchorEarned))
             {
-                DeadlyDeadlyGoopManager.GetGoopManagerForGoopType(GoopDatabase.LambIchor).TimedAddGoopCircle(player.specRigidbody.UnitBottomCenter, 6f, 1f, false);
+                DeadlyDeadlyGoopManager.GetGoopManagerForGoopType(player.PlayerHasActiveSynergy("A Better Fate") ? GoopDatabase.LambIchorWhite : GoopDatabase.LambIchor).TimedAddGoopCircle(player.specRigidbody.UnitBottomCenter, 6f * TarotCardCount(TarotCards.TarotCardType.IchorEarned), 1f, false);
+            }
+            if (tarotCards.Contains(TarotCards.TarotCardType.KinOfTurua) && player.CurrentRoom != null && player.CurrentRoom.GetActiveEnemies(RoomHandler.ActiveEnemyType.All) != null)
+            {
+                var nearestEnemy = player.CurrentRoom.GetNearestEnemy(player.CenterPosition, out _, true, true);
+                if (nearestEnemy != null)
+                {
+                    BeamController.FreeFireBeam((player.PlayerHasActiveSynergy("A Better Fate") ? KalibersGripSynergyObject : AbyssalTentacleObject).GetProjectile(), player, (nearestEnemy.CenterPosition - player.CenterPosition).ToAngle(), 3f * TarotCardCount(TarotCards.TarotCardType.KinOfTurua), true);
+                }
+            }
+            if(tarotCards.Contains(TarotCards.TarotCardType.Retribution) && player.CurrentRoom != null && player.IsInCombat)
+            {
+                var amount = 10 * TarotCardCount(TarotCards.TarotCardType.Retribution);
+                for(int i = 0; i < amount; i++)
+                {
+                    var randomPos = player.CurrentRoom.GetRandomAvailableCell(new(1, 1), CellTypes.FLOOR, false, null);
+                    if (randomPos.HasValue)
+                    {
+                        Instantiate((player.PlayerHasActiveSynergy("A Better Fate") ? ProximityMineObject : BombObject).objectToSpawn, randomPos.Value.ToVector2(), Quaternion.identity);
+                        LootEngine.DoDefaultPurplePoof(randomPos.Value.ToVector2(), false);
+                    }
+                }
             }
         }
 
@@ -402,7 +680,7 @@ namespace SpecialStuffPack.Components
                     {
                         continue;
                     }
-                    enemy.healthHaver.ApplyDamage(50f, Vector2.zero, "died because of death", CoreDamageTypes.None, DamageCategory.Unstoppable, true, null, true);
+                    enemy.healthHaver.ApplyDamage((player.PlayerHasActiveSynergy("A Better Fate") ? 50f : 75f) * TarotCardCount(TarotCards.TarotCardType.DiseasedHeart), Vector2.zero, "died because of death", CoreDamageTypes.None, DamageCategory.Unstoppable, true, null, true);
                 }
             }
         }
@@ -412,10 +690,10 @@ namespace SpecialStuffPack.Components
             if (tarotCards.Contains(TarotCards.TarotCardType.TheDeal))
             {
                 tarotCards.Remove(TarotCards.TarotCardType.TheDeal);
-                player.healthHaver.ApplyHealing(1f);
+                player.healthHaver.ApplyHealing(player.PlayerHasActiveSynergy("A Better Fate") ? 2f : 1f);
                 if (player.ForceZeroHealthState)
                 {
-                    player.healthHaver.Armor += 2f;
+                    player.healthHaver.Armor += player.PlayerHasActiveSynergy("A Better Fate") ? 4f : 2f;
                 }
                 player.ClearDeadFlags();
             }
@@ -425,7 +703,7 @@ namespace SpecialStuffPack.Components
         {
             if(tarotCards.Contains(TarotCards.TarotCardType.BlazingTrail) && player.IsDodgeRolling && otherRigidbody != null && otherRigidbody.aiActor != null && otherRigidbody.healthHaver != null)
             {
-                otherRigidbody.healthHaver.ApplyDamage(100f * BraveTime.DeltaTime, Vector2.zero, "incinerated", CoreDamageTypes.None, DamageCategory.Normal, false, null, false);
+                otherRigidbody.healthHaver.ApplyDamage((player.PlayerHasActiveSynergy("A Better Fate") ? 150f : 100f) * BraveTime.DeltaTime * TarotCardCount(TarotCards.TarotCardType.BlazingTrail), Vector2.zero, "incinerated", CoreDamageTypes.None, DamageCategory.Normal, false, null, false);
                 PhysicsEngine.SkipCollision = true;
                 var sprite = otherRigidbody.sprite;
                 Vector3 vector = sprite.WorldBottomLeft.ToVector3ZisY(0f);
@@ -443,43 +721,33 @@ namespace SpecialStuffPack.Components
                 GlobalSparksDoer.DoRandomParticleBurst(num4, minPosition, maxPosition, direction, angleVariance, magnitudeVariance, null, startLifetime, null, GlobalSparksDoer.SparksType.STRAIGHT_UP_FIRE);
                 GlobalSparksDoer.DoRandomParticleBurst(num4, minPosition, maxPosition, direction, angleVariance, magnitudeVariance, null, startLifetime, null, GlobalSparksDoer.SparksType.EMBERS_SWIRLING);
             }
-        }
-
-        public void RecalculateFloorBonus()
-        {
-            if (GameManager.Instance.nextLevelIndex % 2 == 0)
+            if(tarotCards.Contains(TarotCards.TarotCardType.WraithsWill) && !player.IsDodgeRolling && otherRigidbody != null && otherRigidbody.aiActor != null && otherRigidbody.healthHaver)
             {
-                floorDamageModifier.amount = oddFloorDamageBonus;
+                otherRigidbody.healthHaver.ApplyDamage((player.PlayerHasActiveSynergy("A Better Fate") ? 20f : 15f) * TarotCardCount(TarotCards.TarotCardType.WraithsWill), Vector2.zero, "the wraiths", CoreDamageTypes.None, DamageCategory.Normal, false, null, false);
             }
-            else
-            {
-                floorDamageModifier.amount = evenFloorDamageBonus;
-            }
-            player.RecalculateStats();
         }
 
         public void FloorLoadEffects(PlayerController play)
         {
             if (tarotCards.Contains(TarotCards.TarotCardType.Telescope))
             {
-                Minimap.Instance.RevealAllRooms(false);
+                Minimap.Instance.RevealAllRooms(TarotCardCount(TarotCards.TarotCardType.Telescope) > 1 || player.PlayerHasActiveSynergy("A Better Fate"));
             }
-            RecalculateFloorBonus();
         }
 
         public void HandleDefaultEffects(Projectile proj, float scale)
         {
-            if (poisonProjectileChance.ScaledRandom(scale))
+            if (player.stats.Ext().GetStatValue("LambPoisonChance").ScaledRandom(scale))
             {
                 proj.statusEffectsToApply.Add(defaultPoison);
                 proj.AdjustPlayerProjectileTint(Color.green, 0, 0f);
             }
-            if (lambCritChance.RandomChance())
+            if (player.stats.Ext().GetStatValue("LambCritChance").RandomChance())
             {
                 proj.AdjustPlayerProjectileTint(Color.red, 0, 0f);
                 proj.baseData.damage *= 2f;
             }
-            if (tarotCards.Contains(TarotCards.TarotCardType.HandsOfRage) && Time.time - lastHandsOfRageTime >= 10f)
+            if (tarotCards.Contains(TarotCards.TarotCardType.HandsOfRage) && Time.time - lastHandsOfRageTime >= (player.PlayerHasActiveSynergy("A Better Fate") ? 10f : 7.5f) / TarotCardCount(TarotCards.TarotCardType.HandsOfRage))
             {
                 var rage = OwnedShootProjectile(ThePredatorObject.GetProjectile(), player.CurrentGun != null ? player.CurrentGun.barrelOffset.position.XY() : player.CenterPosition, player.GetAimDirection(), player);
                 rage.AdjustPlayerProjectileTint(Color.red, 0, 0f);
@@ -490,6 +758,11 @@ namespace SpecialStuffPack.Components
                 homing.AngularVelocity = 420f;
                 lastHandsOfRageTime = Time.time;
             }
+        }
+
+        public int TarotCardCount(TarotCards.TarotCardType t)
+        {
+            return tarotCards.FindAll(x => x == t).Count;
         }
 
         public void OnDestroy()
@@ -593,26 +866,17 @@ namespace SpecialStuffPack.Components
         }
 
         public bool wasLastInFoyer;
-        public float poisonProjectileChance;
-        public float lambCritChance;
         public PlayerController player;
         public bool HasBeenKeyRobbed;
-        public float evenFloorDamageBonus;
-        public float oddFloorDamageBonus;
         public float lastHandsOfRageTime;
-        public float activeChargeMultiplier = 1f;
-        public float activeChargeOnRoomEnter;
-        public float activeChargeOnDamage;
-        public float activeChargePerSecond;
-        public float cooldownMultiplier = 1f;
-        public float roomDamageOnActiveDamageCharge;
-        public float roomDamageOnActiveRoomCharge;
-        public float bulletChanceEffectScaleMultiplier = 1f;
         public float soulSnatcherDamageLeft = 1500f;
         public float giftFromBelowDamageLeft = 2000f;
         public int cccAbId;
         public bool isCCCRun;
         public StatModifier floorDamageModifier;
         public List<TarotCards.TarotCardType> tarotCards = new();
+        public Action<PlayerController, RoomHandler, RoomHandler.VisibilityStatus> OnEnteredRoom;
+        public Action<PlayerController, RoomHandler> OnExitedRoom;
+        public Func<PlayerController, ShopItemController, float> ModifyPriceMult;
     }
 }

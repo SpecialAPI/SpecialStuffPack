@@ -8,7 +8,6 @@ using System.Linq;
 using UnityEngine;
 using HutongGames.PlayMaker.Actions;
 using System.Text;
-using SpecialStuffPack.SaveAPI;
 using HutongGames.PlayMaker;
 using SpecialStuffPack.SynergyAPI;
 
@@ -95,9 +94,12 @@ namespace SpecialStuffPack.Items
                     }
                     else if (fsm.FsmStates[i].Actions[j] is BeginConversation || fsm.FsmStates[i].Actions[j] is EndConversation || fsm.FsmStates[i].Actions[j] is DialogueBox)
                     {
-                        FsmStateAction[] actions = fsm.FsmStates[i].Actions;
-                        SaveTools.Remove(ref actions, fsm.FsmStates[i].Actions[j]);
-                        fsm.FsmStates[i].Actions = actions;
+                        var actions = fsm.FsmStates[i].Actions.ToList();
+
+                        actions.Remove(actions[j]);
+
+                        fsm.FsmStates[i].Actions = actions.ToArray();
+
                         j--;
                     }
                 }

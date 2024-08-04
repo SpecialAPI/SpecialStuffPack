@@ -29,6 +29,16 @@ namespace SpecialStuffPack
             return default;
         }
 
+        public static StatModifier CreateCustomStatModifier(string statname, float amount, ModifyMethod modifyMethod)
+        {
+            var d = ETGModCompatibility.ExtendEnum<PlayerStats.StatType>(SpecialStuffModule.GUID, statname);
+            if (!PlayerStatsExt.newStatsForMods.ContainsKey(d))
+            {
+                PlayerStatsExt.newStatsForMods.Add(d, statname);
+            }
+            return StatModifier.Create(d, modifyMethod, amount);
+        }
+
         public static string EraseUserName(string original)
         {
             var userFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -193,6 +203,61 @@ namespace SpecialStuffPack
             return PassiveItem.ActiveFlagItems[p][passiveFlag];
         }
 
+        public static int GetFlagCountAllPlayers<T>()
+        {
+            return GetFlagCountAllPlayers(typeof(T));
+        }
+
+        public static void TriggerStuffedStarInvulnerability(this PlayerController player, float duration)
+        {
+            player.StartCoroutine(HandleStuffedStarInvulnerability(player, duration));
+        }
+
+        public static IEnumerator HandleStuffedStarInvulnerability(PlayerController user, float dura)
+        {
+            AkSoundEngine.PostEvent("Play_OBJ_powerstar_use_01", user.gameObject);
+            Material[] array = user.SetOverrideShader(ShaderCache.Acquire("Brave/Internal/RainbowChestShader"));
+            for (int i = 0; i < array.Length; i++)
+            {
+                if (!(array[i] == null))
+                {
+                    array[i].SetFloat("_AllColorsToggle", 1f);
+                }
+            }
+            float ela = 0f;
+            while (ela < dura)
+            {
+                ela += BraveTime.DeltaTime;
+                user.healthHaver.IsVulnerable = false;
+                yield return null;
+            }
+            user.ClearOverrideShader();
+            user.healthHaver.IsVulnerable = true;
+            AkSoundEngine.PostEvent("Stop_SND_OBJ", user.gameObject);
+            yield break;
+        }
+
+        public static int GetFlagCountAllPlayers(Type flagType)
+        {
+            if(!GameManager.HasInstance || GameManager.Instance.AllPlayers == null)
+            {
+                return 0;
+            }
+            int c = 0;
+            foreach(var play in GameManager.Instance.AllPlayers)
+            {
+                if(play == null)
+                {
+                    continue;
+                }
+                if (PassiveItem.IsFlagSetForCharacter(play, flagType))
+                {
+                    c += play.GetFlagCount(flagType);
+                }
+            }
+            return c;
+        }
+
         public static int ToInt(this bool b, int onFalse = 0, int onTrue = 1)
         {
             return b ? onTrue : onFalse;
@@ -202,6 +267,8 @@ namespace SpecialStuffPack
         {
             return mod == g.DefaultModule || mod.CloneSourceIndex == 0;
         }
+
+
 
         public static bool OwnerHasSynergy(this Projectile proj, string name)
         {
@@ -436,6 +503,24 @@ namespace SpecialStuffPack
                 return null;
             }
             return pstats.GetOrAddComponent<PlayerStatsExt>();
+        }
+
+        public static HealthHaverExt Ext(this HealthHaver hh)
+        {
+            if (hh == null)
+            {
+                return null;
+            }
+            return hh.GetOrAddComponent<HealthHaverExt>();
+        }
+
+        public static ProjectileExt Ext(this Projectile proj)
+        {
+            if (proj == null)
+            {
+                return null;
+            }
+            return proj.GetOrAddComponent<ProjectileExt>();
         }
 
         public static tk2dSpriteAnimationClip AddClipWithExistingFrames(this tk2dSpriteAnimation library, string animationName, tk2dSpriteCollectionData collection, float fps = 15f,
@@ -755,6 +840,215 @@ namespace SpecialStuffPack
             dfLabel.StartCoroutine(self.HandleDamageNumberCR(worldPosition, worldPosition.y - heightOffGround, dfLabel));
         }
 
+        public static void DoCustomRisingTextPopup(Vector3 worldPosition, string whatDoesItSay, Color whatColorIsIt, float vel, float duration)
+        {
+            var self = GameUIRoot.Instance;
+            if (self == null)
+            {
+                return;
+            }
+            if (self.m_inactiveDamageLabels.Count == 0)
+            {
+                GameObject gameObject = (GameObject)UnityEngine.Object.Instantiate(BraveResources.Load("DamagePopupLabel", ".prefab"), self.transform);
+                self.m_inactiveDamageLabels.Add(gameObject.GetComponent<dfLabel>());
+            }
+            dfLabel dfLabel = self.m_inactiveDamageLabels[0];
+            self.m_inactiveDamageLabels.RemoveAt(0);
+            dfLabel.gameObject.SetActive(true);
+            dfLabel.Text = whatDoesItSay;
+            dfLabel.Color = whatColorIsIt;
+            dfLabel.Opacity = 1f;
+            dfLabel.transform.position = dfFollowObject.ConvertWorldSpaces(worldPosition, GameManager.Instance.MainCameraController.Camera, self.m_manager.RenderCamera).WithZ(0f);
+            dfLabel.transform.position = dfLabel.transform.position.QuantizeFloor(dfLabel.PixelsToUnits() / (Pixelator.Instance.ScaleTileScale / Pixelator.Instance.CurrentTileScale));
+            dfLabel.StartCoroutine(HandleRisingPopup(dfLabel, worldPosition, vel, duration));
+        }
+
+        public static string FormatStatMessage(this StatModifier mod, out Color c)
+        {
+            if (mod.IsPositiveForPlayer())
+            {
+                c = Color.green;
+            }
+            else
+            {
+                c = Color.red;
+            }
+            if (!StatNameDict.ContainsKey(mod.statToBoost))
+            {
+                return "Error: unknown stat?";
+            }
+            var statname = StatNameDict[mod.statToBoost];
+            if (mod.modifyType == StatModifier.ModifyMethod.ADDITIVE)
+            {
+                if (WeirdPercentageStats.Contains(mod.statToBoost))
+                {
+                    return $"{(mod.amount >= 0f ? "+" : "")}{mod.amount.Quantize(0.01f)}% {statname}";
+                }
+                else if (PercentageStats.Contains(mod.statToBoost))
+                {
+                    return $"{(mod.amount >= 0f ? "+" : "")}{(mod.amount * 100f).Quantize(0.01f)}% {statname}";
+                }
+                return $"{(mod.amount >= 0f ? "+" : "")}{(mod.amount).Quantize(0.01f)} {statname}";
+            }
+            else if(mod.modifyType == StatModifier.ModifyMethod.MULTIPLICATIVE || mod.modifyType == ModifyMethodE.TrueMultiplicative)
+            {
+                return $"{mod.amount.Quantize(0.01f)}x {statname}";
+            }
+            else if(mod.modifyType == ModifyMethodE.Exponent)
+            {
+                return $"{statname}^{mod.amount.Quantize(0.01f)}";
+            }
+            return "Error: unknown modify method?";
+        }
+
+        public static void DoEpicAnnouncementChain(Vector3 worldPosition, List<string> messages, List<Color> messageColors = null, float messageVel = 0.5f, float messageDur = 4f, float delayBetweenMessages = 2f)
+        {
+            if(messages == null || messages.Count <= 0)
+            {
+                return;
+            }
+            GameManager.Instance.Dungeon.StartCoroutine(EpicAnnouncementChainCR(worldPosition, messages, messageColors, messageVel, messageDur, delayBetweenMessages));
+        }
+
+        public static IEnumerator EpicAnnouncementChainCR(Vector3 worldPosition, List<string> messages, List<Color> messageColors = null, float messageVel = 0.5f, float messageDur = 4f, float delayBetweenMessages = 2f)
+        {
+            for(int i = 0; i < messages.Count; i++)
+            {
+                var msg = messages[i];
+                if (!string.IsNullOrEmpty(msg))
+                {
+                    DoCustomRisingTextPopup(worldPosition, msg, messageColors != null && i < messageColors.Count ? messageColors[i] : Color.white, messageVel, messageDur);
+                }
+                yield return new WaitForSeconds(delayBetweenMessages);
+            }
+            yield break;
+        }
+
+        public static void ApplyHealingUnmodified(this HealthHaver hh, float healing)
+        {
+            if (!hh.isPlayerCharacter || !hh.m_player.IsGhost)
+            {
+                hh.currentHealth += healing;
+                if (hh.quantizeHealth)
+                {
+                    hh.currentHealth = BraveMathCollege.QuantizeFloat(hh.currentHealth, hh.quantizedIncrement);
+                }
+                if (hh.currentHealth > hh.AdjustedMaxHealth)
+                {
+                    hh.currentHealth = hh.AdjustedMaxHealth;
+                }
+                hh.RaiseEvent("OnHealthChanged", hh.currentHealth, hh.AdjustedMaxHealth);
+            }
+        }
+
+        public static bool IncreasesStat(this StatModifier mod)
+        {
+            if (mod.modifyType == StatModifier.ModifyMethod.MULTIPLICATIVE || mod.modifyType == ModifyMethodE.TrueMultiplicative || mod.modifyType == ModifyMethodE.Exponent)
+            {
+                return mod.amount > 1f;
+            }
+            else if (mod.modifyType == StatModifier.ModifyMethod.ADDITIVE)
+            {
+                return mod.amount > 0f;
+            }
+            return false;
+        }
+
+        public static bool IsPositiveForPlayer(this StatModifier mod)
+        {
+            return mod.IncreasesStat() == !ReverseBadStats.Contains(mod.statToBoost);
+        }
+
+        public static readonly List<PlayerStats.StatType> ReverseBadStats = new()
+        {
+            PlayerStats.StatType.Accuracy,
+            PlayerStats.StatType.ReloadSpeed,
+            PlayerStats.StatType.GlobalPriceMultiplier,
+            PlayerStats.StatType.EnemyProjectileSpeedMultiplier,
+            PlayerStats.StatType.Curse
+        };
+
+        public static readonly List<PlayerStats.StatType> PercentageStats = new()
+        {
+            PlayerStats.StatType.RateOfFire,
+            PlayerStats.StatType.Accuracy,
+            PlayerStats.StatType.Damage,
+            PlayerStats.StatType.ProjectileSpeed,
+            PlayerStats.StatType.AmmoCapacityMultiplier,
+            PlayerStats.StatType.ReloadSpeed,
+            PlayerStats.StatType.KnockbackMultiplier,
+            PlayerStats.StatType.GlobalPriceMultiplier,
+            PlayerStats.StatType.PlayerBulletScale,
+            PlayerStats.StatType.AdditionalClipCapacityMultiplier,
+            PlayerStats.StatType.ThrownGunDamage,
+            PlayerStats.StatType.DodgeRollDamage,
+            PlayerStats.StatType.DamageToBosses,
+            PlayerStats.StatType.EnemyProjectileSpeedMultiplier,
+            PlayerStats.StatType.ChargeAmountMultiplier,
+            PlayerStats.StatType.RangeMultiplier,
+            PlayerStats.StatType.DodgeRollDistanceMultiplier,
+            PlayerStats.StatType.DodgeRollSpeedMultiplier,
+            PlayerStats.StatType.TarnisherClipCapacityMultiplier,
+            PlayerStats.StatType.MoneyMultiplierFromEnemies
+        };
+
+        public static readonly List<PlayerStats.StatType> WeirdPercentageStats = new()
+        {
+            PlayerStats.StatType.ShadowBulletChance,
+            PlayerStats.StatType.ExtremeShadowBulletChance
+        };
+
+        public static readonly Dictionary<PlayerStats.StatType, string> StatNameDict = new()
+        {
+            { PlayerStats.StatType.MovementSpeed, "Speed" },
+            { PlayerStats.StatType.RateOfFire, "Firerate" },
+            { PlayerStats.StatType.Accuracy, "Spread" },
+            { PlayerStats.StatType.Health, "Health" },
+            { PlayerStats.StatType.Coolness, "Coolness" },
+            { PlayerStats.StatType.Damage, "Damage" },
+            { PlayerStats.StatType.ProjectileSpeed, "Bullet Speed" },
+            { PlayerStats.StatType.AdditionalGunCapacity, "d" },
+            { PlayerStats.StatType.AdditionalItemCapacity, "Item Slots" },
+            { PlayerStats.StatType.AmmoCapacityMultiplier, "Ammo" },
+            { PlayerStats.StatType.ReloadSpeed, "Reload Time" },
+            { PlayerStats.StatType.AdditionalShotPiercing, "Bullet Pierces" },
+            { PlayerStats.StatType.KnockbackMultiplier, "Knockback" },
+            { PlayerStats.StatType.GlobalPriceMultiplier, "Shop Price" },
+            { PlayerStats.StatType.Curse, "Curse" },
+            { PlayerStats.StatType.PlayerBulletScale, "Bullet Scale" },
+            { PlayerStats.StatType.AdditionalClipCapacityMultiplier, "Clip Size" },
+            { PlayerStats.StatType.AdditionalShotBounces, "Bullet Bounces" },
+            { PlayerStats.StatType.AdditionalBlanksPerFloor, "Blanks Per Floor" },
+            { PlayerStats.StatType.ShadowBulletChance, "Shadow Bullet Chance" },
+            { PlayerStats.StatType.ThrownGunDamage, "Thrown Gun Damage" },
+            { PlayerStats.StatType.DodgeRollDamage, "Roll Damage" },
+            { PlayerStats.StatType.DamageToBosses, "Damage To Bosses" },
+            { PlayerStats.StatType.EnemyProjectileSpeedMultiplier, "Enemy Bullet Speed" },
+            { PlayerStats.StatType.ExtremeShadowBulletChance, "Pop-Pop Chance" },
+            { PlayerStats.StatType.ChargeAmountMultiplier, "Charge Speed" },
+            { PlayerStats.StatType.RangeMultiplier, "Range" },
+            { PlayerStats.StatType.DodgeRollDistanceMultiplier, "Roll Distance" },
+            { PlayerStats.StatType.DodgeRollSpeedMultiplier, "Roll Speed" },
+            { PlayerStats.StatType.TarnisherClipCapacityMultiplier, "Temporary Clip Size" },
+            { PlayerStats.StatType.MoneyMultiplierFromEnemies, "Money Drops" }
+        };
+
+        public static IEnumerator HandleRisingPopup(dfLabel label, Vector3 initialPos, float vel, float duration)
+        {
+            var ela = 0f;
+            while(ela < duration)
+            {
+                initialPos += Vector3.up * vel * BraveTime.DeltaTime;
+                ela += BraveTime.DeltaTime;
+                label.transform.position = dfFollowObject.ConvertWorldSpaces(initialPos, GameManager.Instance.MainCameraController.Camera, GameUIRoot.Instance.Manager.renderCamera);
+                label.Opacity = 1 - ela / duration;
+                yield return null;
+            }
+            label.gameObject.SetActive(value: false);
+            GameUIRoot.Instance.m_inactiveDamageLabels.Add(label);
+            yield break;
+        }
+
         public static bool ScaledChance(float chance, float scale)
         {
             if(chance >= 1f)
@@ -1027,7 +1321,7 @@ namespace SpecialStuffPack
 
         public static string ToMTGId(this string s)
         {
-            return s.ToID().Replace("'", "");
+            return s.ToID().Replace("'", "").Replace("/", "_");
         }
 
         public static List<AIActor> GetActiveEnemiesUnreferenced(this RoomHandler room, RoomHandler.ActiveEnemyType type)
@@ -1035,6 +1329,16 @@ namespace SpecialStuffPack
             List<AIActor> enemies = new List<AIActor>();
             room.GetActiveEnemies(type, ref enemies);
             return enemies;
+        }
+
+        public static AIActorExt Ext(this AIActor enemy)
+        {
+            return enemy.GetOrAddComponent<AIActorExt>();
+        }
+
+        public static float DiminishingReturnsChance(float stack, float m, float a)
+        {
+            return 1 - 1 / (stack * m + a);
         }
 
         public static List<T> GetComponentsInRoom<T>(this RoomHandler room) where T : Component
@@ -1134,13 +1438,18 @@ namespace SpecialStuffPack
 
         public static PierceProjModifier GetOrAddPierce(this Projectile proj)
         {
-            if (proj.GetComponent<PierceProjModifier>() != null)
+            if (proj.GetComponent<PierceProjModifier>() == null)
             {
-                return proj.GetComponent<PierceProjModifier>();
+                proj.AddComponent<PierceProjModifier>().penetration = 0;
             }
-            var pierce = proj.AddComponent<PierceProjModifier>();
-            pierce.penetration = 0;
-            return pierce;
+            return proj.GetComponent<PierceProjModifier>();
+        }
+
+        public static Vector2 PredictGameActorPosition(Vector2 firingOrigin, SpeculativeRigidbody body, float speed)
+        {
+            Vector2 unitCenter = body.GetUnitCenter(ColliderType.HitBox);
+            Vector2 targetVelocity = body.Velocity;
+            return BraveMathCollege.GetPredictedPosition(unitCenter, targetVelocity, firingOrigin, speed);
         }
 
         public static T[] AddRangeToArray<T>(this T[] array, ICollection<T> range)

@@ -1,5 +1,4 @@
-﻿using SpecialStuffPack.SaveAPI;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,16 +15,16 @@ namespace SpecialStuffPack.Components
 
         public void DeathChecks(Vector2 v)
         {
-            SaveAPIManager.SetCharacterSpecificFlag("BeatDragun", true);
+            GameStatsManager.Instance.SetCharacterSpecificFlag(ETGModCompatibility.ExtendEnum<CharacterSpecificGungeonFlags>(SpecialStuffModule.GUID, "BeatDragun"), true);
             if (GameManager.Instance.CurrentGameMode == GameManager.GameMode.BOSSRUSH)
             {
-                SaveAPIManager.SetCharacterSpecificFlag("BeatBossrush", true);
+                GameStatsManager.Instance.SetCharacterSpecificFlag(ETGModCompatibility.ExtendEnum<CharacterSpecificGungeonFlags>(SpecialStuffModule.GUID, "BeatBossrush"), true);
             }
             else
             {
                 if(GameManager.Instance.CurrentGameMode == GameManager.GameMode.SHORTCUT && GameManager.Instance.LastShortcutFloorLoaded == 4)
                 {
-                    SaveAPIManager.SetFlag("WoodenToken", true);
+                    GameStatsManager.Instance.SetFlag(ETGModCompatibility.ExtendEnum<GungeonFlags>(SpecialStuffModule.GUID, "WoodenToken"), true);
                 }
             }
         }

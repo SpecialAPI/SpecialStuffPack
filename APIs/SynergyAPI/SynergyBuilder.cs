@@ -6,6 +6,7 @@ using System.Reflection;
 using Gungeon;
 using System.Diagnostics.Eventing.Reader;
 using UnityEngine;
+using Alexandria.ItemAPI;
 
 namespace SpecialStuffPack.SynergyAPI
 {
@@ -144,56 +145,6 @@ namespace SpecialStuffPack.SynergyAPI
         {
             return self.CurrentOwner && self.CurrentOwner is PlayerController && (self.CurrentOwner as PlayerController).PlayerHasActiveSynergy(synergyToCheck);
         }
-        
-        /// <summary>
-        /// Adds a <see cref="AdvancedCompanionSynergyProcessor"/> to <paramref name="item"/>
-        /// </summary>
-        /// <param name="item">The item to apply the <see cref="AdvancedCompanionSynergyProcessor"/> to.</param>
-        /// <param name="requiredSynergy">The synergy required to spawn the companion.</param>
-        /// <param name="requiresNoSynergy">If <see langword="true"/>, the companion will always be active, even without the synergy.</param>
-        /// <param name="companionGuid">The guid of the companion that will be spawned</param>
-        /// <returns>The added <see cref="AdvancedCompanionSynergyProcessor"/>.</returns>
-        public static AdvancedCompanionSynergyProcessor AddCompanionSynergyProcessor(this PlayerItem item, string requiredSynergy, bool requiresNoSynergy, string companionGuid)
-        {
-            return item.AddCompanionSynergyProcessorPO(requiredSynergy, requiresNoSynergy, true, companionGuid);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="AdvancedCompanionSynergyProcessor"/> to <paramref name="item"/>
-        /// </summary>
-        /// <param name="item">The item to apply the <see cref="AdvancedCompanionSynergyProcessor"/> to.</param>
-        /// <param name="requiredSynergy">The synergy required to spawn the companion.</param>
-        /// <param name="requiresNoSynergy">If <see langword="true"/>, the companion will always be active, even without the synergy.</param>
-        /// <param name="companionGuid">The guid of the companion that will be spawned</param>
-        /// <returns>The added <see cref="AdvancedCompanionSynergyProcessor"/>.</returns>
-        public static AdvancedCompanionSynergyProcessor AddCompanionSynergyProcessor(this PassiveItem item, string requiredSynergy, bool requiresNoSynergy, string companionGuid)
-        {
-            return item.AddCompanionSynergyProcessorPO(requiredSynergy, requiresNoSynergy, true, companionGuid);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="AdvancedCompanionSynergyProcessor"/> to <paramref name="item"/>
-        /// </summary>
-        /// <param name="item">The item to apply the <see cref="AdvancedCompanionSynergyProcessor"/> to.</param>
-        /// <param name="requiredSynergy">The synergy required to spawn the companion.</param>
-        /// <param name="requiresNoSynergy">If <see langword="true"/>, the companion will always be active, even without the synergy.</param>
-        /// <param name="persistsOnDisable">If <see langword="true"/>, the companion will be active even when the owner is not holding the gun.</param>
-        /// <param name="companionGuid">The guid of the companion that will be spawned</param>
-        /// <returns>The added <see cref="AdvancedCompanionSynergyProcessor"/>.</returns>
-        public static AdvancedCompanionSynergyProcessor AddCompanionSynergyProcessor(this Gun item, string requiredSynergy, bool requiresNoSynergy, bool persistsOnDisable, string companionGuid)
-        {
-            return item.AddCompanionSynergyProcessorPO(requiredSynergy, requiresNoSynergy, persistsOnDisable, companionGuid);
-        }
-
-        private static AdvancedCompanionSynergyProcessor AddCompanionSynergyProcessorPO(this PickupObject item, string requiredSynergy, bool requiresNoSynergy, bool persistsOnDisable, string companionGuid)
-        {
-            AdvancedCompanionSynergyProcessor p = item.gameObject.AddComponent<AdvancedCompanionSynergyProcessor>();
-            p.RequiredSynergy = requiredSynergy;
-            p.RequiresNoSynergy = requiresNoSynergy;
-            p.PersistsOnDisable = persistsOnDisable;
-            p.CompanionGuid = companionGuid;
-            return p;
-        }
 
         public static void SetupDualWieldSynergy(string synergyName, Gun first, Gun second)
         {
@@ -225,15 +176,7 @@ namespace SpecialStuffPack.SynergyAPI
         public static AdvancedGunFormeSynergyProcessor AddGunFormeSynergyProcessor(this Gun gun)
         {
             AdvancedGunFormeSynergyProcessor p = gun.gameObject.AddComponent<AdvancedGunFormeSynergyProcessor>();
-            p.Formes = new AdvancedGunFormeData[0];
-            return p;
-        }
-
-        public static AdvancedVolleyReplacementSynergyProcessor AddVolleyReplacementSynergyProcessor(this Gun gun, string requiredSynergy, ProjectileVolleyData synergyVolley)
-        {
-            AdvancedVolleyReplacementSynergyProcessor p = gun.gameObject.AddComponent<AdvancedVolleyReplacementSynergyProcessor>();
-            p.RequiredSynergy = requiredSynergy;
-            p.SynergyVolley = synergyVolley;
+            p.Formes = new List<AdvancedGunFormeData>();
             return p;
         }
 
@@ -250,10 +193,9 @@ namespace SpecialStuffPack.SynergyAPI
         {
             AdvancedGunFormeData forme = ScriptableObject.CreateInstance<AdvancedGunFormeData>();
             forme.RequiresSynergy = requiresSynergy;
-            forme.RequiredSynergy = requiredSynergy;
+            forme.RequiredSynergyString = requiredSynergy;
             forme.FormeID = formeGunId;
-            Array.Resize(ref processor.Formes, processor.Formes.Length + 1);
-            processor.Formes[processor.Formes.Length - 1] = forme;
+            processor.Formes.Add(forme);
             addedForme = forme;
             return processor;
         }
@@ -269,41 +211,6 @@ namespace SpecialStuffPack.SynergyAPI
         public static AdvancedGunFormeSynergyProcessor AddForme(this AdvancedGunFormeSynergyProcessor processor, bool requiresSynergy, string requiredSynergy, int formeGunId)
         {
             return processor.AddForme(requiresSynergy, requiredSynergy, formeGunId, out _);
-        }
-
-        /// <summary>
-        /// Adds a <see cref="AdvancedInfiniteAmmoSynergyProcessor"/> to <paramref name="gun"/>.
-        /// </summary>
-        /// <param name="gun">The gun to add the <see cref="AdvancedInfiniteAmmoSynergyProcessor"/> to.</param>
-        /// <param name="requiredSynergy">The name of the synergy required for the gun to have infinite ammo.</param>
-        /// <param name="preventsReload">If <see langword="true"/>, will also set <paramref name="gun"/>'s reload time to 0 when the synergy is active.</param>
-        /// <returns>The added <see cref="AdvancedInfiniteAmmoSynergyProcessor"/>.</returns>
-        public static AdvancedInfiniteAmmoSynergyProcessor AddInfiniteAmmoSynergyProcessor(this Gun gun, string requiredSynergy, bool preventsReload)
-        {
-            AdvancedInfiniteAmmoSynergyProcessor p = gun.gameObject.AddComponent<AdvancedInfiniteAmmoSynergyProcessor>();
-            p.RequiredSynergy = requiredSynergy;
-            p.PreventsReload = preventsReload;
-            return p;
-        }
-
-        /// <summary>
-        /// Adds a <see cref="AdvancedTransformGunSynergyProcessor"/> to <paramref name="gun"/>.
-        /// </summary>
-        /// <param name="gun">The gun to add the <see cref="AdvancedTransformGunSynergyProcessor"/> to.</param>
-        /// <param name="requiredSynergy">The synergy required for the gun to transform.</param>
-        /// <param name="synergyFormId">The id of the gun used for the synergy form.</param>
-        /// <param name="shouldResetAmmoAfterTransformation">If <see langword="true"/>, the gun's ammo will be set to <paramref name="resetAmmoCount"/> after transforming.</param>
-        /// <param name="resetAmmoCount">If <paramref name="shouldResetAmmoAfterTransformation"/> is <see langword="true"/>, amount to which the gun's ammo will be set to.</param>
-        /// <returns>The added <see cref="AdvancedTransformGunSynergyProcessor"/>.</returns>
-        public static AdvancedTransformGunSynergyProcessor AddTransformGunSynergyProcessor(this Gun gun, string requiredSynergy, int synergyFormId, bool shouldResetAmmoAfterTransformation, int resetAmmoCount)
-        {
-            AdvancedTransformGunSynergyProcessor p = gun.gameObject.AddComponent<AdvancedTransformGunSynergyProcessor>();
-            p.SynergyToCheck = requiredSynergy;
-            p.SynergyGunId = synergyFormId;
-            p.NonSynergyGunId = gun.PickupObjectId;
-            p.ShouldResetAmmoAfterTransformation = shouldResetAmmoAfterTransformation;
-            p.ResetAmmoCount = resetAmmoCount;
-            return p;
         }
 
         /// <summary>
@@ -331,76 +238,23 @@ namespace SpecialStuffPack.SynergyAPI
         /// <returns>The added <see cref="AdvancedHoveringGunSynergyProcessor"/>.</returns>
         public static AdvancedHoveringGunSynergyProcessor AddHoveringGunSynergyProcessor(this Gun gun, string requiredSynergy, int targetGunId, bool usesMultipleGuns, List<int> targetGunIDs, HoveringGunController.HoverPosition positionType,
             HoveringGunController.AimType aimType, HoveringGunController.FireType fireType, float fireCooldown, float fireDuration, bool onlyOnEmptyReload, string shootAudioEvent, string onEveryShotAudioEvent, string onFinishedShootingAudioEvent,
-            HoveringGunSynergyProcessor.TriggerStyle trigger, int numToTrigger, float triggerDuration, bool consumesTargetGunAmmo, float chanceToConsumeTargetGunAmmo)
+            AdvancedHoveringGunSynergyProcessor.TriggerStyle trigger, int numToTrigger, float triggerDuration, bool consumesTargetGunAmmo, float chanceToConsumeTargetGunAmmo)
         {
             AdvancedHoveringGunSynergyProcessor p = gun.gameObject.AddComponent<AdvancedHoveringGunSynergyProcessor>();
             p.RequiredSynergy = requiredSynergy;
-            p.TargetGunID = targetGunId;
-            p.UsesMultipleGuns = usesMultipleGuns;
-            p.TargetGunIDs = targetGunIDs?.ToArray() ?? new int[0];
+            p.IDsToSpawn = targetGunIDs?.ToArray() ?? new int[] { targetGunId };
             p.PositionType = positionType;
             p.AimType = aimType;
             p.FireType = fireType;
             p.FireCooldown = fireCooldown;
-            p.FireDuration = fireDuration;
+            p.BeamFireDuration = fireDuration;
             p.OnlyOnEmptyReload = onlyOnEmptyReload;
             p.ShootAudioEvent = shootAudioEvent;
             p.OnEveryShotAudioEvent = onEveryShotAudioEvent;
             p.FinishedShootingAudioEvent = onFinishedShootingAudioEvent;
             p.Trigger = trigger;
-            p.NumToTrigger = numToTrigger;
             p.TriggerDuration = triggerDuration;
-            p.ConsumesTargetGunAmmo = consumesTargetGunAmmo;
-            p.ChanceToConsumeTargetGunAmmo = chanceToConsumeTargetGunAmmo;
-            return p;
-        }
-
-        /// <summary>
-        /// Adds a <see cref="AdvancedHoveringGunSynergyProcessor"/> to <paramref name="item"/>.
-        /// </summary>
-        /// <param name="item">The item to add the <see cref="AdvancedHoveringGunSynergyProcessor"/> to.</param>
-        /// <param name="requiredSynergy">The synergy required for the hovering gun to be created.</param>
-        /// <param name="targetGunId">The id of the hovering gun.</param>
-        /// <param name="usesMultipleGuns">If <see langword="true"/>, instead of creating one gun with id of <paramref name="targetGunId"/> it will instead create multiple guns from all ids in <paramref name="targetGunIDs"/></param>
-        /// <param name="targetGunIDs">If <paramref name="usesMultipleGuns"/> is <see langword="true"/>, ids of the guns it will create. This array's length must be the same as <paramref name="numToTrigger"/>.</param>
-        /// <param name="positionType">How the gun will move when created.</param>
-        /// <param name="aimType">Where the gun will aim when created.</param>
-        /// <param name="fireType">When the gun will fire when created.</param>
-        /// <param name="fireCooldown">Firing cooldown of the gun.</param>
-        /// <param name="fireDuration">Firing duration of the gun. If zero or less, the gun will just shoot a single time every time the fire condition is met. If greater than zero, after the fire condition is met the gun will shoot for this duration.</param>
-        /// <param name="onlyOnEmptyReload">If <paramref name="fireType"/> is <see cref="HoveringGunController.FireType.ON_RELOAD"/>, the gun will only fire on empty reload.</param>
-        /// <param name="shootAudioEvent">Sound that the gun makes when shooting. If <paramref name="fireDuration"/> is greater than zero, the sound will only play at the start.</param>
-        /// <param name="onEveryShotAudioEvent">Sound that the gun makes when shooting. If <paramref name="fireDuration"/> is greater than zero, unlike <paramref name="shootAudioEvent"/>, the sound will play every shot.</param>
-        /// <param name="onFinishedShootingAudioEvent">If <paramref name="fireDuration"/> is greater than zero, this sound will play when the firing duration finishes.</param>
-        /// <param name="trigger">Condition that creates the gun.</param>
-        /// <param name="numToTrigger">Number of guns that will be created.</param>
-        /// <param name="triggerDuration">If <paramref name="trigger"/> is <see cref="HoveringGunSynergyProcessor.TriggerStyle.ON_DAMAGE"/>, the gun will only stay for this long (in seconds).</param>
-        /// <param name="consumesTargetGunAmmo">If <see langword="true"/> and the owner has the hovering gun as a normal gun, the hovering gun will have a chance to consume that gun's ammo equal to <paramref name="chanceToConsumeTargetGunAmmo"/>.</param>
-        /// <param name="chanceToConsumeTargetGunAmmo">If <paramref name="chanceToConsumeTargetGunAmmo"/> is <see langword="true"/>, the chance that the hovering gun will consume the "original" gun's ammo. Ranges from 0 to 1 (0 = 0%, 1 = 100%)</param>
-        /// <returns>The added <see cref="AdvancedHoveringGunSynergyProcessor"/>.</returns>
-        public static AdvancedHoveringGunSynergyProcessor AddHoveringGunSynergyProcessor(this PassiveItem item, string requiredSynergy, int targetGunId, bool usesMultipleGuns, List<int> targetGunIDs, HoveringGunController.HoverPosition positionType,
-            HoveringGunController.AimType aimType, HoveringGunController.FireType fireType, float fireCooldown, float fireDuration, bool onlyOnEmptyReload, string shootAudioEvent, string onEveryShotAudioEvent, string onFinishedShootingAudioEvent,
-            HoveringGunSynergyProcessor.TriggerStyle trigger, int numToTrigger, float triggerDuration, bool consumesTargetGunAmmo, float chanceToConsumeTargetGunAmmo)
-        {
-            AdvancedHoveringGunSynergyProcessor p = item.gameObject.AddComponent<AdvancedHoveringGunSynergyProcessor>();
-            p.RequiredSynergy = requiredSynergy;
-            p.TargetGunID = targetGunId;
-            p.UsesMultipleGuns = usesMultipleGuns;
-            p.TargetGunIDs = targetGunIDs.ToArray();
-            p.PositionType = positionType;
-            p.AimType = aimType;
-            p.FireType = fireType;
-            p.FireCooldown = fireCooldown;
-            p.FireDuration = fireDuration;
-            p.OnlyOnEmptyReload = onlyOnEmptyReload;
-            p.ShootAudioEvent = shootAudioEvent;
-            p.OnEveryShotAudioEvent = onEveryShotAudioEvent;
-            p.FinishedShootingAudioEvent = onFinishedShootingAudioEvent;
-            p.Trigger = trigger;
-            p.NumToTrigger = numToTrigger;
-            p.TriggerDuration = triggerDuration;
-            p.ConsumesTargetGunAmmo = consumesTargetGunAmmo;
-            p.ChanceToConsumeTargetGunAmmo = chanceToConsumeTargetGunAmmo;
+            p.ChanceToConsumeTargetGunAmmo = consumesTargetGunAmmo ? chanceToConsumeTargetGunAmmo : 0f;
             return p;
         }
 

@@ -305,8 +305,5 @@ namespace SpecialStuffPack.CursorAPI
 				return 16384;
 			}
 		}
-
-		private static string[] BundlePrereqs;
-        private static bool m_initialized;
     }
 }

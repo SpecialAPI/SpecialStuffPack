@@ -229,6 +229,7 @@ namespace SpecialStuffPack.ItemAPI
             T proj = obj.AddComponent<T>();
             proj.baseData = new ProjectileData();
             proj.persistTime = 0f;
+            proj.AdditionalBurstLimits = new SynergyBurstLimit[0];
             SpeculativeRigidbody body = obj.AddComponent<SpeculativeRigidbody>();
             body.PixelColliders = new List<PixelCollider>()
             {

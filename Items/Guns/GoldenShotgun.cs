@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Alexandria.SoundAPI;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -35,12 +36,11 @@ namespace SpecialStuffPack.Items.Guns
                     }
                 },
                 type = VFXPoolType.Single
-            }, "GoldenShotgun", PickupObject.ItemQuality.SPECIAL, GunClass.SHOTGUN, out var finish, null, null, null);
-            SoundManager.AddCustomSwitchData("WPN_Guns", "GoldenShotgun", "Play_WPN_Gun_Shot_01", "PizzaTowerShotgunShot");
-            SoundManager.AddCustomSwitchData("WPN_Guns", "GoldenShotgun", "Play_WPN_Gun_Reload_01");
-            SoundManager.AddCustomSwitchData("WPN_Guns", "GoldenShotgun", "IntroFakeReload", "PizzaTowerShotgunLoad");
+            }, "SPAPI_GoldenShotgun", PickupObject.ItemQuality.SPECIAL, GunClass.SHOTGUN, out var finish, null, null, null);
+            SoundManager.AddCustomSwitchData("WPN_Guns", "SPAPI_GoldenShotgun", "Play_WPN_Gun_Shot_01", "PizzaTowerShotgunShot");
+            SoundManager.AddCustomSwitchData("WPN_Guns", "SPAPI_GoldenShotgun", "Play_WPN_Gun_Reload_01");
             gun.spriteAnimator.GetClipByName(gun.introAnimation).frames[7].triggerEvent = true;
-            gun.spriteAnimator.GetClipByName(gun.introAnimation).frames[7].eventAudio = "IntroFakeReload";
+            gun.spriteAnimator.GetClipByName(gun.introAnimation).frames[7].eventAudio = "PizzaTowerShotgunLoad";
             gun.SetAnimationFPS(gun.introAnimation, 13);
             gun.reloadTime = 0f;
             var projectile = EasyProjectileInit<Projectile>("GoldenShotgunProjectile", null, 10f, 60f, 10f, 30f, true, false, true, ETGMod.Databases.Items.ProjectileCollection.GetSpriteIdByName("yellow_blaster_bolt_001"), tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, null, null, null, null, ETGMod.Databases.Items.ProjectileCollection);

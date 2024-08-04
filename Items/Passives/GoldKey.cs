@@ -9,7 +9,6 @@ using SpecialStuffPack.BulletScripts.UltimateDragun;
 using SpecialStuffPack.Components;
 using SpecialStuffPack.Enemies;
 using SpecialStuffPack.ItemAPI;
-using SpecialStuffPack.SaveAPI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -1171,7 +1170,7 @@ namespace SpecialStuffPack.Items
             }
             else if (GameManager.Instance.Dungeon.IsEndTimes)
             {
-                SaveAPIManager.SetFlag("LockUnlocked", true);
+                GameStatsManager.Instance.SetFlag(ETGModCompatibility.ExtendEnum<GungeonFlags>(SpecialStuffModule.GUID, "LockUnlocked"), true);
                 ghost.Fade();
                 Owner.RemovePassiveItem(PickupObjectId);
             }

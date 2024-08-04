@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 using Dungeonator;
-using SpecialStuffPack.SaveAPI;
 using SpecialStuffPack.SynergyAPI;
 
 namespace SpecialStuffPack.Items
@@ -21,7 +20,6 @@ namespace SpecialStuffPack.Items
             item.SetCooldownType(CooldownType.Timed, 0.1f);
             item.IgnoredByRat = true;
             item.consumable = true;
-            item.SetupUnlockOnCustomFlag("WoodenToken", true);
         }
 
         public override void Pickup(PlayerController player)

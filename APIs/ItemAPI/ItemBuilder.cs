@@ -332,7 +332,7 @@ namespace SpecialStuffPack.ItemAPI
         /// <summary>
         /// Adds a passive player stat modifier to a PlayerItem or PassiveItem
         /// </summary>
-        public static PickupObject AddPassiveStatModifier(this PickupObject po, PlayerStats.StatType statType, float amount, StatModifier.ModifyMethod method = StatModifier.ModifyMethod.ADDITIVE)
+        public static PickupObject AddPassiveStatModifier(this PickupObject po, PlayerStats.StatType statType, float amount, ModifyMethod method = StatModifier.ModifyMethod.ADDITIVE)
         {
             StatModifier modifier = new StatModifier
             {
@@ -340,6 +340,40 @@ namespace SpecialStuffPack.ItemAPI
                 statToBoost = statType,
                 modifyType = method
             };
+            if (po is PlayerItem)
+            {
+                var item = (po as PlayerItem);
+                if (item.passiveStatModifiers == null)
+                    item.passiveStatModifiers = new StatModifier[] { modifier };
+                else
+                    item.passiveStatModifiers = item.passiveStatModifiers.Concat(new StatModifier[] { modifier }).ToArray();
+            }
+            else if (po is PassiveItem)
+            {
+                var item = (po as PassiveItem);
+                if (item.passiveStatModifiers == null)
+                    item.passiveStatModifiers = new StatModifier[] { modifier };
+                else
+                    item.passiveStatModifiers = item.passiveStatModifiers.Concat(new StatModifier[] { modifier }).ToArray();
+            }
+            else if (po is Gun)
+            {
+                var item = (po as Gun);
+                if (item.passiveStatModifiers == null)
+                    item.passiveStatModifiers = new StatModifier[] { modifier };
+                else
+                    item.passiveStatModifiers = item.passiveStatModifiers.Concat(new StatModifier[] { modifier }).ToArray();
+            }
+            else
+            {
+                throw new NotSupportedException("Object must be of type PlayerItem, PassiveItem or Gun!");
+            }
+            return po;
+        }
+
+        public static PickupObject AddPassiveStatModifier(this PickupObject po, string statType, float amount, ModifyMethod method = StatModifier.ModifyMethod.ADDITIVE)
+        {
+            var modifier = CreateCustomStatModifier(statType, amount, method);
             if (po is PlayerItem)
             {
                 var item = (po as PlayerItem);

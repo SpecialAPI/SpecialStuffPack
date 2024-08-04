@@ -12,29 +12,32 @@ namespace SpecialStuffPack.Components
             if(projectile != null)
             {
                 projectile.OnDestruction += OnDestruction;
-                if (projectile.Owner != null && projectile.Owner is PlayerController && (projectile.Owner as PlayerController).CurrentGun != null && (projectile.Owner as PlayerController).CurrentGun != null &&
-                    (projectile.Owner as PlayerController).CurrentGun.DefaultModule != null)
+                if (InheritDamage)
                 {
-                    if((projectile.Owner as PlayerController).CurrentGun.DefaultModule.chargeProjectiles.Where((ProjectileModule.ChargeProjectile charg) => charg.Projectile != null).ToList().Count > 0)
+                    if (projectile.Owner != null && projectile.Owner is PlayerController && (projectile.Owner as PlayerController).CurrentGun != null && (projectile.Owner as PlayerController).CurrentGun != null &&
+                        (projectile.Owner as PlayerController).CurrentGun.DefaultModule != null)
                     {
-                        Projectile proj = null;
-                        float maxChargeTime = float.MinValue;
-                        foreach(ProjectileModule.ChargeProjectile charg in (projectile.Owner as PlayerController).CurrentGun.DefaultModule.chargeProjectiles.Where((ProjectileModule.ChargeProjectile charg2) => charg2.Projectile != null).ToList())
+                        if ((projectile.Owner as PlayerController).CurrentGun.DefaultModule.chargeProjectiles.Where((ProjectileModule.ChargeProjectile charg) => charg.Projectile != null).ToList().Count > 0)
                         {
-                            if(charg.ChargeTime > maxChargeTime)
+                            Projectile proj = null;
+                            float maxChargeTime = float.MinValue;
+                            foreach (ProjectileModule.ChargeProjectile charg in (projectile.Owner as PlayerController).CurrentGun.DefaultModule.chargeProjectiles.Where((ProjectileModule.ChargeProjectile charg2) => charg2.Projectile != null).ToList())
                             {
-                                proj = charg.Projectile;
-                                maxChargeTime = charg.ChargeTime;
+                                if (charg.ChargeTime > maxChargeTime)
+                                {
+                                    proj = charg.Projectile;
+                                    maxChargeTime = charg.ChargeTime;
+                                }
+                            }
+                            if (proj != null)
+                            {
+                                projectile.baseData.damage *= proj.baseData.damage;
                             }
                         }
-                        if(proj != null)
+                        else if ((projectile.Owner as PlayerController).CurrentGun.DefaultModule.projectiles.Count > 0 && (projectile.Owner as PlayerController).CurrentGun.DefaultModule.projectiles[0] != null)
                         {
-                            projectile.baseData.damage *= proj.baseData.damage;
+                            projectile.baseData.damage *= (projectile.Owner as PlayerController).CurrentGun.DefaultModule.projectiles[0].baseData.damage;
                         }
-                    }
-                    else if((projectile.Owner as PlayerController).CurrentGun.DefaultModule.projectiles.Count > 0 && (projectile.Owner as PlayerController).CurrentGun.DefaultModule.projectiles[0] != null)
-                    {
-                        projectile.baseData.damage *= (projectile.Owner as PlayerController).CurrentGun.DefaultModule.projectiles[0].baseData.damage;
                     }
                 }
             }
@@ -53,6 +56,7 @@ namespace SpecialStuffPack.Components
             Exploder.DoRadialIgnite(Fire, proj.specRigidbody.UnitCenter, IgniteRadius, null);
         }
 
+        public bool InheritDamage;
         public GameActorFireEffect Fire;
         public float IgniteRadius;
     }

@@ -26,6 +26,11 @@ namespace SpecialStuffPack.Items.Passives
         {
             if(p.CurrentRoom != null)
             {
+                var goldpig = p.PlayerHasActiveSynergy("Ignorance");
+                var mage = p.PlayerHasActiveSynergy("Humour");
+                var professor = p.PlayerHasActiveSynergy("Nihilism");
+                var robzob = p.PlayerHasActiveSynergy("Scared");
+                var frog = p.PlayerHasActiveSynergy("Stoic");
                 bool killedSomething = false;
                 if (p.CurrentRoom.remainingReinforcementLayers != null && p.CurrentRoom.remainingReinforcementLayers.Count > 0)
                 {
@@ -41,6 +46,32 @@ namespace SpecialStuffPack.Items.Passives
                         foreach(var effect in ondeath)
                         {
                             DestroyImmediate(effect);
+                        }
+                        if (goldpig)
+                        {
+                            LootEngine.SpawnCurrency(e.CenterPosition, 1, false);
+                        }
+                        if (mage && 0.05f.RandomChance())
+                        {
+                            LootEngine.SpawnItem(GlassGuonStoneObject.gameObject, e.CenterPosition, Vector2.down, 0f, false, true, false);
+                        }
+                        if (professor && p.activeItems != null)
+                        {
+                            foreach(var active in p.activeItems)
+                            {
+                                active.DidDamage(p, e.healthHaver.GetCurrentHealth() * 0.5f);
+                            }
+                        }
+                        if (robzob && p.inventory != null && p.inventory.AllGuns != null)
+                        {
+                            foreach (var g in p.inventory.AllGuns)
+                            {
+                                g.GainAmmo(1);
+                            }
+                        }
+                        if (frog)
+                        {
+                            p.ownerlessStatModifiers.Add(StatModifier.Create(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.005f));
                         }
                         e.EraseFromExistenceWithRewards();
                         killedSomething = true;

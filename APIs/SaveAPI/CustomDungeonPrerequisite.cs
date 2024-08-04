@@ -17,112 +17,14 @@ namespace SpecialStuffPack.SaveAPI
         /// <returns><see langword="true"/> if all conditions are fulfilled</returns>
         public virtual new bool CheckConditionsFulfilled()
         {
-            if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_FLAG)
+            if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_CHARACTER_SPECIFIC_FLAG)
             {
-                return AdvancedGameStatsManager.Instance.GetFlag(customFlagToCheck) == requireCustomFlag;
-            }
-            else if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_CHARACTER_SPECIFIC_FLAG)
-            {
-                return AdvancedGameStatsManager.Instance.GetCharacterSpecificFlag(characterToCheck, customCharacterSpecificFlagToCheck) == requireCustomCharacterSpecificFlag;
-            }
-            else if (advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_STAT_COMPARISION)
-            {
-                float playerStatValue = AdvancedGameStatsManager.Instance.GetPlayerStatValue(customStatToCheck);
-                switch (prerequisiteOperation)
-                {
-                    case PrerequisiteOperation.LESS_THAN:
-                        return playerStatValue < comparisonValue;
-                    case PrerequisiteOperation.EQUAL_TO:
-                        return playerStatValue == comparisonValue;
-                    case PrerequisiteOperation.GREATER_THAN:
-                        return playerStatValue > comparisonValue;
-                    default:
-                        Debug.LogError("Switching on invalid stat comparison operation!");
-                        break;
-                }
-            }
-            else if(advancedPrerequisiteType == AdvancedPrerequisiteType.CUSTOM_MAXIMUM_COMPARISON)
-            {
-                float playerMaximum = AdvancedGameStatsManager.Instance.GetPlayerMaximum(customMaximumToCheck);
-                switch (prerequisiteOperation)
-                {
-                    case PrerequisiteOperation.LESS_THAN:
-                        return playerMaximum < comparisonValue;
-                    case PrerequisiteOperation.EQUAL_TO:
-                        return playerMaximum == comparisonValue;
-                    case PrerequisiteOperation.GREATER_THAN:
-                        return playerMaximum > comparisonValue;
-                    default:
-                        Debug.LogError("Switching on invalid stat comparison operation!");
-                        break;
-                }
-            }
-            else if (advancedPrerequisiteType == AdvancedPrerequisiteType.NUMBER_PASTS_COMPLETED_BETTER)
-            {
-                float pastsBeaten = GameStatsManager.Instance.GetNumberPastsBeaten();
-                switch (prerequisiteOperation)
-                {
-                    case PrerequisiteOperation.LESS_THAN:
-                        return pastsBeaten < comparisonValue;
-                    case PrerequisiteOperation.EQUAL_TO:
-                        return pastsBeaten == comparisonValue;
-                    case PrerequisiteOperation.GREATER_THAN:
-                        return pastsBeaten > comparisonValue;
-                    default:
-                        Debug.LogError("Switching on invalid stat comparison operation!");
-                        break;
-                }
-            }
-            else if(advancedPrerequisiteType == AdvancedPrerequisiteType.ENCOUNTER_OR_CUSTOM_FLAG)
-            {
-                EncounterDatabaseEntry encounterDatabaseEntry = null;
-                if (!string.IsNullOrEmpty(encounteredObjectGuid))
-                {
-                    encounterDatabaseEntry = EncounterDatabase.GetEntry(encounteredObjectGuid);
-                }
-                if (AdvancedGameStatsManager.Instance.GetFlag(customFlagToCheck) == requireCustomFlag)
-                {
-                    return true;
-                }
-                if (encounterDatabaseEntry != null)
-                {
-                    int num3 = GameStatsManager.Instance.QueryEncounterable(encounterDatabaseEntry);
-                    switch (prerequisiteOperation)
-                    {
-                        case PrerequisiteOperation.LESS_THAN:
-                            return num3 < requiredNumberOfEncounters;
-                        case PrerequisiteOperation.EQUAL_TO:
-                            return num3 == requiredNumberOfEncounters;
-                        case PrerequisiteOperation.GREATER_THAN:
-                            return num3 > requiredNumberOfEncounters;
-                        default:
-                            Debug.LogError("Switching on invalid stat comparison operation!");
-                            break;
-                    }
-                }
-                else if (encounteredRoom != null)
-                {
-                    int num4 = GameStatsManager.Instance.QueryRoomEncountered(encounteredRoom.GUID);
-                    switch (prerequisiteOperation)
-                    {
-                        case PrerequisiteOperation.LESS_THAN:
-                            return num4 < requiredNumberOfEncounters;
-                        case PrerequisiteOperation.EQUAL_TO:
-                            return num4 == requiredNumberOfEncounters;
-                        case PrerequisiteOperation.GREATER_THAN:
-                            return num4 > requiredNumberOfEncounters;
-                        default:
-                            Debug.LogError("Switching on invalid stat comparison operation!");
-                            break;
-                    }
-                }
-                return false;
+                return GameStatsManager.Instance.GetCharacterSpecificFlag(characterToCheck, customCharacterSpecificFlagToCheck) == requireCustomCharacterSpecificFlag;
             }
             else
             {
                 return CheckConditionsFulfilledOrig();
             }
-            return false;
         }
 
         /// <summary>
@@ -288,22 +190,13 @@ namespace SpecialStuffPack.SaveAPI
         }
 
         public AdvancedPrerequisiteType advancedPrerequisiteType;
-        public string customFlagToCheck;
-        public bool requireCustomFlag;
-        public string customCharacterSpecificFlagToCheck;
+        public CharacterSpecificGungeonFlags customCharacterSpecificFlagToCheck;
         public bool requireCustomCharacterSpecificFlag;
         public PlayableCharacters characterToCheck;
         public Type requiredPassiveFlag;
-        public string customMaximumToCheck;
-        public string customStatToCheck;
         public enum AdvancedPrerequisiteType
         {
             NONE,
-            CUSTOM_FLAG,
-            CUSTOM_STAT_COMPARISION,
-            CUSTOM_MAXIMUM_COMPARISON,
-            NUMBER_PASTS_COMPLETED_BETTER,
-            ENCOUNTER_OR_CUSTOM_FLAG,
             CUSTOM_CHARACTER_SPECIFIC_FLAG
         }
     }

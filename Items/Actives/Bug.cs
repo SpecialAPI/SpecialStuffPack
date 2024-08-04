@@ -14,16 +14,32 @@ namespace SpecialStuffPack.Items.Actives
             string longdesc = "Heals and bugs out the user.\n\nThis bug probably escaped from someone's plate of spaghetti.";
             var item = EasyItemInit<Bug>("bug", "bug_idle_001", name, shortdesc, longdesc, ItemQuality.SPECIAL, null, null);
             item.consumable = true;
-            item.multRange = 1.15f;
+            item.multRange = 1.3f;
+            item.numRandomizations = 2;
             item.SetCooldownType(CooldownType.None, 0f);
         }
 
         public override void DoEffect(PlayerController user)
         {
             user.healthHaver.ApplyHealing(0.5f);
-            user.ownerlessStatModifiers.Add(CreateRandomStatMod(multRange, user));
-            AkSoundEngine.PostEvent("EverhoodHandError", user.gameObject);
+            DoBugStatRandomizations(user, numRandomizations, multRange);
             base.DoEffect(user);
+        }
+
+        public static void DoBugStatRandomizations(PlayerController play, int numRandomizations, float multRange)
+        {
+            AkSoundEngine.PostEvent("EverhoodHandError", play.gameObject);
+            List<string> messages = new();
+            List<Color> colors = new();
+            for(int i = 0; i < numRandomizations; i++)
+            {
+                var mod = CreateRandomStatMod(multRange, play);
+                play.ownerlessStatModifiers.Add(mod);
+                messages.Add(mod.FormatStatMessage(out var c));
+                colors.Add(c);
+            }
+            play.RecalculateStats();
+            DoEpicAnnouncementChain(play.sprite.WorldTopCenter + Vector2.up * 0.5f, messages, colors);
         }
 
         public static StatModifier CreateRandomStatMod(float multiplicativeRange, PlayerController owner = null)
@@ -95,7 +111,7 @@ namespace SpecialStuffPack.Items.Actives
                 modifyMethod = StatModifier.ModifyMethod.ADDITIVE;
             }
             var amount = Random.Range(1f / multiplicativeRange, multiplicativeRange);
-            if(modifyMethod == StatModifier.ModifyMethod.ADDITIVE)
+            if (modifyMethod == StatModifier.ModifyMethod.ADDITIVE)
             {
                 var rand = BraveUtility.RandomBool();
                 amount = stat == PlayerStats.StatType.Health ? (rand ? 0.5f : -0.5f) : (rand ? 1f : -1f);
@@ -103,6 +119,7 @@ namespace SpecialStuffPack.Items.Actives
             return StatModifier.Create(stat, modifyMethod, amount);
         }
 
-        public float multRange;
+        public float multRange = 1f;
+        public int numRandomizations = 1;
     }
 }

@@ -16,12 +16,8 @@ namespace SpecialStuffPack.Items
             string shortdesc = "Heavy Hitter";
             string longdesc = "Throws watermelons at all enemies in the room.";
             Watermelon item = EasyItemInit<Watermelon>("items/watermelon", "sprites/watermelon_idle_001", name, shortdesc, longdesc, ItemQuality.B, null, null);
-            LobbedProjectile proj = EasyProjectileInit<LobbedProjectile>("projectiles/melonprojectile", "projectilesprites/melon_projectile_001", 67f, 1f, 999999f, 0f, true, false, false, null, tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, 
+            LobbedProjectile proj = EasyProjectileInit<LobbedProjectile>("projectiles/melonprojectile", "projectilesprites/melon_projectile_001", 67f, 23f, 999999f, 0f, true, false, false, null, tk2dBaseSprite.Anchor.MiddleCenter, 0, 0, 
                 null, null, null, null);
-            proj.initialSpeed = 23f;
-            proj.speedCurve = new AnimationCurve(new Keyframe(0f, 0f), new Keyframe(1f, -10f));
-            proj.flySpeedMultiplier = 1f;
-            proj.destinationOffset = new Vector2(0f, 0.6875f);
             proj.angularVelocity = 360f;
             proj.DestroyMode = Projectile.ProjectileDestroyMode.BecomeDebris;
             proj.shouldRotate = true;

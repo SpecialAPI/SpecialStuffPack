@@ -1,4 +1,5 @@
-﻿using MonoMod.RuntimeDetour;
+﻿using Alexandria.ItemAPI;
+using MonoMod.RuntimeDetour;
 using SpecialStuffPack.Components;
 using SpecialStuffPack.ItemAPI;
 using SpecialStuffPack.SynergyAPI;
@@ -44,7 +45,7 @@ namespace SpecialStuffPack
             CreateSynergy("why do you keep crashing", new() { ItemIds["binary_gun"], MagnumId });
             CreateSynergy("BURN! BUUURRRNNNN!!!", new() { ItemIds["greencandle"] }, new() { GungeonPepperId, RingOfFireResistanceId, HotLeadId });
             CreateSynergy("Ring It Twice", new() { ItemIds["glassbell"], AgedBellId });
-            CreateSynergy("Celestial Rhythm", new() { ItemIds["shooting_star"], CrescentCrossbowId });
+            CreateSynergy("Celestial Rhythm", new() { ItemIds["shooting_star"], CrescentCrossbowId }).bonusSynergies.Add(ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "CelestialRhythm"));
             CreateSynergy("Wishing Star", new() { ItemIds["shooting_star"], ItemIds["wishorb"] });
             CreateSynergy("The Initial Idea", new() { ItemIds["shooting_star"], ItemIds["asteroidbelt"] }, null, false, new List<StatModifier> { StatModifier.Create(PlayerStats.StatType.Damage,
                 StatModifier.ModifyMethod.MULTIPLICATIVE, 2f) });
@@ -55,7 +56,6 @@ namespace SpecialStuffPack
             CreateSynergy("The zombies are coming", new() { ItemIds["gravediggershovel"] }, new() { ZombieBulletsId, Vertebraek47Id, SkullSpitterId });
             CreateSynergy("Armored Support", new() { ItemIds["frailheart"] }, new() { BionicLegId, LaserSightId, ShockRoundsId, NanomachinesId });
             CreateSynergy("I am YesEngine", new() { ItemIds["consolecontroller"] }, new() { GungineId, AlienEngineId });
-            CreateSynergy("Killing 1 Bird With 2 Stones", new() { ItemIds["catapult"], SlingId });
             CreateSynergy("Super Launch", new() { ItemIds["catapult"], ItemIds["launcher"] }, activeWhenGunsUnequipped: false, statModifiers: new()
             {
                 StatModifier.Create(PlayerStats.StatType.ProjectileSpeed, StatModifier.ModifyMethod.MULTIPLICATIVE, 3f),
@@ -73,8 +73,11 @@ namespace SpecialStuffPack
             CreateSynergy("Mono.dll has caused an Access Violation", new() { ItemIds["nank"] }, new() { GrapplingHookId, LilBomberId, BombId, IbombCompanionAppId });
             CreateSynergy("Frogs are Friends", new() { ItemIds["frogun"], ReallySpecialLuteId });
             CreateSynergy("Revenge", new() { ItemIds["frogun"], FaceMelterId });
-            CreateSynergy("Gun and Bullets", new() { ItemIds["lichgun"], LichsEyeBulletsId }, ignoreLichsEyeBullets: true);
-            CreateSynergy("Flatter Flat Bullets", new() { ItemIds["flatbullets"] }, new(upgradeGang));
+            CreateSynergy("Gun and Bullets", new() { ItemIds["lichgun"], LichsEyeBulletsId }, ignoreLichsEyeBullets: true).bonusSynergies.Add(ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "GunAndBullets"));
+            CreateSynergy("Flatter Flat Bullets", new() { ItemIds["flatbullets"] }, new(upgradeGang), statModifiers: new()
+            {
+                CreateCustomStatModifier("UnscaledFlatDamage", 1f, StatModifier.ModifyMethod.MULTIPLICATIVE)
+            });
             CreateSynergy("SpecialUtils", new() { ItemIds["boxofstuff"] }, new()
             {
                 PeaShooterId,
@@ -104,7 +107,7 @@ namespace SpecialStuffPack
                 HighDragunfireId
             });
             CreateSynergy("Hotter Kiln", new() { ItemIds["hotcoal"], TheKilnId }, activeWhenGunsUnequipped: false);
-            CreateSynergy("When the shotgun is sus!", new() { ItemIds["sus_shotgun"] }, new() { BackpackId, MoonscraperId, DungeonEagleId, JetpackId, BlastHelmetId, KnifeShieldId });
+            CreateSynergy("When the shotgun is sus!", new() { ItemIds["sus_shotgun"] }, new() { BackpackId, MoonscraperId, DungeonEagleId, JetpackId, BlastHelmetId, KnifeShieldId }).bonusSynergies.Add(ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "WhenTheShotgunIsSus"));
             CreateSynergy("Rainbuddy", new() { ItemIds["sus_shotgun"] }, new() { BabyGoodShelletonId, BabyGoodMimicId, ChickenFluteId, OwlId, R2g2Id }, false, new()
             {
                 CreateStatMod(PlayerStats.StatType.Damage, StatModifier.ModifyMethod.ADDITIVE, 0.25f),
@@ -317,23 +320,42 @@ namespace SpecialStuffPack
             CreateSynergy("Gambling Addiction", new() { ItemIds["woodendice"], ChanceBulletsId });
             CreateSynergy("Midnight", new() { ItemIds["woodendice"], SixthChamberId });
             CreateSynergy("Recycling at its Finest", new() { ItemIds["rustyammobox"] }, new List<int>() { AmmoSynthesizerId, AmmoBeltId, UtilityBeltId, HipHolsterId });
-            CreateSynergy("Magnum Mox", new() { ItemIds["magnificus"], MagnumId });
+            CreateSynergy("Magnum Mox", new() { ItemIds["magnificus"], MagnumId }).bonusSynergies.Add(ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "MagnumMox"));
             CreateSynergy("The Goo Mage", new() { ItemIds["magnificus"] }, new() { PoisonVialId });
             CreateSynergy("The Pike Mage", new() { ItemIds["magnificus"] }, new() { PitchforkId });
             CreateSynergy("The Lonely Mage", new() { ItemIds["magnificus"] }, new() { RingOfEtherealFormId });
-            CreateSynergy("Wizard Mentor", new() { ItemIds["magnificus"] }, new() { ChaosBulletsId });
             CreateSynergy("Advanced, Feature-Rich Interactive", new() { ItemIds["soundengine"], ItemIds["ugly_gun"] });
+            CreateSynergy("SPIN", new() { ItemIds["asteroidbelt"] }, new() { ItemIds["revolvever"], ItemIds["akpi"], MrAccretionJrId });
+            CreateSynergy("Planetary Travel", new() { ItemIds["asteroidbelt"] }, new() { MoonscraperId, ElimentalerId, PartiallyEatenCheeseId });
+            CreateSynergy("Orbital Orbit", new() { ItemIds["asteroidbelt"], OrbitalBulletsId });
+            CreateSynergy("A Modder's Worst Nightmare", new() { ItemIds["consolecontroller"] }, new() { DirectionalPadId, ThirdPartyControllerId });
+            CreateSynergy("It Guards Time!", new() { ItemIds["guardianbook"] }, new() { SuperHotWatchId, ItemIds["calendar"], SunglassesId, BlueGuonStoneId, TableTechSightId });
+            CreateSynergy("Coming Soon (tm)", new() { ItemIds["plushie"], ItemIds["keytobeyond"] });
+            CreateSynergy("Extra Spicy Sauce", new() { ItemIds["hotcoal"], ItemIds["hotsauce"] });
+            CreateSynergy("Ignorance", new() { ItemIds["brokenmask"] }, new() { CoinCrownId, GildedBulletsId, GildedHydraId, ItemIds["brokenmask"], ItemIds["emerald"], ItemIds["diamond"], ItemIds["ruby"], ItemIds["amethyst"] });
+            CreateSynergy("Humour", new() { ItemIds["brokenmask"] }, new() { HexagunId, BundleOfWandsId, MagicBulletsId, WitchPistolId, StaffOfFirepowerId, ItemIds["opal"] });
+            CreateSynergy("Nihilism", new() { ItemIds["brokenmask"] }, new() { TheFatLineId, ScienceCannonId, RubeAdyneMk2Id, RubeAdynePrototypeId, BlackHoleGunId, ItemIds["aquamarine"] });
+            CreateSynergy("Scared", new() { ItemIds["brokenmask"] }, new() { ZombieBulletsId, Vertebraek47Id, SkullSpitterId, ShelletonKeyId, ShellegunId });
+            CreateSynergy("Stoic", new() { ItemIds["brokenmask"] }, new() { ItemIds["frogun"], ReallySpecialLuteId, FaceMelterId, MahogunyId, AngryBulletsId, BubbleBlasterId, EvolverId });
+            CreateSynergy("A Better Fate", new() { ItemIds["leaderdeck"] }, new() { ItemIds["magnificus"], SevenLeafCloverId, Plus1BulletsId });
+            CreateSynergy("Double Anvil", new() { ItemIds["anvil"] }, new() { AnvillainId });
+            CreateSynergy("Expert Blacksmith", new() { ItemIds["anvil"] }, new() { CobaltHammerId });
+            CreateSynergy("Arms Dealer", new() { ItemIds["anvil"] }, new() { DuelingPistolId, MachinePistolId, PlaguePistolId, WitchPistolId, ItemIds["pistolwhip"] });
 
             // add synergy processors
             SetupDualWieldSynergy("Rotato Potato", Guns["revolvever"], Guns["akpi"]);
             Guns["frogun"].AddHoveringGunSynergyProcessor("Frogs are Friends", 506, false, null, HoveringGunController.HoverPosition.CIRCULATE,
-                HoveringGunController.AimType.PLAYER_AIM, HoveringGunController.FireType.ON_FIRED_GUN, 0.5f, -1f, false, "", "", "", HoveringGunSynergyProcessor.TriggerStyle.CONSTANT, 1, -1f, false, 0f);
+                HoveringGunController.AimType.PLAYER_AIM, HoveringGunController.FireType.ON_FIRED_GUN, 0.5f, -1f, false, "", "", "", AdvancedHoveringGunSynergyProcessor.TriggerStyle.CONSTANT, 1, -1f, false, 0f);
             Guns["frogun"].AddHoveringGunSynergyProcessor("Revenge", 149, false, null, HoveringGunController.HoverPosition.CIRCULATE,
-                HoveringGunController.AimType.PLAYER_AIM, HoveringGunController.FireType.ON_RELOAD, 0.2f, 0f, false, "", "", "", HoveringGunSynergyProcessor.TriggerStyle.CONSTANT, 1, -1f, false, 0f);
+                HoveringGunController.AimType.PLAYER_AIM, HoveringGunController.FireType.ON_RELOAD, 0.2f, 0f, false, "", "", "", AdvancedHoveringGunSynergyProcessor.TriggerStyle.CONSTANT, 1, -1f, false, 0f);
             var goodgamedesign = MicrotransactionGunObject.AddComponent<MiscSynergyProcessor>();
             goodgamedesign.synergy = "Good Game Design";
             goodgamedesign.toggleFundsToShoot = true;
             MicrotransactionGunObject.ammo = MicrotransactionGunObject.maxAmmo;
+
+            Guns["catapult"].AddComponent<AdvancedDualWieldSynergyProcessor>();
+
+            SetupDualWieldSynergy("Killing 1 Bird With 2 Stones", Guns["catapult"], SlingObject);
 
             //add this long synergy
             List<StatModifier> sm = new();

@@ -14,7 +14,7 @@ namespace SpecialStuffPack.Items
         {
             string name = "Subscribe Button";
             string shortdesc = "Don't forget to LIKE & SUBSCRIBE!";
-            string longdesc = "Power increases with the number of subscribers you have.\n\nBrought to a gungeon from another dimension by a famous GunTuber";
+            string longdesc = "Power increases with the number of subscribers you have.\n\nBrought to the Gungeon from another dimension by a famous GunTuber";
             SubscribeButton item = EasyItemInit<SubscribeButton>("items/subscribebutton", "sprites/subscribe_button_idle_001.png", name, shortdesc, longdesc, ItemQuality.S, 524, null);
             item.DamageIncreasePerSubscriber = 0.05f;
             item.DamageIncreasePerSubscriberSynergy = 0.07f;
@@ -52,7 +52,7 @@ namespace SpecialStuffPack.Items
 
         public int GetNumSubscribers(PlayerController player)
         {
-            int subscribers = 0;
+            /*int subscribers = 0;
             //playercontroller actions
             subscribers += (player.GetEventDelegate("OnPitfall")?.GetInvocationList().Length).GetValueOrDefault();
             subscribers += (player.GetEventDelegate("PostProcessProjectile")?.GetInvocationList().Length).GetValueOrDefault();
@@ -117,7 +117,19 @@ namespace SpecialStuffPack.Items
             subscribers += (player.specRigidbody.ReflectProjectilesNormalGenerator?.GetInvocationList().Length).GetValueOrDefault();
             subscribers += (player.specRigidbody.ReflectBeamsNormalGenerator?.GetInvocationList().Length).GetValueOrDefault();
             //playerstats actions
-            subscribers += (player.stats.GetEventDelegate("AdditionalVolleyModifiers")?.GetInvocationList().Length).GetValueOrDefault();
+            subscribers += (player.stats.GetEventDelegate("AdditionalVolleyModifiers")?.GetInvocationList().Length).GetValueOrDefault();*/
+
+            var subscribers = 
+                player.GetComponents<Component>()
+                .Select(x => 
+                    x.GetType()
+                    .GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+                    .Where(x2 => x2.FieldType.IsSubclassOf(typeof(Delegate)))
+                    .Select(x2 => 
+                        ((x2.GetValue(x) as Delegate)?.GetInvocationList().Length).GetValueOrDefault())
+                ).SelectMany(x => x)
+                .Sum();
+
             //final modifications
             subscribers -= 8;
             subscribers = Mathf.Max(subscribers, 0);

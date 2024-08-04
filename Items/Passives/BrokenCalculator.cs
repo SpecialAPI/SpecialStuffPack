@@ -24,6 +24,10 @@ namespace SpecialStuffPack.Items
 
         public override void DisableEffect(PlayerController player)
         {
+			if(player == null)
+            {
+				return;
+            }
             player.DecrementFlag<BrokenCalculator>();
         }
 

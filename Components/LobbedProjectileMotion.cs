@@ -9,35 +9,100 @@ namespace SpecialStuffPack.Components
     {
         public void Start()
         {
-            m_canCollide = false;
+            canCollide = false;
+            projectile.pierceMinorBreakables = true;
             PierceProjModifier pierce = this.GetOrAddComponent<PierceProjModifier>();
             pierce.penetratesBreakables = true;
-            pierce.penetration = 999999;
+            pierce.BeastModeLevel = PierceProjModifier.BeastModeStatus.BEAST_MODE_LEVEL_ONE; //this applies infinite penetration for some reason
             pierce.preventPenetrationOfActors = false;
-            m_currentHeightSpeed = initialSpeed;
             transform.rotation = Quaternion.identity;
             if(projectile.sprite != null)
             {
                 projectile.sprite.transform.localRotation = transform.rotation;
                 lastSpritePosition = projectile.sprite.transform.position;
-                m_originalHeightOffGround = projectile.sprite.HeightOffGround;
+                originalHeightOffGround = projectile.sprite.HeightOffGround;
             }
-            specRigidbody.OnPreMovement += HandleHeight;
             specRigidbody.OnPreRigidbodyCollision += OnPreCollision;
             specRigidbody.OnRigidbodyCollision += OnRigidbodyCollision;
+            projectile.OnPostUpdate += HandleHeight;
             projectile.angularVelocity = 0f;
+            localLastPosition = transform.position;
+            projectile.baseData.range = 999999f;
+            if (destinationDist < 0f)
+            {
+                if (forcedDistance > 0f)
+                {
+                    destinationDist = forcedDistance;
+                }
+                else
+                {
+                    var own = projectile.Owner;
+                    var shoot = projectile.Shooter;
+                    if (own is PlayerController p && own.specRigidbody == shoot)
+                    {
+                        SetPlayerDestination(p);
+                    }
+                    else if (shoot != null && shoot.aiActor != null && shoot.aiActor.TargetRigidbody != null)
+                    {
+                        SetDestination(shoot.aiActor.TargetRigidbody.UnitCenter);
+                    }
+                    else if (own is PlayerController p2)
+                    {
+                        SetPlayerDestination(p2);
+                    }
+                }
+            }
+            if(destinationDist < 0f)
+            {
+                destinationDist = 0.0625f;
+            }
         }
 
-        public void HandleHeight(SpeculativeRigidbody body)
+        public static bool CONTROLLER_LOB_DEBUG = false;
+
+        public void SetPlayerDestination(PlayerController play)
         {
-            var speedmult = m_originalProjectileSpeed.GetValueOrDefault() / 15f;
-            m_currentHeightSpeed += speedCurve.Evaluate(m_elapsedBounceTime) * 60 * projectile.LocalDeltaTime * speedmult;
-            m_elapsedBounceTime += projectile.LocalDeltaTime * speedmult;
-            m_currentHeight += (m_currentHeightSpeed * projectile.LocalDeltaTime) * speedmult;
-            if(projectile.sprite != null)
+            var inp = BraveInput.GetInstanceForPlayer(play.PlayerIDX);
+            if (inp != null)
             {
-                projectile.sprite.transform.localPosition = new Vector3(projectile.sprite.transform.localPosition.x, Mathf.Max(m_currentHeight, 0f));
-                projectile.sprite.HeightOffGround = m_originalHeightOffGround + m_currentHeight;
+                if (inp.IsKeyboardAndMouse() && !CONTROLLER_LOB_DEBUG)
+                {
+                    SetDestination(play.CenterPosition + play.GetRelativeAim());
+                }
+                else
+                {
+                    PhysicsEngine.Instance.Raycast(specRigidbody.UnitCenter, play.GetRelativeAim().normalized, 1000f, out var res, true, true, int.MaxValue, CollisionLayer.Projectile, false, x => !(x.minorBreakable == null && x.majorBreakable == null));
+                    if(res.SpeculativeRigidbody == null)
+                    {
+                        RaycastResult.Pool.Free(ref res);
+                        PhysicsEngine.Instance.Raycast(specRigidbody.UnitCenter, play.GetRelativeAim().normalized, 1000f, out res, true, true, int.MaxValue, CollisionLayer.Projectile, false, x => !(x.minorBreakable == null && (x.majorBreakable == null || (!x.majorBreakable.m_isBroken && (x.GetComponent<FlippableCover>() == null || !x.GetComponent<FlippableCover>().m_flipped)))));
+                    }
+                    if (res.SpeculativeRigidbody == null)
+                    {
+                        RaycastResult.Pool.Free(ref res);
+                        PhysicsEngine.Instance.Raycast(specRigidbody.UnitCenter, play.GetRelativeAim().normalized, 1000f, out res, true, true, int.MaxValue, CollisionLayer.Projectile, false, x => !((x.majorBreakable == null || (!x.majorBreakable.m_isBroken && (x.GetComponent<FlippableCover>() == null || !x.GetComponent<FlippableCover>().m_flipped))) && (x.minorBreakable == null || !x.minorBreakable.IsBroken)));
+                    }
+                    if (res.SpeculativeRigidbody != null)
+                    {
+                        SetDestination(res.SpeculativeRigidbody.UnitCenter + res.SpeculativeRigidbody.Velocity * projectile.baseData.speed * timeToLandWithNormalShotSpeed / 23);
+                    }
+                    else
+                    {
+                        SetDestination(res.Contact);
+                        destinationDist = Mathf.Max(destinationDist - 0.25f, 0.0625f);
+                    }
+                }
+            }
+        }
+
+        public void HandleHeight(Projectile proj)
+        {
+            proj.specRigidbody.Velocity *= destinationDist / 23f / timeToLandWithNormalShotSpeed;
+            if (projectile.sprite != null)
+            {
+                var currentHeight = Mathf.Max(localDistanceElapsed / destinationDist * 4 * visualHeight * (1 - localDistanceElapsed / destinationDist), 0f);
+                projectile.sprite.transform.localPosition = new Vector3(projectile.sprite.transform.localPosition.x, Mathf.Max(currentHeight, 0f));
+                projectile.sprite.HeightOffGround = originalHeightOffGround + currentHeight;
                 if (transform.rotation.eulerAngles.z != 0f)
                 {
                     Quaternion rotation = projectile.sprite.transform.rotation;
@@ -51,16 +116,19 @@ namespace SpecialStuffPack.Components
                 }
                 lastSpritePosition = projectile.sprite.transform.position;
             }
-            if (m_currentHeight <= 0f && m_currentHeightSpeed < 0f && !m_isDestroying)
+            localDistanceElapsed += Vector3.Distance(localLastPosition, transform.position);
+            localLastPosition = transform.position;
+            if (localDistanceElapsed >= destinationDist && !isDestroying)
             {
+                localDistanceElapsed = 0f;
                 StartCoroutine(HandleDestruction());
-                m_isDestroying = true;
+                isDestroying = true;
             }
         }
 
         public void OnPreCollision(SpeculativeRigidbody body, PixelCollider collider, SpeculativeRigidbody collision, PixelCollider collisionCollider)
         {
-            if (!m_canCollide && collision.GetComponentInParent<DungeonDoorController>() == null && (collision.GetComponent<MajorBreakable>() == null || !collision.GetComponent<MajorBreakable>().IsSecretDoor))
+            if (!canHitAnythingEvenWhenNotGrounded && !canCollide && collision.GetComponentInParent<DungeonDoorController>() == null && (collision.GetComponent<MajorBreakable>() == null || !collision.GetComponent<MajorBreakable>().IsSecretDoor))
             {
                 PhysicsEngine.SkipCollision = true;
                 return;
@@ -69,47 +137,12 @@ namespace SpecialStuffPack.Components
 
         public void SetDestination(Vector2 destination)
         {
-            m_originalProjectileSpeed ??= projectile.baseData.speed;
-            float? simulatedTime = SimulateTime();
-            if (simulatedTime != null)
+            var lastdd = destinationDist;
+            destinationDist = Mathf.Max(Vector2.Distance(transform.position.XY(), destination), 0.0625f);
+            if(lastdd >= 0f)
             {
-                projectile.baseData.speed *= Vector2.Distance(transform.position.XY(), destination) / (simulatedTime.Value * Time.timeScale) / 15f;
+                localDistanceElapsed *= destinationDist / lastdd;
             }
-        }
-
-        public float? SimulateTime()
-        {
-            if (speedCurve.keys[speedCurve.length - 1].value >= 0f)
-            {
-                return null;
-            }
-            float time = 0f;
-            float speed = initialSpeed;
-            float height = 0f;
-            float actualSpeed = 1f;
-            float distance = 0f;
-            bool breakNextFrame = false;
-            var speedmult = m_originalProjectileSpeed.GetValueOrDefault() / 15f;
-            while (true)
-            {
-                if(speedmult == 0f)
-                {
-                    break;
-                }
-                time += GameManager.INVARIANT_DELTA_TIME * speedmult;
-                speed += speedCurve.Evaluate(time) * 60 * GameManager.INVARIANT_DELTA_TIME * speedmult;
-                height += speed * GameManager.INVARIANT_DELTA_TIME * speedmult;
-                distance += actualSpeed * GameManager.INVARIANT_DELTA_TIME;
-                if (breakNextFrame)
-                {
-                    break;
-                }
-                if (height <= 0f && speed < 0f)
-                {
-                    breakNextFrame = true;
-                }
-            }
-            return time * Mathf.Sign(speedmult);
         }
 
         public void OnRigidbodyCollision(CollisionData rigidbodyCollision)
@@ -119,16 +152,13 @@ namespace SpecialStuffPack.Components
 
         protected IEnumerator HandleDestruction()
         {
-            m_canCollide = true;
+            canCollide = true;
             yield return null;
             if (GetComponent<BounceProjModifier>() != null && GetComponent<BounceProjModifier>().numberOfBounces > 0)
             {
-                m_canCollide = false;
-                m_elapsedBounceTime = 0f;
-                m_currentHeightSpeed = initialSpeed;
-                m_currentHeight = 0f;
+                canCollide = false;
                 GetComponent<BounceProjModifier>().numberOfBounces--;
-                m_isDestroying = false;
+                isDestroying = false;
             }
             else
             {
@@ -137,17 +167,16 @@ namespace SpecialStuffPack.Components
             yield break;
         }
 
-        public AnimationCurve speedCurve;
-        public float initialSpeed;
-        public float flySpeedMultiplier;
-        public Vector2 destinationOffset;
+        public float forcedDistance = -1f;
+        public float timeToLandWithNormalShotSpeed = 0.5f;
+        public float visualHeight = 5f;
+        public bool canHitAnythingEvenWhenNotGrounded;
         private Vector3 lastSpritePosition;
-        private float m_elapsedBounceTime;
-        private bool m_isDestroying;
-        private float m_currentHeightSpeed;
-        private float m_currentHeight;
-        private float m_originalHeightOffGround;
-        private float? m_originalProjectileSpeed;
-        private bool m_canCollide;
+        private float destinationDist = -1f;
+        private bool isDestroying;
+        private float originalHeightOffGround;
+        private bool canCollide;
+        private float localDistanceElapsed;
+        private Vector3 localLastPosition;
     }
 }

@@ -14,7 +14,6 @@ namespace SpecialStuffPack.Items.Actives
             var longdesc = "Makes the user throw the current gun, getting a new one.\n\nA personal favorite of the Cultist";
             var item = EasyItemInit<BananaJam>("BananaJam", "banana_jam_idle_001", name, shortdesc, longdesc, ItemQuality.D, null, null);
             item.SetCooldownType(CooldownType.Damage, 300);
-			item.SetupUnlockOnCustomCharacterSpecificFlag("BeatDragun", PlayableCharacters.CoopCultist);
         }
 
         public override void DoEffect(PlayerController user)

@@ -1,6 +1,5 @@
 ﻿using Dungeonator;
 using SpecialStuffPack.ItemAPI;
-using SpecialStuffPack.SaveAPI;
 using SpecialStuffPack.SynergyAPI;
 using System;
 using System.Collections;
@@ -91,7 +90,7 @@ namespace SpecialStuffPack.Items
                     if (turret)
                     {
                         turret.sourcePlayer = user;
-                        SaveTools.Add(ref turret.GetComponent<AIActor>().EffectResistances, new ActorEffectResistance { resistType = EffectResistanceType.Freeze, resistAmount = 1 });
+                        turret.GetComponent<AIActor>().EffectResistances = turret.GetComponent<AIActor>().EffectResistances.AddToArray(new ActorEffectResistance { resistType = EffectResistanceType.Freeze, resistAmount = 1 });
                     }
                     else
                     {

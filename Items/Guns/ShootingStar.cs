@@ -54,8 +54,14 @@ namespace SpecialStuffPack.Items
                     sequenceStyle = ProjectileModule.ProjectileSequenceStyle.Ordered
                 }
             };
-            gun.AddVolleyReplacementSynergyProcessor("Celestial Rhythm", synergyVolley);
+
+            var rep = gun.AddComponent<VolleyReplacementSynergyProcessor>();
+
+            rep.RequiredSynergy = ETGModCompatibility.ExtendEnum<CustomSynergyType>(SpecialStuffModule.GUID, "CelestialRhythm");
+            rep.SynergyVolley = synergyVolley;
+
             finish();
+
             gun.AddToCursulaShop();
             gun.AddToBlacksmithShop();
         }
